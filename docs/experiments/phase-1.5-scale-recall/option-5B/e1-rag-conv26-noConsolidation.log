@@ -1,0 +1,8 @@
+ADVANCED tier ¡ú tongyi:qwen-max (advanced_tier_uses_cloud)
+loaded 1/1 instances (skipped 0 with no matching questions); total 32 questions (categories=['single-hop'])
+  [1/1] conv-26  q=32  rag=0.042  (24.4s)
+
+wrote docs\experiments\phase-1.5-scale-recall\option-5B\e1-rag-conv26-noConsolidation.json
+wall=24.4s  cache hits=0 misses=0
+rag     mean=0.042  by_cat={'single-hop': 0.041666666666666664}
+gate (rag single-hop ¡Ý 0.4): 0.041666666666666664 ¡ú FAIL

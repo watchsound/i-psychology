@@ -1,0 +1,101 @@
+# LLM router config for psychology-base.
+#
+# Routing policy:
+#   TaskTier.SIMPLE   -> Ollama when reachable (free + fast + private);
+#                        falls back to the active cloud provider's simple slot.
+#   TaskTier.ADVANCED -> always the active cloud provider's advanced slot.
+#
+# Rationale: semantic analysis is a hot-path operation across this project
+# (per-fragment summarization, per-recall relevance scoring, reconsolidation
+# delta detection, Witness divergence scoring). Keeping SIMPLE on a local
+# model is critical for both cost and latency. ADVANCED is reserved for
+# complicated planning / analysis / free-form judging where a wrong answer
+# invalidates downstream work.
+#
+# API keys are read from env vars (api_key_env), never written here.
+
+active_provider: tongyi
+
+providers:
+  tongyi:
+    # Alibaba DashScope (通义千问). Strong Chinese + English, native API
+    # at https://dashscope.aliyuncs.com/api/v1/.../generation.
+    #   qwen-turbo: fast + cheap; the SIMPLE tier default.
+    #   qwen-max:   most capable; the ADVANCED / judge / reader tier.
+    #   text-embedding-v3: 1024-dim retrieval-tuned embedder. Phase 1.5
+    #     E1 v3 showed mxbai-embed-large (via Ollama) ranked
+    #     "Caroline experience transition" above "Caroline origin Sweden"
+    #     for the cue "Where did Caroline move from?" — Bucket A persisted
+    #     at F1 0.288. Swap enabled via local_ollama.force_cloud_embeddings.
+    simple_model: qwen-turbo
+    advanced_model: qwen-max
+    embedding_model: text-embedding-v3
+    api_key_env: ALIBABA_TONGYI_API_KEY
+
+  anthropic:
+    simple_model: claude-haiku-4-5-20251001
+    advanced_model: claude-opus-4-7
+    api_key_env: ANTHROPIC_API_KEY
+
+  openai:
+    simple_model: gpt-4o-mini
+    advanced_model: gpt-4o
+    api_key_env: OPENAI_API_KEY
+
+  ollama:
+    base_url: http://localhost:11434
+    # Choose a model you have pulled locally. Qwen2.5 7B is a strong default
+    # for English + Chinese semantic analysis; swap for llama3.1:8b,
+    # qwen2.5:14b, deepseek-r1:7b, etc. as needed.
+    simple_model: qwen2.5:7b
+    advanced_model: qwen2.5:32b
+    # Dedicated embedding model. Chat-tuned LLMs (qwen2.5:7b) expose
+    # /api/embeddings but produce retrieval-degenerate vectors — Phase
+    # 1.5 E1 v1 measured cos(cue, correct_fact) ≈ 0.25 vs cos(cue,
+    # distractor) ≈ 0.46, inverting the ranking. mxbai-embed-large is a
+    # 1024-dim retrieval-tuned embedder; bge-small-zh-v1.5 is the
+    # Chinese-leaning alternative the Phase 1.5 plan originally
+    # proposed. Pull one before enabling consolidation.
+    embedding_model: mxbai-embed-large
+    # Local 7B generation on CPU/mid-GPU can take minutes for 500-2000
+    # output tokens (Phase 1.5 fact extraction on long sessions). Default
+    # 120s is tuned for cloud; raise it for local runs.
+    request_timeout_s: 600
+
+local_ollama:
+  # Master toggle. When false, SIMPLE routes to the active cloud provider's
+  # simple slot regardless of whether a local Ollama is running. Flip off
+  # when you want deterministic cloud-only runs (e.g. in CI).
+  enabled: true
+  # Independent of ``enabled``: when true, SIMPLE tier chat is forced to
+  # cloud even if Ollama is reachable. Embeddings continue to route to
+  # Ollama (mxbai-embed-large). Phase 1.5 Option 5.C flipped this on
+  # 2026-10-06 — qwen2.5:7b on CPU extracted ~99 facts per 19-session
+  # dialogue and missed the specific proper nouns the LoCoMo gate checks
+  # (Sweden, pottery, book titles). Cloud qwen-turbo matches Mem0's
+  # gpt-4o-mini reference tier and should close "Bucket A / not stated"
+  # without reshaping the architecture.
+  force_cloud_chat: true
+  # Phase 1.5 E1 v4 toggled this on; v4 F1=0.198 (worse than v3's 0.288).
+  # text-embedding-v3 fixes q11 Sweden (rank 75→8) but breaks q7 Single
+  # (rank 18→104) and q40 beach-frequency (rank 1→103) — different
+  # cue-paraphrase strengths. mxbai wins more queries overall. Reverted
+  # to mxbai for v6; substring augmentation (system.py) provides the
+  # proper-noun fidelity that pure cosine ranking lacks.
+  force_cloud_embeddings: false
+  # How long the probe waits for Ollama's /api/tags before giving up.
+  # Keep tight — a slow probe blocks startup.
+  probe_timeout_s: 1.0
+  # If true, the probe fails unless `ollama.simple_model` is actually
+  # pulled (not just that the server is up). Catches the silent-failure
+  # mode where /api/tags responds but /api/chat 404s every call.
+  require_model_pulled: true
+
+cache:
+  # Disk cache of chat + embedding responses, keyed on
+  # (provider, model_id, tier, temperature, max_tokens, messages).
+  # Default-on because benchmark re-runs over the same inputs are the
+  # dominant workload — a cache hit saves both tokens and latency.
+  enabled: true
+  # null => ~/.cache/psychology_base/llm/ (or $PSYCHOLOGY_BASE_LLM_CACHE_DIR).
+  dir: null

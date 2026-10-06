@@ -1,0 +1,82 @@
+{
+  "benchmark": "longmemeval",
+  "split": "fixture-mini",
+  "instance_count": 3,
+  "question_count": 3,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.6666666666666666,
+    "per_question": [
+      {
+        "instance": "lm-mini-0",
+        "question_id": "lm-mini-0",
+        "question_type": "single-session-user",
+        "gold": "red",
+        "candidate": "nice meet you mira how can i help today hi m first time chatting with rode my red bicycle the s this sounds like a ride did find anything up some and tomatoes dog chased squirrel in park",
+        "score": 1.0,
+        "verdict": "correct"
+      },
+      {
+        "instance": "lm-mini-1",
+        "question_id": "lm-mini-1",
+        "question_type": "multi-session",
+        "gold": "tulips and daffodils",
+        "candidate": "tulips are what color the planting along path yellow a pink nice yard will look great in weeks finally got daffodils took forever",
+        "score": 1.0,
+        "verdict": "correct"
+      },
+      {
+        "instance": "lm-mini-2",
+        "question_id": "lm-mini-2",
+        "question_type": "abstention",
+        "gold": "not stated",
+        "candidate": "what you talk about coffee with my brother this mostly weekend",
+        "score": 0.0,
+        "verdict": "incorrect"
+      }
+    ]
+  },
+  "rag_mode": {
+    "mean_score": 1.0,
+    "per_question": [
+      {
+        "instance": "lm-mini-0",
+        "question_id": "lm-mini-0",
+        "question_type": "single-session-user",
+        "gold": "red",
+        "candidate": "red",
+        "score": 1.0,
+        "verdict": "correct"
+      },
+      {
+        "instance": "lm-mini-1",
+        "question_id": "lm-mini-1",
+        "question_type": "multi-session",
+        "gold": "tulips and daffodils",
+        "candidate": "tulips, daffodils",
+        "score": 1.0,
+        "verdict": "correct"
+      },
+      {
+        "instance": "lm-mini-2",
+        "question_id": "lm-mini-2",
+        "question_type": "abstention",
+        "gold": "not stated",
+        "candidate": "not stated",
+        "score": 1.0,
+        "verdict": "correct"
+      }
+    ]
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 6
+  },
+  "generated_at": "2026-10-05T22:40:14"
+}

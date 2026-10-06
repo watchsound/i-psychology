@@ -1,0 +1,5 @@
+instance=conv-26  turns=419  questions[single-hop]=32  top_k=10
+embedded 419 fragments in 230.5s
+scored 32 questions in 3.2s
+wrote C:\Users\nihan\Desktop\my-ai-projects\psychology-base\docs\experiments\phase-1.5-scale-recall\option-5A\probe-raw-fragments.json
+mean f1 = 0.0113  (gate 0.40 = FAIL)

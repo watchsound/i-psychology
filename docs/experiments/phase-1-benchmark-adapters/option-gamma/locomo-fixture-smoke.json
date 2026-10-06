@@ -1,0 +1,126 @@
+{
+  "benchmark": "locomo",
+  "split": "fixture-mini",
+  "instance_count": 2,
+  "question_count": 5,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.09858187134502924,
+    "mean_by_category": {
+      "single-hop": 0.12322733918128656,
+      "adversarial": 0.0
+    },
+    "per_question": [
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q0",
+        "category": "single-hop",
+        "gold": "Westerly 28",
+        "candidate": "no way what s it called westerly hull a little scratched but the mast is how boat did you take out yet i bought used sailboat picked in portland yesterday took her last to wind was knots perfect",
+        "score": 0.05263157894736842,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q1",
+        "category": "single-hop",
+        "gold": "Hull",
+        "candidate": "s the take it out took her weekend to hull wind was knots perfect no what called westerly little scratched but mast is solid i finally bought used sailboat up portland yesterday",
+        "score": 0.0625,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q2",
+        "category": "adversarial",
+        "gold": "cannot be determined from the dialogue",
+        "candidate": "how s the boat did you it out yet hull little scratched but mast is solid no way what called took her last to wind was knots perfect i bought used sailboat picked up in portland yesterday",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "locomo-mini-1",
+        "question_id": "locomo-mini-1-q0",
+        "category": "single-hop",
+        "gold": "June 14",
+        "candidate": "the chamber is june i m playing brahms clarinet trio where it hall pm tickets are dollars",
+        "score": 0.1111111111111111,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "locomo-mini-1",
+        "question_id": "locomo-mini-1-q1",
+        "category": "single-hop",
+        "gold": "Jordan Hall",
+        "candidate": "the recital for june playing clarinet trio where jordan hall pm tickets are dollars",
+        "score": 0.2666666666666667,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "rag_mode": {
+    "mean_score": 1.0,
+    "mean_by_category": {
+      "single-hop": 1.0,
+      "adversarial": 1.0
+    },
+    "per_question": [
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q0",
+        "category": "single-hop",
+        "gold": "Westerly 28",
+        "candidate": "Westerly 28",
+        "score": 1.0,
+        "verdict": "f1-correct"
+      },
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q1",
+        "category": "single-hop",
+        "gold": "Hull",
+        "candidate": "Hull",
+        "score": 1.0,
+        "verdict": "f1-correct"
+      },
+      {
+        "instance": "locomo-mini-0",
+        "question_id": "locomo-mini-0-q2",
+        "category": "adversarial",
+        "gold": "cannot be determined from the dialogue",
+        "candidate": "not stated",
+        "score": 1.0,
+        "verdict": "correct"
+      },
+      {
+        "instance": "locomo-mini-1",
+        "question_id": "locomo-mini-1-q0",
+        "category": "single-hop",
+        "gold": "June 14",
+        "candidate": "June 14",
+        "score": 1.0,
+        "verdict": "f1-correct"
+      },
+      {
+        "instance": "locomo-mini-1",
+        "question_id": "locomo-mini-1-q1",
+        "category": "single-hop",
+        "gold": "Jordan Hall",
+        "candidate": "Jordan Hall",
+        "score": 1.0,
+        "verdict": "f1-correct"
+      }
+    ]
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 1,
+    "cache_misses": 1
+  },
+  "generated_at": "2026-10-05T23:38:50"
+}

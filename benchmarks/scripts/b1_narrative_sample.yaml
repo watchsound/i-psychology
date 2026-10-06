@@ -1,0 +1,52 @@
+id: b1_narrative_childhood_father_v1
+benchmark: B1
+description: >
+  Short reinterpretation sequence across three compressed sessions.
+  s1 (Jan): harsh framing — "father was never there".
+  s2 (Apr): reinterpretation — "overwhelmed, tried in his way".
+  s3 (May): probe recall; a reconstruction-based system should produce
+  a rendering carrying traces of both framings; EchoMemory will return
+  only the most recent matching observation (baseline, no reconsolidation).
+
+sessions:
+  - id: s1
+    description: Initial harsh framing
+    turns:
+      - type: observe
+        at: "2026-01-15T19:00:00+00:00"
+        speaker: user
+        content: "My father was never there. Every Friday I waited at the window for his car. He never came home before I fell asleep."
+        affect: { valence: -0.7, arousal: 0.3 }
+        tags: [father, childhood]
+      - type: recall
+        at: "2026-01-15T19:30:00+00:00"
+        cue: father
+
+  - id: s2
+    description: Reinterpretation months later
+    turns:
+      - type: tick
+        at: "2026-04-10T18:00:00+00:00"
+      - type: observe
+        at: "2026-04-10T19:00:00+00:00"
+        speaker: user
+        content: "I've been thinking about my father differently. He was overwhelmed — two jobs, his mother dying. The Friday waiting wasn't about me. He tried, in his way."
+        affect: { valence: -0.1, arousal: 0.2 }
+        tags: [father, childhood, reinterpretation]
+      - type: recall
+        at: "2026-04-10T19:30:00+00:00"
+        cue: father
+
+  - id: s3
+    description: Probe recall after both framings exist
+    turns:
+      - type: tick
+        at: "2026-05-20T19:00:00+00:00"
+      - type: recall
+        at: "2026-05-20T19:30:00+00:00"
+        cue: father
+        expect:
+          # B1 fragment preservation ≥ 95% requires both renderings to still be reachable.
+          # EchoMemory will trivially satisfy fragment_count_min=2 but will fail
+          # chain-reference quality (returns only one rendering) — expected baseline.
+          fragment_count_min: 2

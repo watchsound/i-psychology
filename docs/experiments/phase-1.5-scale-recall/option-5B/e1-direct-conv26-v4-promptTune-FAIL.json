@@ -1,0 +1,222 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "direct",
+  "consolidation_enabled": true,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.032977806516821626,
+    "mean_by_category": {
+      "single-hop": 0.032977806516821626
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "Caroline studies adoption Caroline works in school event Caroline loves reading Caroline reflects personal growth Caroline believes conversations important Caro",
+        "score": 0.049,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "Caroline passionate about self-acceptance Caroline shares personal struggles Caroline feels bonded Caroline likes acceptance Caroline likes self-portraits Carol",
+        "score": 0.054,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "Caroline feels bonded Caroline shares personal struggles Caroline likes showing love Caroline likes acceptance Caroline attended LGBT pride event Caroline refle",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "Caroline shares personal struggles Caroline reflects personal growth Caroline feels bonded Caroline feels optimistic Caroline feels hopeful Caroline shares tran",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "Caroline pursues counseling career Caroline reflects personal growth Caroline passionate about self-acceptance Caroline likes acceptance Caroline plans to do pa",
+        "score": 0.107,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "Melanie has hobby nature outings Melanie did activities nature, campfire, hike, running Melanie did activities painting Melanie has family Melanie did activitie",
+        "score": 0.042,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "Melanie went camping mountains Melanie did activities nature, campfire, hike, running Melanie did activities hiking in the mountains, exploring forests Melanie ",
+        "score": 0.038,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "Melanie loves kids smiles Melanie has family Melanie has husband, kids Melanie supports family Melanie cherishes family moments Melanie feels loved Melanie has ",
+        "score": 0.043,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "Melanie hobby reading Melanie likes poetry readings Melanie has family Melanie has husband, kids Melanie has hobby nature outings Melanie loves running Caroline",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "Melanie has family Melanie feels loved Melanie feels thankful Melanie supports family Melanie has husband, kids Melanie supports Caroline Melanie cherishes fami",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "Caroline attended LGBT pride event Caroline attended event pride parade Caroline attended event pride parade Caroline supports LGBTQ+ community Caroline has 'Co",
+        "score": 0.127,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "Caroline did activities mentoring LGBTQ youth Caroline works in school event Caroline passionate about creating safe space for people to grow Caroline supports ",
+        "score": 0.095,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "Melanie did activities painting Melanie has hobby painting landscape and still life Melanie hobby painting Melanie plans to do painting autumn scenes Melanie li",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "Melanie has family Melanie supports family Melanie cherishes family moments Melanie has husband, kids Melanie has hobby nature outings Melanie did activities na",
+        "score": 0.036,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "Caroline supports LGBTQ+ community Caroline attended LGBT pride event Caroline has 'Connected LGBTQ Activists' Caroline did activities mentoring LGBTQ youth Car",
+        "score": 0.118,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "Melanie did activities nature, campfire, hike, running Melanie has hobby nature outings Melanie has family Melanie loves running Melanie has husband, kids Melan",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "Caroline has painting for art show Caroline has tradition painting for art show Caroline owns painting Caroline has hobby painting Caroline likes self-portraits",
+        "score": 0.048,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "Caroline shares personal struggles Melanie supports Caroline Caroline feels bonded Caroline supports LGBTQ+ community Caroline passionate about self-acceptance ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "Melanie has hobby pottery Melanie takes pottery class Melanie has family Melanie supports family Melanie has husband, kids Melanie did activities painting Melan",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "Melanie did activities painting Melanie hobby painting Melanie has hobby painting landscape and still life Melanie likes painting horses Melanie plans to do pai",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "rag_mode": null,
+  "gate": {
+    "target": 0.4,
+    "mode": "direct",
+    "category": "single-hop",
+    "value": 0.032977806516821626,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 2797.8,
+  "generated_at": "2026-10-06T05:18:06"
+}

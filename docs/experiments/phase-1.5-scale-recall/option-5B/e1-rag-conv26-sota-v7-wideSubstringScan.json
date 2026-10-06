@@ -1,0 +1,222 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "rag",
+  "consolidation_enabled": true,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": null,
+  "rag_mode": {
+    "mean_score": 0.2635602810534876,
+    "mean_by_category": {
+      "single-hop": 0.2635602810534876
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "exploring, inspiration, empowering, being real, showing off true selves, friendship, encouragement, freedom, feeling appreciated, support, self-expression, lear",
+        "score": 0.043,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "exploring, playing at the park, learning about nature, dinosaur exhibits, beach trips, camping, roasting marshmallows, storytelling around the campfire, pottery",
+        "score": 0.087,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "Charlotte's Web, Becoming Nicole, classics, stories from different cultures, educational books",
+        "score": 0.25,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "Melanie destresses through activities like painting, pottery, and spending time in nature.",
+        "score": 0.143,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "LGBTQ+ pride parade, transgender conference, LGBTQ art show, transgender poetry reading, joining LGBTQ activist group",
+        "score": 0.286,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "Melanie painted an abstract painting and a sunset-inspired painting recently.",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "camping, playing games, eating good food, hanging out, roasting marshmallows, telling stories around the campfire, hiking, celebrating daughter's birthday, goin",
+        "score": 0.029,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "speaking up for the community, joining activist groups, participating in pride parades, creating art that represents inclusivity, mentoring LGBTQ youth, attendi",
+        "score": 0.409,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "once or twice",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "Caroline makes paintings, drawings, and stained glass art.",
+        "score": 0.2,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "pots",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "sunsets, abstract, landscapes, still life",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q55",
+        "category": "single-hop",
+        "gold": "Sunsets",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q56",
+        "category": "single-hop",
+        "gold": "Rainbow flag, transgender symbol",
+        "candidate": "love, faith, strength, rainbow flag, eagle",
+        "score": 0.4,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q60",
+        "category": "single-hop",
+        "gold": "clarinet and violin",
+        "candidate": "violin, guitar",
+        "score": 0.4,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q65",
+        "category": "single-hop",
+        "gold": "Changes to her body, losing unsupportive friends",
+        "candidate": "changing body, exploring gender identity, self-acceptance, finding supportive relationships, expressing herself through art",
+        "score": 0.1,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "gate": {
+    "target": 0.4,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.2635602810534876,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 118.1,
+  "generated_at": "2026-10-06T06:55:53"
+}

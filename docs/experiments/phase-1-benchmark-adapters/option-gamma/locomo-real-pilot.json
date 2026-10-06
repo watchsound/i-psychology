@@ -1,0 +1,407 @@
+{
+  "benchmark": "locomo",
+  "split": "real-first2",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 2,
+  "question_count": 43,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "both",
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.015592761000008103,
+    "mean_by_category": {
+      "single-hop": 0.015592761000008103
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "love that painting so cool found such a helpful what s it done for caroline happened was awesome did hear any inspiring stories hey to see with work up anything",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "wow love that painting cool you such a helpful group s it done for caroline happened was awesome hear any inspiring stories hey good to see i m swamped with the",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "wow that painting so cool you found such a helpful group what s it done caroline happened did hear any inspiring stories hey good to i swamped with kids work up",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "wow love painting so cool found such a helpful what s it done for caroline hear any stories hey good to see i m swamped with kids work anything really ve got gu",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "wow so you found such a what s it for caroline awesome did hear any inspiring stories hey to see i m swamped with the kids work up really got guts now jobs are ",
+        "score": 0.038,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "wow love that painting found such a helpful what it done for caroline happened awesome hear any inspiring stories hey good to see i m swamped kids up anything n",
+        "score": 0.038,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "that so cool you found such helpful group s it for caroline awesome hear any inspiring stories good to swamped with the kids work up anything new really ve got ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "wow love that painting so cool you found such a helpful what s done for caroline happened was did hear any inspiring stories really ve got guts now hey good see",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "wow love that so cool you found a helpful group what s it done for caroline was awesome hear any stories really ve got guts now hey good see i m swamped with th",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "wow love that painting so cool you found a helpful group what s it done for caroline was did hear inspiring really ve got guts now hey good to i m swamped the k",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "that so cool found such a helpful group what s done caroline happened was awesome did hear any inspiring stories really got guts now hey good to see i m swamped",
+        "score": 0.036,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "wow love that so cool you found such a helpful group what it done for happened was awesome did hear any stories really ve got guts now to see i m with the kids ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "wow love painting cool you found such helpful group what s it done for caroline was awesome did hear any stories really ve got guts good see i m swamped with th",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "wow love painting so cool you found such a helpful what s it for happened was awesome did hear inspiring stories really got guts now good to see i swamped the k",
+        "score": 0.036,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "wow love that painting so cool you found such a helpful group what s it for caroline happened was awesome did hear any inspiring really ve got guts now hey good",
+        "score": 0.056,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "wow love that painting so cool you such a helpful group what it done for caroline happened was awesome did hear any inspiring stories really ve got guts now hey",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "wow that painting cool you such a helpful group what s it done for caroline happened was awesome did hear any inspiring stories really ve got guts now hey good ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "love that painting cool you found such helpful what s it done for caroline happened awesome did hear any inspiring stories really guts now hey good to see i swa",
+        "score": 0.036,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "wow that painting so cool you found such a helpful what s it caroline happened was awesome hear any inspiring stories really ve got guts now hey good to see i m",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "what that painting so cool you found such a group it done caroline was awesome did hear inspiring stories really ve guts hey good to see i m swamped with the ki",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "rag_mode": {
+    "mean_score": 0.0035778175313059034,
+    "mean_by_category": {
+      "single-hop": 0.0035778175313059034
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "Painting",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "gate": {
+    "target": 0.9,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.0035778175313059034,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 29.3,
+  "generated_at": "2026-10-06T00:08:09"
+}

@@ -1,0 +1,222 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "direct",
+  "consolidation_enabled": true,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.0,
+    "mean_by_category": {
+      "single-hop": 0.0
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Mel enjoys_camp",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Mel enjoys_camp",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favorite_song Brave by Sara Bareilles Caroline group",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Mel enjoys_camp",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "Caroline group_name Connected LGBTQ Activists Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline favori",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "Caroline support_for_artist True Caroline support_for_artist True Caroline support_for_artist True Caroline group_name Connected LGBTQ Activists Mel support_for",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "rag_mode": null,
+  "gate": {
+    "target": 0.4,
+    "mode": "direct",
+    "category": "single-hop",
+    "value": 0.0,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 3015.0,
+  "generated_at": "2026-10-06T04:18:53"
+}

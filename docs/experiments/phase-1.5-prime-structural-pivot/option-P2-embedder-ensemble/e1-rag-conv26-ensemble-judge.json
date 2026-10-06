@@ -1,0 +1,135 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "rag",
+  "consolidation_enabled": true,
+  "judge_single_hop": true,
+  "embedder_ensemble": true,
+  "cross_encoder_rerank": false,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": null,
+  "rag_mode": {
+    "mean_score": 0.4375,
+    "mean_by_category": {
+      "single-hop": 0.4375
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q55",
+        "category": "single-hop",
+        "gold": "Sunsets",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q61",
+        "category": "single-hop",
+        "gold": "Summer Sounds, Matt Patterson",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q66",
+        "category": "single-hop",
+        "gold": "Roast marshmallows, tell stories",
+        "candidate": "Melanie and her family explore nature, enjoy the view, and feel inspired by the togetherness during hikes.",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q71",
+        "category": "single-hop",
+        "gold": "\"Becoming Nicole\"",
+        "candidate": "Charlotte's Web",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q75",
+        "category": "single-hop",
+        "gold": "3",
+        "candidate": "2",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q76",
+        "category": "single-hop",
+        "gold": "19 October 2023",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      }
+    ]
+  },
+  "gate": {
+    "target": 0.7,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.4375,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 14,
+    "cache_misses": 18
+  },
+  "wall_time_s": 165.2,
+  "generated_at": "2026-10-06T09:03:29"
+}

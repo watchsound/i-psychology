@@ -1,0 +1,40 @@
+{
+  "run_id": "epbench-fixture-smoke-2026-10-05",
+  "benchmark": "epbench",
+  "split": "fixture-mini",
+  "mode": "direct",
+  "data_source": "tests/fixtures/epbench_mini/epbench_shim.jsonl (synthetic, 2 instances / 5 questions — NOT the real EpBench Figshare bundle)",
+  "sut": {
+    "class": "CompanionSystem",
+    "witness_active": false,
+    "pain_gain": 0.6,
+    "companion_only_suppress": 0.4,
+    "byte_cap": 4096,
+    "git_sha": "pending-step-2-commit"
+  },
+  "seeds": [0],
+  "results": {
+    "mini-0": {
+      "mean_f1": 0.0,
+      "per_question": [
+        {"id": "mini-0-q0", "retrieval_type": "entity-to-places", "f1": 0.0},
+        {"id": "mini-0-q1", "retrieval_type": "co-occurrence", "f1": 0.0},
+        {"id": "mini-0-q2", "retrieval_type": "place-to-entities", "f1": 0.0}
+      ]
+    },
+    "mini-1": {
+      "mean_f1": 0.0,
+      "per_question": [
+        {"id": "mini-1-q0", "retrieval_type": "entity-to-places", "f1": 0.0},
+        {"id": "mini-1-q1", "retrieval_type": "place-to-entities", "f1": 0.0}
+      ]
+    }
+  },
+  "aggregate_mean_f1": 0.0,
+  "verdict": "Direct-mode substrate output is a token bag, not a formatted item list — F1 against list-structured gold answers is 0.0 by construction. This is the predicted behavior per plan §3 Option α 'likely under-performs on narrow factual QA'. The step-2 gate 'F1 >= 0.70 in direct mode' is therefore unreachable for Option α on EpBench; the gate wording should be revised to measure under Option γ RAG mode.",
+  "replicates_against_real_data": false,
+  "notes": [
+    "This run uses a synthetic fixture, not the real EpBench Figshare bundle (https://doi.org/10.6084/m9.figshare.28244480). Real-data numbers will not match this one even in direction — EpBench universes have thousands of events and specific entity-pool structures.",
+    "The honest step-2 finding is that direct-mode α on list-structured QA has a floor near zero regardless of substrate quality. The RAG reader (step 3) is required to score the substrate's actual recall quality against this benchmark."
+  ]
+}

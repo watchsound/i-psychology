@@ -1,0 +1,9 @@
+ADVANCED tier ¡ú tongyi:qwen-max (advanced_tier_uses_cloud)
+SIMPLE tier ¡ú tongyi:qwen-turbo (ollama_unavailable_fallback_to_cloud) [consolidation ON]
+loaded 1/1 instances (skipped 0 with no matching questions); total 32 questions (categories=['single-hop'])
+  [1/1] conv-26  q=32  rag=0.264  (118.1s)
+
+wrote docs\experiments\phase-1.5-scale-recall\option-5B\e1-rag-conv26-sota-v7-wideSubstringScan.json
+wall=118.1s  cache hits=0 misses=0
+rag     mean=0.264  by_cat={'single-hop': 0.2635602810534876}
+gate (rag single-hop ¡Ý 0.4): 0.2635602810534876 ¡ú FAIL

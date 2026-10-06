@@ -1,0 +1,222 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "direct",
+  "consolidation_enabled": true,
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.01009094427244582,
+    "mean_by_category": {
+      "single-hop": 0.01009094427244582
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "Caroline plans_to research_adoption_agencies Caroline activities_during_me_time reading_books Caroline motivated_by personal_experience_and_support_from_others ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "Caroline artwork_theme gender_identity Caroline has support_network Caroline has pets, family_members Caroline works_with trans_people Caroline family_feelings ",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "Caroline has support_network Caroline has pets, family_members Caroline relationship_changes acceptance_of_adoption Caroline feels_about single_parenting_challe",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "Caroline has support_network Caroline has pets, family_members Caroline transition_experience positive Caroline works_with trans_people Caroline support_from_ot",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "Caroline plans_to pursue_career_in_mental_health Caroline plans_to pursue_counseling_and_mental_health_services Caroline motivated_by personal_experience_and_su",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "Mel activities_during_me_time spending_time_with_family Mel activities_during_me_time spending_time_with_kids Caroline activities_during_me_time reading_books M",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "Mel outdoor_activity camping Mel hobby camping Mel family_activity camping_trip Mel enjoys_camping True Mel family_activities hiking, camping Mel plans_to cheri",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "Mel children_feelings enjoyment Mel activities_during_me_time spending_time_with_kids Mel has_children True Mel summer_tradition family_outing Mel family_activi",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "Mel outdoor_activity reading Caroline activities_during_me_time reading_books Mel outdoor_activity reading_and_hiking Caroline activities_during_me_time reading",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "Mel feels_about self_care Mel feels_about painting_outlet_for_expressing_self Caroline feels_about mel_camping_plan Caroline plans_to pursue_counseling_and_ment",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "Caroline activities_during_me_time talking_about_lgbtq_community Caroline activities_during_me_time talking_about_lgbtq_community Caroline attended LGBTQ_suppor",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "Caroline activism_impact positive Caroline activism_impact positive Caroline activism_impact positive Caroline activism_impact positive Caroline activism_impact",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "Mel hobby painting Mel hobby painting Mel feels_about painting_outlet_for_expressing_self Caroline hobby painting Caroline hobby painting Caroline artwork_mediu",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "Mel activities_during_me_time spending_time_with_family Mel summer_tradition family_outing Mel activities_during_me_time camping_with_family Mel activities_duri",
+        "score": 0.1,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "Caroline activities_during_me_time talking_about_lgbtq_community Caroline activities_during_me_time talking_about_lgbtq_community Caroline attended LGBTQ_suppor",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "Mel summer_tradition beach_trip, family_outing, horseback_riding Mel activities_during_me_time family_picnic_at_beach Mel plans_to cherish_time_with_family_and_",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "Caroline artwork_mediums painting, pottery, abstract Caroline art_show True Caroline hobby painting Caroline hobby painting Caroline artwork_theme nature_and_fa",
+        "score": 0.053,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "Caroline support_from_others friends_family Caroline has support_network Caroline motivated_by support_from_others_and_personal_experience Caroline journey_to_s",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "Mel hobby pottery Mel children_activities pottery_workshop Caroline artwork_mediums painting, pottery, abstract Mel family_bonding camping_trip, art_project Mel",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "Mel hobby painting Mel hobby painting Mel feels_about painting_outlet_for_expressing_self Caroline hobby painting Caroline hobby painting Caroline artwork_mediu",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      }
+    ]
+  },
+  "rag_mode": null,
+  "gate": {
+    "target": 0.4,
+    "mode": "direct",
+    "category": "single-hop",
+    "value": 0.01009094427244582,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 375.9,
+  "generated_at": "2026-10-06T04:28:42"
+}

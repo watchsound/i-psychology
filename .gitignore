@@ -3,3 +3,32 @@
 .idea/
 .DS_Store
 Thumbs.db
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Secrets — never commit API keys. Use .env.example as the template.
+.env
+.env.local
+.env.*.local
+
+# LLM response cache
+.cache/
+
+# Claude Code local state (per-user, not shared)
+.claude/

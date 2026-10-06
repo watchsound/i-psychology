@@ -1,0 +1,265 @@
+{
+  "benchmark": "locomo",
+  "instance_id": "conv-26",
+  "category": "single-hop",
+  "top_k": 10,
+  "mean_f1": 0.011325892612320332,
+  "per_question": [
+    {
+      "question_id": "conv-26-q3",
+      "cue": "What did Caroline research?",
+      "gold": "Adoption agencies",
+      "top_cos": 0.663,
+      "top_content_head": "Caroline: Cool! What did it look like? Melanie: Wow, Caroline, that looks amazing! What inspired it? Melanie: That's great news, Caroline! Love seeing your dedication to helping others. Any specific p",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q4",
+      "cue": "What is Caroline's identity?",
+      "gold": "Transgender woman",
+      "top_cos": 0.67,
+      "top_content_head": "Caroline: Thanks, Melanie. Here's one- 'Embracing Identity' is all about finding comfort and love in being yourself. The woman in the painting stands for the journey of acceptance. My aim was to show ",
+      "f1": 0.011
+    },
+    {
+      "question_id": "conv-26-q7",
+      "cue": "What is Caroline's relationship status?",
+      "gold": "Single",
+      "top_cos": 0.711,
+      "top_content_head": "Melanie: Caroline, awesome news that you two are getting along! What was it like for you both? Care to fill me in? Caroline: Hey Melanie! Long time no talk! A lot's been going on in my life! Take a lo",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q11",
+      "cue": "Where did Caroline move from 4 years ago?",
+      "gold": "Sweden",
+      "top_cos": 0.672,
+      "top_content_head": "Caroline: That's awesome, Melanie! How have your family been supportive during your move? Melanie: Wow, Caroline! That's huge! How did it feel to be around so much love and acceptance? Caroline: Hey M",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q13",
+      "cue": "What career path has Caroline decided to persue?",
+      "gold": "counseling or mental health for Transgender people",
+      "top_cos": 0.814,
+      "top_content_head": "Caroline: Gonna continue my edu and check out career options, which is pretty exciting! Melanie: Wow, Caroline! What kinda jobs are you thinkin' of? Anything that stands out? Caroline: Lately, I've be",
+      "f1": 0.049
+    },
+    {
+      "question_id": "conv-26-q15",
+      "cue": "What activities does Melanie partake in?",
+      "gold": "pottery, camping, painting, swimming",
+      "top_cos": 0.706,
+      "top_content_head": "Melanie: Yeah, it's tough. So I'm carving out some me-time each day - running, reading, or playing my violin - which refreshes me and helps me stay present for my fam! Melanie: Wow, looks awesome! Did",
+      "f1": 0.011
+    },
+    {
+      "question_id": "conv-26-q18",
+      "cue": "Where has Melanie camped?",
+      "gold": "beach, mountains, forest",
+      "top_cos": 0.726,
+      "top_content_head": "Melanie: We always look forward to our family camping trip. We roast marshmallows, tell stories around the campfire and just enjoy each other's company. It's the highlight of our summer! Melanie: Abso",
+      "f1": 0.013
+    },
+    {
+      "question_id": "conv-26-q19",
+      "cue": "What do Melanie's kids like?",
+      "gold": "dinosaurs, nature",
+      "top_cos": 0.7,
+      "top_content_head": "Melanie: Hey Caroline! Since we last spoke, I took my kids to a park yesterday. They had fun exploring and playing. It was nice seeing them have a good time outdoors. Time flies, huh? What's new with ",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q23",
+      "cue": "What books has Melanie read?",
+      "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+      "top_cos": 0.713,
+      "top_content_head": "Melanie: Sounds great! What kind of books you got in your library? Melanie: Wow, Caroline! Books have such an awesome power! Which one has been your favorite guide? Caroline: Thanks so much, Mel! Seei",
+      "f1": 0.016
+    },
+    {
+      "question_id": "conv-26-q24",
+      "cue": "What does Melanie do to destress?",
+      "gold": "Running, pottery",
+      "top_cos": 0.684,
+      "top_content_head": "Melanie: Caroline, thanks! Mental health is important to me, and it's made such an improvement! Melanie: I've been running farther to de-stress, which has been great for my headspace. Melanie: Thanks,",
+      "f1": 0.01
+    },
+    {
+      "question_id": "conv-26-q32",
+      "cue": "What LGBTQ+ events has Caroline participated in?",
+      "gold": "Pride parade, school speech, support group",
+      "top_cos": 0.764,
+      "top_content_head": "Caroline: Since we last spoke, some big things have happened. Last week I went to an LGBTQ+ pride parade. Everyone was so happy and it made me feel like I belonged. It showed me how much our community",
+      "f1": 0.024
+    },
+    {
+      "question_id": "conv-26-q34",
+      "cue": "What events has Caroline participated in to help children?",
+      "gold": "Mentoring program, school speech",
+      "top_cos": 0.725,
+      "top_content_head": "Melanie: I totally agree, Caroline. Everyone deserves that. It's awesome to see how passionate you are about helping these kids. Caroline: I'm definitely carrying on volunteering at the youth center. ",
+      "f1": 0.006
+    },
+    {
+      "question_id": "conv-26-q37",
+      "cue": "What did Melanie paint recently?",
+      "gold": "sunset",
+      "top_cos": 0.806,
+      "top_content_head": "Melanie: We love painting together lately, especially nature-inspired ones. Here's our latest work from last weekend. Melanie: Thanks, Caroline! Painting's a fun way to express my feelings and get cre",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q38",
+      "cue": "What activities has Melanie done with her family?",
+      "gold": "Pottery, painting, camping, museum, swimming, hiking",
+      "top_cos": 0.737,
+      "top_content_head": "Melanie: It so fun! We played games, ate good food, and just hung out together. Family moments make life awesome. Melanie: Absolutely, Caroline! I cherish time with family. It's when I really feel ali",
+      "f1": 0.01
+    },
+    {
+      "question_id": "conv-26-q39",
+      "cue": "In what ways is Caroline participating in the LGBTQ community?",
+      "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+      "top_cos": 0.774,
+      "top_content_head": "Caroline: I'm inspired seeing my work make a difference for the LGBTQ+ community. Knowing I'm helping create a more loving world is amazing. I'm really thankful for my friends, family and mentors' sup",
+      "f1": 0.033
+    },
+    {
+      "question_id": "conv-26-q40",
+      "cue": "How many times has Melanie gone to the beach in 2023?",
+      "gold": "2",
+      "top_cos": 0.649,
+      "top_content_head": "Melanie: Seeing my kids' faces so happy at the beach was the best! We don't go often, usually only once or twice a year. But those times are always special to spend time together and chill. Melanie: W",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q43",
+      "cue": "What kind of art does Caroline make?",
+      "gold": "abstract art",
+      "top_cos": 0.772,
+      "top_content_head": "Caroline: Painting's great for expressing myself. I love creating art! Here's a recent self-portrait I made last week. Caroline: Check out my painting for the art show! Hope you like it. Melanie: Than",
+      "f1": 0.009
+    },
+    {
+      "question_id": "conv-26-q47",
+      "cue": "Who supports Caroline when she has a negative experience?",
+      "gold": "Her mentors, family, and friends",
+      "top_cos": 0.742,
+      "top_content_head": "Caroline: Thanks, Melanie. It really mattered. My own journey and the support I got made a huge difference. Now I want to help people go through it too. I saw how counseling and support groups improve",
+      "f1": 0.007
+    },
+    {
+      "question_id": "conv-26-q48",
+      "cue": "What types of pottery have Melanie and her kids made?",
+      "gold": "bowls, cup",
+      "top_cos": 0.772,
+      "top_content_head": "Melanie: I'm a big fan of pottery - the creativity and skill is awesome. Plus, making it is so calming. Look at this! Melanie: Thanks, Caroline! Your kind words mean a lot. Pottery is a huge part of m",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q51",
+      "cue": "What has Melanie painted?",
+      "gold": "Horse, sunset, sunrise",
+      "top_cos": 0.806,
+      "top_content_head": "Melanie: Thanks, Caroline! Painting's a fun way to express my feelings and get creative. It's a great way to relax after a long day. Melanie: Thanks, Caroline! I'm obsessed with those, so I made somet",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q52",
+      "cue": "What are Melanie's pets' names?",
+      "gold": "Oliver, Luna, Bailey",
+      "top_cos": 0.734,
+      "top_content_head": "Melanie: We've got a pup and a kitty. That's the dog, and here's our cat! They brighten up our day and always make us smile. Caroline: Ah, they're adorable! What are their names? Pets sure do bring so",
+      "f1": 0.028
+    },
+    {
+      "question_id": "conv-26-q55",
+      "cue": "What subject have Caroline and Melanie both painted?",
+      "gold": "Sunsets",
+      "top_cos": 0.801,
+      "top_content_head": "Melanie: Thanks, Caroline! I'm obsessed with those, so I made something to catch the eye and make people smile. Plus, painting helps me express my feelings and be creative. Each stroke carries a part ",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q56",
+      "cue": "What symbols are important to Caroline?",
+      "gold": "Rainbow flag, transgender symbol",
+      "top_cos": 0.735,
+      "top_content_head": "Caroline: Thanks, Melanie! This necklace is super special to me - a gift from my grandma in my home country, Sweden. She gave it to me when I was young, and it stands for love, faith and strength. It'",
+      "f1": 0.013
+    },
+    {
+      "question_id": "conv-26-q60",
+      "cue": "What instruments does Melanie play?",
+      "gold": "clarinet and violin",
+      "top_cos": 0.797,
+      "top_content_head": "Melanie: Cool! What type of music do you play? Caroline: Thanks, Melanie! Appreciate it. You play any instruments? Melanie: That's awesome! What type of guitar? Been playing long? Melanie: Yeah, I pla",
+      "f1": 0.037
+    },
+    {
+      "question_id": "conv-26-q61",
+      "cue": "What musical artists/bands has Melanie seen?",
+      "gold": "Summer Sounds, Matt Patterson",
+      "top_cos": 0.749,
+      "top_content_head": "Melanie: Cool! What type of music do you play? Melanie: Yeah, that pic was from a show I went to. It was so much fun and reminded me of how music brings us together. Melanie: Music's amazing, isn't it",
+      "f1": 0.027
+    },
+    {
+      "question_id": "conv-26-q65",
+      "cue": "What are some changes Caroline has faced during her transition journey?",
+      "gold": "Changes to her body, losing unsupportive friends",
+      "top_cos": 0.791,
+      "top_content_head": "Caroline: Realizing I can be me without fear and having the courage to transition was the best part. It's so freeing to express myself authentically and have people back me up. Caroline: Thanks, Melan",
+      "f1": 0.017
+    },
+    {
+      "question_id": "conv-26-q66",
+      "cue": "What does Melanie do with her family on hikes?",
+      "gold": "Roast marshmallows, tell stories",
+      "top_cos": 0.775,
+      "top_content_head": "Melanie: We enjoy hiking in the mountains and exploring forests. It's a cool way to connect with nature and each other. Melanie: We always look forward to our family camping trip. We roast marshmallow",
+      "f1": 0.027
+    },
+    {
+      "question_id": "conv-26-q70",
+      "cue": "What transgender-specific events has Caroline attended?",
+      "gold": "Poetry reading, conference",
+      "top_cos": 0.751,
+      "top_content_head": "Caroline: I mentor a transgender teen just like me. We've been working on building up confidence and finding positive strategies, and it's really been paying off! We had a great time at the LGBT pride",
+      "f1": 0.014
+    },
+    {
+      "question_id": "conv-26-q71",
+      "cue": "What book did Melanie read from Caroline's suggestion?",
+      "gold": "\"Becoming Nicole\"",
+      "top_cos": 0.778,
+      "top_content_head": "Melanie: Wow, Caroline! Books have such an awesome power! Which one has been your favorite guide? Melanie: Yeah, Caroline! I'll start thinking about what we can do. Caroline: Glad it helped ya, Melani",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q75",
+      "cue": "How many children does Melanie have?",
+      "gold": "3",
+      "top_cos": 0.693,
+      "top_content_head": "Melanie: I'm lucky to have my husband and kids; they keep me motivated. Melanie: You're doing something amazing! Creating a family for those kids is so lovely. You'll be an awesome mom! Good luck! Mel",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q76",
+      "cue": "When did Melanie go on a hike after the roadtrip?",
+      "gold": "19 October 2023",
+      "top_cos": 0.728,
+      "top_content_head": "Melanie: We enjoy hiking in the mountains and exploring forests. It's a cool way to connect with nature and each other. Melanie: It was an awesome time, Caroline! We explored nature, roasted marshmall",
+      "f1": 0.0
+    },
+    {
+      "question_id": "conv-26-q78",
+      "cue": "What items has Melanie bought?",
+      "gold": "Figurines, shoes",
+      "top_cos": 0.677,
+      "top_content_head": "Caroline: Yep, Melanie! I've got some other stuff with sentimental value, like my hand-painted bowl. A friend made it for my 18th birthday ten years ago. The pattern and colors are awesome-- it remind",
+      "f1": 0.0
+    }
+  ]
+}

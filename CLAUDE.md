@@ -16,6 +16,25 @@ Per the user's framing (2026-10-05) and [README.md](README.md):
 
 Memory and psychology are the substrate; the two applications are the north star. A mechanism on tracks 1–2 that cannot be used by the learning tutor or the companion is out of scope.
 
+## Memory thesis (consciousness-simulation principles)
+
+The memory architecture is **not** organized around re-synthesizing SOTA features (vector-RAG + knowledge-graph + sleep-cycle + sycophancy stack) or around adding typed sub-stores. It is organized around a set of **consciousness-simulation principles** — because the three structural gaps current SOTA does not address (reconsolidation, 换位思考, 共情) are not content a store is missing; they are behaviors a store cannot produce.
+
+The directive, from the user (2026-10-05): *to achieve SOTA, the memory system has to simulate consciousness to some degree*. The user's prior project at `C:\Users\nihan\Desktop\ai-projects\ai-writing\ai-consciousness` (Ouroboros) is **studied for principles, not copied as code**. Its empirical findings (reconstructive-memory produces reconsolidation for free; ToM via causal-integration-during-sleep works; Mirror ablation collapsed identity signal 1.36× anchor and 83× null) validate that this architectural stance can produce the needed behaviors.
+
+Six design principles, derived from the gaps and validated by the prior art:
+
+- **A — Memory is a living process, not a store.** It has its own time, its own state, its own tick. State at *t* depends causally on state at *t−1*. 绵延 across months is a north-star metric for the long-term companion.
+- **B — Content is reconstructed, not retrieved.** On query, the system rebuilds current meaning from fragments under current context. Reconsolidation is a side-effect of this, not an engineered feature.
+- **C — Mentalistic objects are processes, not fields.** The user's self-model, the AI's model of user, `mother-as-user-represents-her`, user's model of the AI — each has its own state and its own reconstruction. 换位思考 and clinical insight follow.
+- **D — Importance is revealed by selection pressure, not scored.** What survives purge under capacity constraints across months is what mattered. User-named "covenant-anchored" fragments are the exception, protected from decay.
+- **E — Identity requires contrast with another mind.** A **Witness** entity (second AI, not user-facing, user decision 2026-10-05) observes the Companion's reasoning and feeds divergence as pain. This is the primary anti-sycophancy mechanism.
+- **F — Rules become dispositions.** Therapeutic / pedagogical rules decay out of the prompt and are internalized through operation + Witness feedback. Covenant-boundary rules (self-harm, 《办法》, Digital Bereavement) are **non-decaying**.
+
+See [docs/memory-design.md](docs/memory-design.md), [docs/memory-gaps.md](docs/memory-gaps.md), [docs/benchmarks.md](docs/benchmarks.md), [docs/sota-goal.md](docs/sota-goal.md), and [docs/roadmap.md](docs/roadmap.md). SOTA is defined behaviorally (reconsolidation + 换位思考 + 共情 producing in-application outcomes, under 《办法》 floor + Digital Bereavement obligation, without regressing on standard long-context benchmarks) — not as a point on LongMemEval/LoCoMo/EpBench. The validation sequence is ep20-horizon first; month-horizon 绵延 is a separate open research track (Ouroboros's mianyan decays past ep20; a long-term companion lives for months — honest open problem, not hand-waved). The SOTA claim is made only after the Phase 4 application pilot; earlier phases produce evidence toward the claim.
+
+**One-line thesis.** Memory is not what a mind *has*. Memory is what a mind *does*, moment by moment, under scarcity, in contrast with another mind, with meaning rebuilt from the available fragments each time the question is asked.
+
 ## Reference material (authoritative)
 
 [reference-docs/](reference-docs/) is the authoritative context — these PDFs are deeply researched and define vocabulary, benchmarks, and ethical constraints. Read the relevant one before proposing architecture; use the `pages` parameter on Read rather than loading whole files.

@@ -1,0 +1,9 @@
+ADVANCED tier ¡ú tongyi:qwen-max (advanced_tier_uses_cloud)
+SIMPLE tier ¡ú ollama:qwen2.5:7b (ollama_available) [consolidation ON]
+loaded 1/1 instances (skipped 0 with no matching questions); total 32 questions (categories=['single-hop'])
+  [1/1] conv-26  q=32  direct=0.033  (2797.8s)
+
+wrote docs\experiments\phase-1.5-scale-recall\option-5B\e1-direct-conv26.json
+wall=2797.8s  cache hits=0 misses=0
+direct  mean=0.033  by_cat={'single-hop': 0.032977806516821626}
+gate (direct single-hop ¡Ý 0.4): 0.032977806516821626 ¡ú FAIL
