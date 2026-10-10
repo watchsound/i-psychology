@@ -1,0 +1,18 @@
+{
+  "benchmark": "phase4b_mathdial_fade",
+  "mode": "cloud",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\mathdial\\train.jsonl",
+  "limit": 170,
+  "max_turns": 10,
+  "problem_count": 162,
+  "session_count": 170,
+  "fade_event_count": 113,
+  "successful_fades": 113,
+  "tutor_surrender_count": 4,
+  "unaided_solve_rate": 1.0,
+  "tutor_surrender_rate": 0.023529411764705882,
+  "pivot_gate_pass": true,
+  "wall_s": 1613.7,
+  "generated_at": "2026-10-08T02:17:10"
+}

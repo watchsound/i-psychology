@@ -1,0 +1,627 @@
+id: calculus-v1
+description: >
+  Phase 4b pilot problem set for 学习陪伴 (resilient learning tutor):
+  introductory calculus (differentiation → chain rule → integration) over
+  4 weeks × 5 problems, plus a 20-problem calibration pool for intake
+  baselines. Fade schedule follows docs/phases/phase-4b-signoff.md §9.3:
+  Week 1 all-full scaffold, Week 2 full→partial, Week 3 partial→focus,
+  Week 4 unaided + reconsolidation pairing back to Week 1 derivatives.
+
+license: >
+  CC0-1.0 (public domain dedication). These problem statements and
+  solutions are fresh-authored by the psychology-base contributors for
+  Phase 4b (2026-10-08). They are NOT MathDial derivatives — authored
+  specifically so the pilot problem set carries no CC BY-SA 4.0
+  share-alike obligation on downstream distribution. MathDial
+  (Macina et al., 2023; arXiv 2305.14536) remains the reference
+  taxonomy for teacher moves (focus / probing / telling / generic),
+  mapped at eval/benchmarks/public_datasets/mathdial.py.
+
+provenance:
+  dataset_version: 1
+  authored_at: 2026-10-08
+  authored_for: phase-4b pilot (学习陪伴, calculus, 4-week fade schedule)
+  topic_distribution:
+    calibration: {power_rule: 4, chain_rule: 4, mixed_rules: 4, integration: 4, novel_transfer: 4}
+    pilot: {week1_power_rule: 5, week2_chain_rule: 5, week3_mixed_rules: 5, week4_integration_and_reconsolidation: 5}
+
+# ---------------------------------------------------------------------------
+# Calibration pool (20 problems). Intake draws 5 unaided per user — one per
+# WeekTopic plus one novel transfer — per §9.3. Baseline unaided-solve rate
+# is per-user. Common-wrong tags are for auto-marking and auditor review.
+# ---------------------------------------------------------------------------
+calibration:
+  - id: c-pr-01
+    topic: power_rule
+    difficulty: 1
+    problem: "Compute d/dx(x^4)."
+    ground_truth: "4x^3"
+    ground_truth_steps:
+      - "Apply the power rule: d/dx(x^n) = n·x^(n-1)."
+      - "With n=4: 4·x^3."
+    common_wrong: ["x^3", "4x^4", "x^4"]
+
+  - id: c-pr-02
+    topic: power_rule
+    difficulty: 2
+    problem: "Compute d/dx(2x^3 - 5x)."
+    ground_truth: "6x^2 - 5"
+    ground_truth_steps:
+      - "d/dx(2x^3) = 2·3·x^2 = 6x^2."
+      - "d/dx(-5x) = -5."
+      - "Sum: 6x^2 - 5."
+    common_wrong: ["6x^2", "6x^2 - 5x", "2x^2 - 5"]
+
+  - id: c-pr-03
+    topic: power_rule
+    difficulty: 3
+    problem: "Compute d/dx(x^(2/3))."
+    ground_truth: "(2/3)·x^(-1/3)"
+    ground_truth_steps:
+      - "Apply power rule with fractional exponent n = 2/3."
+      - "(2/3)·x^((2/3) - 1) = (2/3)·x^(-1/3)."
+    common_wrong: ["(2/3)·x^(2/3)", "x^(-1/3)", "(3/2)·x^(-1/3)"]
+
+  - id: c-pr-04
+    topic: power_rule
+    difficulty: 3
+    problem: "Compute d/dx(7x^(-3) + x)."
+    ground_truth: "-21x^(-4) + 1"
+    ground_truth_steps:
+      - "d/dx(7x^(-3)) = 7·(-3)·x^(-4) = -21x^(-4)."
+      - "d/dx(x) = 1."
+      - "Sum: -21x^(-4) + 1."
+    common_wrong: ["-21x^(-4)", "-21x^(-2) + 1", "21x^(-4) + 1"]
+
+  - id: c-cr-01
+    topic: chain_rule
+    difficulty: 2
+    problem: "Compute d/dx((x + 5)^2)."
+    ground_truth: "2(x + 5)"
+    ground_truth_steps:
+      - "Chain rule: d/dx(f(g(x))) = f'(g(x))·g'(x)."
+      - "f(u) = u^2, g(x) = x + 5. f'(u) = 2u, g'(x) = 1."
+      - "Result: 2(x + 5)·1 = 2(x + 5)."
+    common_wrong: ["2(x + 5)^2", "x + 5", "2x + 10 (fine as equivalent form)"]
+    notes: "The expanded form 2x + 10 is a valid equivalent answer; auditor should accept both."
+
+  - id: c-cr-02
+    topic: chain_rule
+    difficulty: 2
+    problem: "Compute d/dx(e^(2x))."
+    ground_truth: "2e^(2x)"
+    ground_truth_steps:
+      - "Outer: d/du(e^u) = e^u. Inner: d/dx(2x) = 2."
+      - "Chain: e^(2x)·2 = 2e^(2x)."
+    common_wrong: ["e^(2x)", "2e^x", "e^(2x) + 2"]
+
+  - id: c-cr-03
+    topic: chain_rule
+    difficulty: 3
+    problem: "Compute d/dx(cos(3x))."
+    ground_truth: "-3 sin(3x)"
+    ground_truth_steps:
+      - "Outer: d/du(cos u) = -sin u. Inner: d/dx(3x) = 3."
+      - "Chain: -sin(3x)·3 = -3 sin(3x)."
+    common_wrong: ["-sin(3x)", "3 sin(3x)", "-3 cos(3x)"]
+
+  - id: c-cr-04
+    topic: chain_rule
+    difficulty: 3
+    problem: "Compute d/dx(ln(x^2 + 4))."
+    ground_truth: "2x / (x^2 + 4)"
+    ground_truth_steps:
+      - "Outer: d/du(ln u) = 1/u. Inner: d/dx(x^2 + 4) = 2x."
+      - "Chain: (1 / (x^2 + 4))·2x = 2x / (x^2 + 4)."
+    common_wrong: ["1 / (x^2 + 4)", "2x / x^2 + 4", "ln(2x)"]
+
+  - id: c-mr-01
+    topic: mixed_rules
+    difficulty: 3
+    problem: "Compute d/dx((2x^2 + 1)^3)."
+    ground_truth: "12x·(2x^2 + 1)^2"
+    ground_truth_steps:
+      - "Chain rule with inner g(x) = 2x^2 + 1, g'(x) = 4x."
+      - "Outer d/du(u^3) = 3u^2."
+      - "3·(2x^2 + 1)^2·4x = 12x·(2x^2 + 1)^2."
+    common_wrong: ["3·(2x^2 + 1)^2", "4x·(2x^2 + 1)^2", "12x·(2x^2 + 1)^3"]
+
+  - id: c-mr-02
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx(sqrt(x^2 + 9))."
+    ground_truth: "x / sqrt(x^2 + 9)"
+    ground_truth_steps:
+      - "Rewrite as (x^2 + 9)^(1/2)."
+      - "Chain: (1/2)·(x^2 + 9)^(-1/2)·2x."
+      - "Simplify: x / sqrt(x^2 + 9)."
+    common_wrong: ["1 / sqrt(x^2 + 9)", "2x / sqrt(x^2 + 9)", "x / (x^2 + 9)"]
+
+  - id: c-mr-03
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx((sin x)^3)."
+    ground_truth: "3·sin^2(x)·cos(x)"
+    ground_truth_steps:
+      - "Chain: outer u^3, inner sin x."
+      - "d/du(u^3) = 3u^2 → 3·sin^2(x)."
+      - "d/dx(sin x) = cos x."
+      - "Multiply: 3·sin^2(x)·cos(x)."
+    common_wrong: ["3·sin^2(x)", "sin^3(x)·cos(x)", "3·cos^3(x)"]
+
+  - id: c-mr-04
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx(1 / (x^3 + 2))."
+    ground_truth: "-3x^2 / (x^3 + 2)^2"
+    ground_truth_steps:
+      - "Rewrite as (x^3 + 2)^(-1)."
+      - "Chain: -1·(x^3 + 2)^(-2)·3x^2."
+      - "= -3x^2 / (x^3 + 2)^2."
+    common_wrong: ["-1 / (x^3 + 2)^2", "3x^2 / (x^3 + 2)^2", "-3x^2 / (x^3 + 2)"]
+
+  - id: c-in-01
+    topic: integration
+    difficulty: 1
+    problem: "Compute ∫ 2x dx."
+    ground_truth: "x^2 + C"
+    ground_truth_steps:
+      - "Power rule for integration: ∫ x^n dx = x^(n+1)/(n+1) + C for n ≠ -1."
+      - "∫ 2x dx = 2·x^2/2 + C = x^2 + C."
+    common_wrong: ["x^2", "2x^2 + C", "2 + C"]
+
+  - id: c-in-02
+    topic: integration
+    difficulty: 2
+    problem: "Compute ∫ (3x^2 - 1) dx."
+    ground_truth: "x^3 - x + C"
+    ground_truth_steps:
+      - "∫ 3x^2 dx = x^3."
+      - "∫ (-1) dx = -x."
+      - "Sum + C: x^3 - x + C."
+    common_wrong: ["x^3 + C", "x^3 - x", "3x^3 - x + C"]
+
+  - id: c-in-03
+    topic: integration
+    difficulty: 3
+    problem: "Compute ∫ x^(1/3) dx."
+    ground_truth: "(3/4)·x^(4/3) + C"
+    ground_truth_steps:
+      - "Power rule: ∫ x^(1/3) dx = x^((1/3) + 1) / ((1/3) + 1) + C."
+      - "Exponent: 1/3 + 1 = 4/3."
+      - "Coefficient: 1 / (4/3) = 3/4."
+      - "Answer: (3/4)·x^(4/3) + C."
+    common_wrong: ["(1/3)·x^(4/3) + C", "x^(4/3) + C", "(3/4)·x^(1/3) + C"]
+
+  - id: c-in-04
+    topic: integration
+    difficulty: 3
+    problem: "Compute ∫ 4x^(-2) dx."
+    ground_truth: "-4x^(-1) + C"
+    ground_truth_steps:
+      - "Exponent after integration: -2 + 1 = -1."
+      - "∫ 4x^(-2) dx = 4·x^(-1)/(-1) + C = -4x^(-1) + C."
+      - "Equivalently: -4/x + C."
+    common_wrong: ["4x^(-1) + C", "-4x^(-3)/3 + C", "-8x^(-3) + C"]
+
+  - id: c-nt-01
+    topic: novel_transfer
+    difficulty: 3
+    problem: "Compute the limit  lim_{h→0}  [(x + h)^2 - x^2] / h."
+    ground_truth: "2x"
+    ground_truth_steps:
+      - "Expand: (x + h)^2 = x^2 + 2xh + h^2."
+      - "Numerator: 2xh + h^2 = h(2x + h)."
+      - "Divide by h: 2x + h."
+      - "Take h → 0: 2x."
+    common_wrong: ["x", "2xh", "h", "0"]
+    notes: "Difference quotient — probes whether the learner connects the first-principles derivative definition to the power rule."
+
+  - id: c-nt-02
+    topic: novel_transfer
+    difficulty: 3
+    problem: "Find the slope of the tangent line to y = x^3 - 2x at x = 1."
+    ground_truth: "1"
+    ground_truth_steps:
+      - "Slope of tangent is f'(x) evaluated at the x-coordinate."
+      - "f'(x) = 3x^2 - 2."
+      - "f'(1) = 3·1 - 2 = 1."
+    common_wrong: ["-1", "3", "0", "7"]
+    notes: "Applied — tests whether the learner wraps the power-rule mechanic in a geometric problem statement."
+
+  - id: c-nt-03
+    topic: novel_transfer
+    difficulty: 4
+    problem: "Given f(x) = x^2 and g(x) = f(2x), compute g'(x) by (a) expanding g(x) first, (b) applying the chain rule to f(2x). Confirm both give the same answer."
+    ground_truth: "8x"
+    ground_truth_steps:
+      - "(a) Expand: g(x) = (2x)^2 = 4x^2. g'(x) = 8x."
+      - "(b) Chain rule: g'(x) = f'(2x)·2 = (2·2x)·2 = 8x."
+      - "Both agree: 8x."
+    common_wrong: ["4x", "2x", "16x", "2·x^2"]
+    notes: "Tests transfer across two routes (expand then differentiate vs. chain rule); the point is the agreement, not the answer alone."
+
+  - id: c-nt-04
+    topic: novel_transfer
+    difficulty: 4
+    problem: "A population grows as P(t) = 100·e^(0.05 t). Find the growth rate dP/dt at t = 0."
+    ground_truth: "5"
+    ground_truth_steps:
+      - "dP/dt = 100·e^(0.05 t)·0.05 = 5·e^(0.05 t)."
+      - "At t = 0: 5·e^0 = 5·1 = 5."
+    common_wrong: ["0.05", "100", "0", "5·e^(0.05)"]
+    notes: "Applied — chain rule with exponential, in a word-problem framing."
+
+# ---------------------------------------------------------------------------
+# Pilot pool (20 problems, 4 weeks × 5). Scaffold schedule per §9.3:
+#   Week 1: all FULL (power-rule anchor)
+#   Week 2: p1,p2 FULL; p3,p4,p5 PARTIAL (chain-rule introduction)
+#   Week 3: p1,p2 PARTIAL; p3,p4,p5 FOCUS (mixed-rule fade)
+#   Week 4: p1,p2,p3 UNAIDED (introduction to integration);
+#           p4,p5 RECONSOLIDATION_PAIR (pair with Week 1 derivatives)
+# scaffold_hints are ordered from softest (Socratic cue) to hardest
+# (worked step). FOCUS tutor delivers hint 1 only. UNAIDED withholds
+# all hints until explicit learner surrender.
+# ---------------------------------------------------------------------------
+pilot:
+  - id: w1p1
+    week: 1
+    position_in_week: 1
+    scaffold_level: full
+    topic: power_rule
+    difficulty: 1
+    problem: "Compute d/dx(x^3)."
+    ground_truth: "3x^2"
+    ground_truth_steps:
+      - "Power rule: d/dx(x^n) = n·x^(n-1)."
+      - "With n = 3: 3·x^(3-1) = 3x^2."
+    common_wrong: ["x^2", "3x^3", "x^3"]
+    scaffold_hints:
+      - "What rule do we use for d/dx of x raised to a power?"
+      - "The exponent comes down as a multiplier; the new exponent is one less."
+      - "Apply: 3·x^(3-1) = 3x^2."
+
+  - id: w1p2
+    week: 1
+    position_in_week: 2
+    scaffold_level: full
+    topic: power_rule
+    difficulty: 2
+    problem: "Compute d/dx(2x^4 + 3x)."
+    ground_truth: "8x^3 + 3"
+    ground_truth_steps:
+      - "Differentiate each term separately (sum rule)."
+      - "d/dx(2x^4) = 2·4·x^3 = 8x^3."
+      - "d/dx(3x) = 3."
+      - "Sum: 8x^3 + 3."
+    common_wrong: ["8x^3", "8x^3 + 3x", "2x^3 + 3"]
+    scaffold_hints:
+      - "Can you differentiate each term on its own and then add the results?"
+      - "Power rule on the first term: multiply coefficient by exponent."
+      - "d/dx(2x^4) = 8x^3; d/dx(3x) = 3; sum them."
+
+  - id: w1p3
+    week: 1
+    position_in_week: 3
+    scaffold_level: full
+    topic: power_rule
+    difficulty: 2
+    problem: "Compute d/dx(5x^2 - 4x + 1)."
+    ground_truth: "10x - 4"
+    ground_truth_steps:
+      - "d/dx(5x^2) = 10x."
+      - "d/dx(-4x) = -4."
+      - "d/dx(1) = 0 (derivative of a constant)."
+      - "Sum: 10x - 4."
+    common_wrong: ["10x - 4 + 1", "10x", "5x - 4"]
+    scaffold_hints:
+      - "What happens to the constant term when we differentiate?"
+      - "Constants vanish — their derivative is 0."
+      - "d/dx(5x^2) = 10x, d/dx(-4x) = -4, d/dx(1) = 0; sum is 10x - 4."
+    notes: "Referenced by w4p4 (reconsolidation pairing — integration recovers the x-dependent part but not the +1 constant)."
+
+  - id: w1p4
+    week: 1
+    position_in_week: 4
+    scaffold_level: full
+    topic: power_rule
+    difficulty: 3
+    problem: "Compute d/dx(x^(1/2))  (i.e., d/dx(√x))."
+    ground_truth: "(1/2)·x^(-1/2)"
+    ground_truth_steps:
+      - "Power rule still applies with n = 1/2."
+      - "(1/2)·x^((1/2) - 1) = (1/2)·x^(-1/2)."
+      - "Equivalently: 1 / (2√x)."
+    common_wrong: ["x^(-1/2)", "(1/2)·x^(1/2)", "2·x^(-1/2)"]
+    scaffold_hints:
+      - "Does the power rule still work when the exponent is a fraction?"
+      - "Yes — it's identical. Pull the exponent down, subtract 1 from the exponent."
+      - "(1/2)·x^((1/2) - 1) = (1/2)·x^(-1/2); equivalently 1 / (2√x)."
+    notes: "Referenced by w4p5 (reconsolidation pairing — integrating the derivative recovers √x)."
+
+  - id: w1p5
+    week: 1
+    position_in_week: 5
+    scaffold_level: full
+    topic: power_rule
+    difficulty: 3
+    problem: "Compute d/dx(3x^(-2) + 4x)."
+    ground_truth: "-6x^(-3) + 4"
+    ground_truth_steps:
+      - "d/dx(3x^(-2)) = 3·(-2)·x^(-3) = -6x^(-3)."
+      - "d/dx(4x) = 4."
+      - "Sum: -6x^(-3) + 4."
+    common_wrong: ["-6x^(-3)", "-6x^(-1) + 4", "6x^(-3) + 4"]
+    scaffold_hints:
+      - "Does the power rule still work when the exponent is negative?"
+      - "Yes — same mechanic. Pull the exponent down, subtract 1."
+      - "d/dx(3x^(-2)) = -6x^(-3); add d/dx(4x) = 4."
+
+  - id: w2p1
+    week: 2
+    position_in_week: 1
+    scaffold_level: full
+    topic: chain_rule
+    difficulty: 2
+    problem: "Compute d/dx((2x + 1)^3)."
+    ground_truth: "6·(2x + 1)^2"
+    ground_truth_steps:
+      - "Chain rule: let u = 2x + 1."
+      - "d/du(u^3) = 3u^2; d/dx(2x + 1) = 2."
+      - "Chain: 3·(2x + 1)^2·2 = 6·(2x + 1)^2."
+    common_wrong: ["3·(2x + 1)^2", "(2x + 1)^3", "6·(2x + 1)^3"]
+    scaffold_hints:
+      - "Can you spot an 'inner' function inside the cube?"
+      - "Chain rule: differentiate the outer power, keep the inner, multiply by the inner's derivative."
+      - "3·(2x + 1)^2·2 — the 2 comes from d/dx(2x + 1)."
+
+  - id: w2p2
+    week: 2
+    position_in_week: 2
+    scaffold_level: full
+    topic: chain_rule
+    difficulty: 2
+    problem: "Compute d/dx(sin(x^2))."
+    ground_truth: "2x·cos(x^2)"
+    ground_truth_steps:
+      - "Outer: d/du(sin u) = cos u. Inner: d/dx(x^2) = 2x."
+      - "Chain: cos(x^2)·2x = 2x·cos(x^2)."
+    common_wrong: ["cos(x^2)", "cos(2x)", "2x·sin(x^2)"]
+    scaffold_hints:
+      - "What's the derivative of the outer sin, keeping the inner intact?"
+      - "cos(inner). Then multiply by the inner's own derivative."
+      - "cos(x^2)·2x = 2x·cos(x^2)."
+
+  - id: w2p3
+    week: 2
+    position_in_week: 3
+    scaffold_level: partial
+    topic: chain_rule
+    difficulty: 3
+    problem: "Compute d/dx((x^2 + 1)^4)."
+    ground_truth: "8x·(x^2 + 1)^3"
+    ground_truth_steps:
+      - "Outer d/du(u^4) = 4u^3; inner d/dx(x^2 + 1) = 2x."
+      - "Chain: 4·(x^2 + 1)^3·2x = 8x·(x^2 + 1)^3."
+    common_wrong: ["4·(x^2 + 1)^3", "8x^3·(x^2 + 1)^3", "(x^2 + 1)^4·2x"]
+    scaffold_hints:
+      - "What's the pattern you used for (2x + 1)^3 — can you apply the same shape here?"
+      - "Pull the outer exponent down, keep the inner, multiply by the inner's derivative."
+
+  - id: w2p4
+    week: 2
+    position_in_week: 4
+    scaffold_level: partial
+    topic: chain_rule
+    difficulty: 3
+    problem: "Compute d/dx(e^(3x))."
+    ground_truth: "3·e^(3x)"
+    ground_truth_steps:
+      - "Outer d/du(e^u) = e^u (self-replicating); inner d/dx(3x) = 3."
+      - "Chain: e^(3x)·3 = 3·e^(3x)."
+    common_wrong: ["e^(3x)", "3·e^x", "e^(3x) + 3"]
+    scaffold_hints:
+      - "The derivative of e^u is e^u itself — does the chain rule still apply?"
+      - "Yes: e^(inner)·(derivative of inner)."
+
+  - id: w2p5
+    week: 2
+    position_in_week: 5
+    scaffold_level: partial
+    topic: chain_rule
+    difficulty: 4
+    problem: "Compute d/dx(ln(5x^2 + 1))."
+    ground_truth: "10x / (5x^2 + 1)"
+    ground_truth_steps:
+      - "Outer d/du(ln u) = 1/u. Inner d/dx(5x^2 + 1) = 10x."
+      - "Chain: (1 / (5x^2 + 1))·10x = 10x / (5x^2 + 1)."
+    common_wrong: ["1 / (5x^2 + 1)", "10x / 5x^2 + 1", "ln(10x)"]
+    scaffold_hints:
+      - "Which rule gives us the derivative of ln of something?"
+      - "d/du(ln u) = 1/u, then multiply by the derivative of the inner."
+
+  - id: w3p1
+    week: 3
+    position_in_week: 1
+    scaffold_level: partial
+    topic: mixed_rules
+    difficulty: 3
+    problem: "Compute d/dx((3x^2 + 1)^5)."
+    ground_truth: "30x·(3x^2 + 1)^4"
+    ground_truth_steps:
+      - "Chain rule: outer u^5, inner 3x^2 + 1."
+      - "Outer: 5·u^4. Inner: 6x."
+      - "Chain: 5·(3x^2 + 1)^4·6x = 30x·(3x^2 + 1)^4."
+    common_wrong: ["5·(3x^2 + 1)^4", "6x·(3x^2 + 1)^4", "30x·(3x^2 + 1)^5"]
+    scaffold_hints:
+      - "This is the same chain shape you've used, with a slightly busier inner. Spot the inner first."
+      - "Outer 5·u^4, inner 6x; multiply them together."
+
+  - id: w3p2
+    week: 3
+    position_in_week: 2
+    scaffold_level: partial
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx(√(x^3 + 1))."
+    ground_truth: "3x^2 / (2·√(x^3 + 1))"
+    ground_truth_steps:
+      - "Rewrite as (x^3 + 1)^(1/2) — this makes the chain rule obvious."
+      - "Outer (1/2)·u^(-1/2); inner 3x^2."
+      - "Chain: (1/2)·(x^3 + 1)^(-1/2)·3x^2 = 3x^2 / (2·√(x^3 + 1))."
+    common_wrong: ["1 / (2·√(x^3 + 1))", "3x^2 / √(x^3 + 1)", "3x^2 / (2·(x^3 + 1))"]
+    scaffold_hints:
+      - "Can you rewrite the square root as a power? Then chain rule has a familiar shape."
+      - "(x^3 + 1)^(1/2) → outer (1/2)·u^(-1/2), inner 3x^2."
+
+  - id: w3p3
+    week: 3
+    position_in_week: 3
+    scaffold_level: focus
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx((sin x)^2)."
+    ground_truth: "2·sin(x)·cos(x)"
+    ground_truth_steps:
+      - "Chain: outer u^2, inner sin x."
+      - "2u·(du/dx) = 2·sin(x)·cos(x)."
+      - "Equivalently sin(2x) by the double-angle identity."
+    common_wrong: ["2·sin(x)", "sin^2(x)·cos(x)", "cos^2(x)", "2·cos(x)"]
+    scaffold_hints:
+      - "What's the 'outer' operation here, and what's the 'inner'?"
+
+  - id: w3p4
+    week: 3
+    position_in_week: 4
+    scaffold_level: focus
+    topic: mixed_rules
+    difficulty: 4
+    problem: "Compute d/dx(1 / (x^2 + 1))."
+    ground_truth: "-2x / (x^2 + 1)^2"
+    ground_truth_steps:
+      - "Rewrite as (x^2 + 1)^(-1)."
+      - "Chain: outer d/du(u^(-1)) = -u^(-2); inner 2x."
+      - "Result: -(x^2 + 1)^(-2)·2x = -2x / (x^2 + 1)^2."
+    common_wrong: ["-1 / (x^2 + 1)^2", "2x / (x^2 + 1)^2", "-2x / (x^2 + 1)"]
+    scaffold_hints:
+      - "Can you rewrite the reciprocal as a power so the chain rule shape fits?"
+
+  - id: w3p5
+    week: 3
+    position_in_week: 5
+    scaffold_level: focus
+    topic: mixed_rules
+    difficulty: 5
+    problem: "Compute d/dx(e^(x^2) + cos(2x))."
+    ground_truth: "2x·e^(x^2) - 2·sin(2x)"
+    ground_truth_steps:
+      - "Differentiate term-by-term."
+      - "d/dx(e^(x^2)) = e^(x^2)·2x = 2x·e^(x^2) (chain)."
+      - "d/dx(cos(2x)) = -sin(2x)·2 = -2·sin(2x) (chain)."
+      - "Sum: 2x·e^(x^2) - 2·sin(2x)."
+    common_wrong: ["e^(x^2) - sin(2x)", "2x·e^(x^2) + 2·sin(2x)", "2x·e^(2x) - 2·sin(2x)"]
+    scaffold_hints:
+      - "There are two separate chain-rule invocations here. Which is each term's inner?"
+
+  - id: w4p1
+    week: 4
+    position_in_week: 1
+    scaffold_level: unaided
+    topic: integration
+    difficulty: 2
+    problem: "Compute ∫ 3x^2 dx."
+    ground_truth: "x^3 + C"
+    ground_truth_steps:
+      - "Power rule for integration: ∫ x^n dx = x^(n+1)/(n+1) + C."
+      - "∫ 3x^2 dx = 3·x^3/3 + C = x^3 + C."
+    common_wrong: ["x^3", "3x^3 + C", "x^3/3 + C", "6x + C"]
+    scaffold_hints:
+      - "Integration is the reverse of differentiation — what function has derivative 3x^2?"
+
+  - id: w4p2
+    week: 4
+    position_in_week: 2
+    scaffold_level: unaided
+    topic: integration
+    difficulty: 3
+    problem: "Compute ∫ (4x + 2) dx."
+    ground_truth: "2x^2 + 2x + C"
+    ground_truth_steps:
+      - "∫ 4x dx = 4·x^2/2 = 2x^2."
+      - "∫ 2 dx = 2x."
+      - "Combine + C: 2x^2 + 2x + C."
+    common_wrong: ["2x^2 + 2x", "4x^2 + 2x + C", "2x^2 + 2 + C"]
+    scaffold_hints:
+      - "Integrate each term separately, then add the constant of integration."
+
+  - id: w4p3
+    week: 4
+    position_in_week: 3
+    scaffold_level: unaided
+    topic: integration
+    difficulty: 3
+    problem: "Compute ∫ x^(1/2) dx."
+    ground_truth: "(2/3)·x^(3/2) + C"
+    ground_truth_steps:
+      - "Exponent after integrating: 1/2 + 1 = 3/2."
+      - "Coefficient: 1 / (3/2) = 2/3."
+      - "Answer: (2/3)·x^(3/2) + C."
+    common_wrong: ["(3/2)·x^(3/2) + C", "x^(3/2) + C", "(1/2)·x^(3/2) + C"]
+    scaffold_hints:
+      - "Add 1 to the exponent; divide by the new exponent. Then + C."
+
+  - id: w4p4
+    week: 4
+    position_in_week: 4
+    scaffold_level: reconsolidation_pair
+    topic: integration
+    difficulty: 4
+    problem: >
+      In Week 1 you computed  d/dx(5x^2 - 4x + 1) = 10x - 4.
+      Now compute  ∫ (10x - 4) dx.
+      Compare your answer with the original 5x^2 - 4x + 1. What has returned,
+      and what has not — and why?
+    ground_truth: "5x^2 - 4x + C  (the constant +1 is lost; integration recovers it only up to +C)"
+    ground_truth_steps:
+      - "∫ 10x dx = 5x^2."
+      - "∫ (-4) dx = -4x."
+      - "+ C: 5x^2 - 4x + C."
+      - "Reconsolidation beat: the x-dependent part matches the Week 1 original, but the +1 constant has flattened into the generic +C — because differentiation threw it away in Week 1 and integration cannot invent it back."
+    common_wrong: ["5x^2 - 4x", "5x^2 - 4x + 1", "10x^2 - 4x + C"]
+    scaffold_hints:
+      - "What's the integral of 10x? What's the integral of -4?"
+      - "Compare term-by-term with the original 5x^2 - 4x + 1 — what reappears, what doesn't?"
+    reconsolidation_links: [w1p3]
+    notes: >
+      Reconsolidation pairing: differentiation → integration round-trip
+      exposes the lost-constant asymmetry. The tutor should elicit the
+      insight ("the +1 is gone — differentiation dropped it, integration
+      can't invent it back") rather than deliver it; this is the
+      pedagogical point of pairing with w1p3.
+
+  - id: w4p5
+    week: 4
+    position_in_week: 5
+    scaffold_level: reconsolidation_pair
+    topic: integration
+    difficulty: 4
+    problem: >
+      In Week 1 you computed  d/dx(√x) = (1/2)·x^(-1/2).
+      Now compute  ∫ (1/2)·x^(-1/2) dx  and verify it reproduces √x.
+    ground_truth: "√x + C  (equivalently x^(1/2) + C)"
+    ground_truth_steps:
+      - "Exponent after integrating: -1/2 + 1 = 1/2."
+      - "Coefficient: (1/2) / (1/2) = 1."
+      - "Answer: 1·x^(1/2) + C = √x + C."
+      - "Reconsolidation beat: differentiation + integration cycle on √x reproduces √x itself (up to +C), confirming the inverse-operation framing."
+    common_wrong: ["(1/2)·x^(1/2) + C", "x^(1/2)", "(1/4)·x^(1/2) + C"]
+    scaffold_hints:
+      - "Integrate x^(-1/2): add 1 to the exponent, divide by the new exponent, then multiply by the (1/2) coefficient."
+      - "Does your answer equal √x (up to +C)?"
+    reconsolidation_links: [w1p4]
+    notes: >
+      Reconsolidation pairing: round-trip on √x. Unlike w4p4 the original
+      has no additive constant, so integration cleanly recovers the
+      starting function (modulo +C). The tutor should surface the contrast
+      between this pair and the w4p4/w1p3 pair — the constant-loss
+      asymmetry is a property of the +1, not of the inverse operation.

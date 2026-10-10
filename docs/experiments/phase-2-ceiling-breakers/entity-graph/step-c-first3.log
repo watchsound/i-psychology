@@ -1,0 +1,14 @@
+ADVANCED tier → tongyi:qwen-max (advanced_tier_uses_cloud)
+SIMPLE tier → tongyi:qwen-turbo (ollama_unavailable_fallback_to_cloud) [consolidation ON]
+reader prompt variant → v3
+loaded 3/3 instances (skipped 0 with no matching questions); total 74 questions (categories=['single-hop'])
+  [1/3] conv-26  q=32  rag=0.484  (152.1s)
+  [2/3] conv-30  q=11  rag=0.409  (46.1s)
+  [3/3] conv-41  q=31  rag=0.661  (140.6s)
+
+wrote docs\experiments\phase-2-ceiling-breakers\entity-graph\step-c-first3.json
+wall=338.8s  cache hits=61 misses=13
+rag     mean=0.547  by_cat={'single-hop': 0.5472972972972973}
+reader  refusals=9/74 (12.2%)
+recall  incorrect=17/74  gold_in_pool=6  session_present_gold_absent=11  recall_missing=0  no_evidence_meta=0
+gate (rag single-hop ≥ 0.9): 0.5472972972972973 → FAIL

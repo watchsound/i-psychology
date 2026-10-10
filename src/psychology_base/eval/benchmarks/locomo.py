@@ -283,6 +283,15 @@ class QuestionResult:
     verdict: str = ""
     category: str = ""
     rationale: str = ""
+    # Phase 2 R6: optional per-row recall diagnostics (evidence-session
+    # overlap, gold-substring presence, gold-token coverage) so that
+    # stacked-ablation comparisons can classify incorrect rows as
+    # reader-side (gold-in-pool, reader mis-extracts) vs recall-side
+    # (gold-absent-from-pool). Populated by run_rag_mode / run_direct_mode
+    # when the instance carries LoCoMo evidence metadata; None otherwise
+    # so the field is additive and callers without diagnostics keep
+    # working.
+    recall_diagnostics: Optional[dict] = None
 
 
 @dataclass
@@ -305,6 +314,100 @@ class InstanceResult:
         for r in self.per_question:
             buckets.setdefault(r.category or SINGLE_HOP, []).append(r.score)
         return {cat: sum(xs) / len(xs) for cat, xs in buckets.items() if xs}
+
+
+# ---------- Phase 2 R6: recall diagnostics ----------
+
+
+_LOCOMO_TURN_EVIDENCE_RE = re.compile(r"^[Dd](\d+):(\d+)$")
+
+
+def _normalize_evidence_sessions(evidence: Iterable[str]) -> tuple[str, ...]:
+    """LoCoMo native evidence is per-turn (``D9:2`` = dialog 9 turn 2).
+    Our fragment tags carry ``session_<N>``. Map the former to the latter
+    for the session-overlap check. Non-matching strings pass through so
+    other schemas (future benchmarks) are not broken."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for e in evidence:
+        if not e:
+            continue
+        m = _LOCOMO_TURN_EVIDENCE_RE.match(e)
+        if m:
+            key = f"session_{int(m.group(1))}"
+        else:
+            key = e
+        if key not in seen:
+            seen.add(key)
+            out.append(key)
+    return tuple(out)
+
+
+def _recall_diagnostics(
+    *,
+    question: BenchmarkQuestion,
+    fragments: Iterable,
+) -> dict:
+    """Classify a question's recall as reader-side vs recall-side bottleneck.
+
+    Returns a dict with:
+      - ``evidence_sessions``: tuple of session IDs the LoCoMo authors
+        marked as the gold source (from ``question.metadata['evidence']``)
+      - ``top_k_fragment_count``: number of fragments the reader will see
+      - ``top_k_sessions``: sorted unique session IDs among those fragments
+        (sourced from ``Fragment.tags`` which carries the originating
+        ``session_id`` under the LoCoMo adapter's ingest contract)
+      - ``evidence_session_in_top_k``: True iff any top-K fragment comes
+        from an evidence session — session-level recall@K signal
+      - ``gold_substring_in_top_k``: True iff the normalized gold string
+        appears as a substring of the normalized concat of top-K fragment
+        texts — lexical "the reader literally had the answer in-pool" check
+      - ``gold_token_coverage``: fraction of unique normalized gold tokens
+        that appear as whole-token matches anywhere in top-K text — a
+        softer coverage score for multi-token golds like "19 October 2023"
+
+    Reader-side failure = gold_substring_in_top_k True (reader saw the
+    answer, output something else). Recall-side failure =
+    evidence_session_in_top_k False AND gold_substring_in_top_k False
+    (the pool genuinely never had the answer). Mixed / imprecise = evidence
+    session present but gold string absent (pool from right session but
+    specific turn not surfaced)."""
+    frags = list(fragments)
+    evidence_raw = tuple(question.metadata.get("evidence") or ())
+    evidence_sessions = _normalize_evidence_sessions(evidence_raw)
+    top_k_sessions: list[str] = []
+    seen: set[str] = set()
+    for f in frags:
+        tags = getattr(f, "tags", ()) or ()
+        for t in tags:
+            if t and t not in seen:
+                seen.add(t)
+                top_k_sessions.append(t)
+    top_k_sessions.sort()
+
+    evidence_set = set(evidence_sessions)
+    evidence_session_in_top_k = bool(evidence_set & seen) if evidence_set else False
+
+    text_norm = _normalize(" ".join(getattr(f, "content", "") for f in frags))
+    gold_norm = _normalize(question.gold)
+    gold_substring_in_top_k = bool(gold_norm) and gold_norm in text_norm
+
+    gold_tokens = tuple({t for t in gold_norm.split() if t})
+    pool_tokens = set(text_norm.split())
+    gold_token_coverage = (
+        sum(1 for t in gold_tokens if t in pool_tokens) / len(gold_tokens)
+        if gold_tokens
+        else 0.0
+    )
+
+    return {
+        "evidence_sessions": evidence_sessions,
+        "top_k_fragment_count": len(frags),
+        "top_k_sessions": tuple(top_k_sessions),
+        "evidence_session_in_top_k": evidence_session_in_top_k,
+        "gold_substring_in_top_k": gold_substring_in_top_k,
+        "gold_token_coverage": round(gold_token_coverage, 3),
+    }
 
 
 # ---------- runners ----------
@@ -433,6 +536,7 @@ def run_direct_mode(
             question=q.cue,
             force_judge_categories=force_judge_categories,
         )
+        diagnostics = _recall_diagnostics(question=q, fragments=recall.fragments_used)
         result.per_question.append(
             QuestionResult(
                 question_id=q.id,
@@ -442,6 +546,7 @@ def run_direct_mode(
                 verdict=verdict,
                 category=q.question_type,
                 rationale=rationale,
+                recall_diagnostics=diagnostics,
             )
         )
     return result
@@ -481,6 +586,7 @@ def run_rag_mode(
             question=q.cue,
             force_judge_categories=force_judge_categories,
         )
+        diagnostics = _recall_diagnostics(question=q, fragments=recall.fragments_used)
         result.per_question.append(
             QuestionResult(
                 question_id=q.id,
@@ -490,6 +596,7 @@ def run_rag_mode(
                 verdict=verdict,
                 category=q.question_type,
                 rationale=rationale,
+                recall_diagnostics=diagnostics,
             )
         )
     return result

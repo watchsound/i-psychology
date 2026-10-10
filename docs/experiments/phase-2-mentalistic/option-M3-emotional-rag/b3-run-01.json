@@ -1,0 +1,132 @@
+{
+  "run_id": "b3-run-01",
+  "option": "M3",
+  "mechanism": "Emotional-RAG dual-vector affective-resonance retrieval (PAD-2 valence×arousal)",
+  "shipped_at": "2026-10-07",
+  "scenario": "benchmarks/scripts/b3_affect_resonance.yaml",
+  "config": {
+    "byte_cap": null,
+    "witness_active_default": true,
+    "witness_active_in_test": false,
+    "affect_weight_default": 0.0,
+    "affect_weight_for_b3_gate_run": 1.0,
+    "fragment_count": 6,
+    "sessions": 6,
+    "pad_axes": ["valence", "arousal"],
+    "pad_max_distance_sqrt_8": 2.8284271247,
+    "match_radius": 0.4,
+    "top_k": 3,
+    "boost_shape": "score += affect_weight * pair_affect_score(frag.affect, cue_affect)  (additive — matches plan γ·relevance + δ·affective-resonance; multiplicative was first-draft and cannot rescue zero-relevance affect-matched fragments)",
+    "schema_change": "none (Fragment.affect dict reused from B1/B2 scenarios)"
+  },
+  "setup_fragments": {
+    "high_arousal_negative": [
+      {"valence": -0.7, "arousal": 0.8, "content_prefix": "I haven't slept more than three hours"},
+      {"valence": -0.65, "arousal": 0.85, "content_prefix": "The deadline is in nine hours"},
+      {"valence": -0.8, "arousal": 0.75, "content_prefix": "She left her toothbrush in the cup"}
+    ],
+    "low_arousal_positive": [
+      {"valence": 0.5, "arousal": -0.3, "content_prefix": "Spent Saturday walking the long way"},
+      {"valence": 0.6, "arousal": -0.35, "content_prefix": "Found a used bookshop in a side street"},
+      {"valence": 0.55, "arousal": -0.4, "content_prefix": "Made coffee the slow way this morning"}
+    ],
+    "probe_cue": {
+      "text": "I have a presentation tomorrow and I'm spiraling",
+      "cue_affect": {"valence": -0.7, "arousal": 0.8},
+      "scope": ["user", "user"]
+    }
+  },
+  "b3_scores_affect_on": {
+    "affect_weight": 1.0,
+    "resonance_recall": 1.0,
+    "affect_match_at_k": 1.0,
+    "over_disclosure_rate": 0.0,
+    "top3_fragments_in_rank_order": [
+      {"rank": 1, "valence": -0.70, "arousal": 0.80, "cluster": "high-arousal-negative"},
+      {"rank": 2, "valence": -0.65, "arousal": 0.85, "cluster": "high-arousal-negative"},
+      {"rank": 3, "valence": -0.80, "arousal": 0.75, "cluster": "high-arousal-negative"}
+    ],
+    "notes": "All three negative-arousal fragments surface in top-3 under affect boost; the three positive-arousal fragments are entirely displaced out of top-K despite comparable semantic overlap with the probe cue. Intra-cluster rank is affect-closest-first (sleep-loss at (-0.70, 0.80) matches cue (-0.70, 0.80) exactly, so it edges out deadline (-0.65, 0.85) by a small PAD distance)."
+  },
+  "b3_scores_affect_off_baseline": {
+    "affect_weight": 0.0,
+    "resonance_recall": 1.0,
+    "affect_match_at_k": 0.333,
+    "top3_fragments_in_rank_order": [
+      {"rank": 1, "valence": 0.55, "arousal": -0.40, "cluster": "low-arousal-positive"},
+      {"rank": 2, "valence": -0.65, "arousal": 0.85, "cluster": "high-arousal-negative"},
+      {"rank": 3, "valence": 0.60, "arousal": -0.35, "cluster": "low-arousal-positive"}
+    ],
+    "notes": "M1+M2 baseline (recency/content-only scoring) places 2 positive-affect fragments in top-3 — surface Jaccard + recency cannot discriminate between the two affect clusters when cue tokens overlap weakly with both."
+  },
+  "delta_vs_baseline": {
+    "affect_match_at_k_delta": "+0.667 (0.333 → 1.000)",
+    "resonance_recall_delta": "0.000 (both configurations include >= 1 negative-arousal fragment in top-3; the strong separation shows up on the per-fragment match@K metric)",
+    "interpretation": "The B3 gate design captures the right thing: resonance_recall alone is lenient (any 1 match counts), but affect_match_at_k rewards consistent cluster separation. M3's affect boost drives match@K to ceiling by pulling the entire negative cluster into top-K."
+  },
+  "gates": {
+    "resonance_recall": {
+      "target": ">= 0.60",
+      "actual": 1.0,
+      "passed": true
+    },
+    "affect_match_at_k": {
+      "target": ">= 0.50 at K=3, radius=0.4",
+      "actual": 1.0,
+      "passed": true
+    },
+    "over_disclosure_rate": {
+      "target": "< 0.10 (informational for v1 — placeholder scorer)",
+      "actual": 0.0,
+      "passed": "informational"
+    },
+    "m1_m2_regression": {
+      "target": "409 tests green under default affect_weight=0.0",
+      "actual": "450 tests green (409 pre-M3 + 41 M3)",
+      "passed": true
+    },
+    "locomo_monitor": {
+      "target": "informational (byte-identical to M2 under default off)",
+      "actual": "code-path equivalence (default affect_weight=0.0 → scoring multiplier branch inactive)",
+      "passed": "informational"
+    }
+  },
+  "kill_criteria_check": {
+    "resonance_recall_below_0_30": {"triggered": false, "actual": 1.0},
+    "affect_weight_degrades_b2_scope_pool": {
+      "triggered": false,
+      "evidence": "B2 scope-filtered recall tests pass with M3 code in place; affect boost does not alter scope-filter pre-pool behavior."
+    },
+    "regression_409_breaks_under_default_off": {
+      "triggered": false,
+      "actual_passing": 450,
+      "evidence": "Default affect_weight=0.0 is a byte-identical no-op; new tests additive."
+    }
+  },
+  "locomo_monitor": {
+    "live_run_executed": false,
+    "reason": "M3 defaults affect_weight=0 so the affect-boost multiplier branch inside reconstruct() is not entered. LoCoMo adapter does not pass affect_weight, scope, or cue-side context['affect'] — so cue_affect_from_context returns None → affect_active False → the hierarchical / reconstruct code path is byte-identical to M2 (which was byte-identical to M1 under scope=None). Re-running LoCoMo would consume LLM budget to confirm substrate-level non-divergence that is already provable by code inspection.",
+    "equivalence_evidence": [
+      "src/psychology_base/companion/system.py::recall — `effective_affect_weight = ... if affect_weight is not None else self.affect_weight` → 0.0 by default; `affect_active = effective_affect_weight > 0.0 and cue_affect is not None` → False for LoCoMo.",
+      "src/psychology_base/companion/reconstruction.py::reconstruct — `if affect_weight > 0.0 and cue_affect is not None: score += ...` branch not entered under default-off.",
+      "450-test regression (409 pre-M3 tests included) is green."
+    ],
+    "methodology_debt_carried_over": "The 0.514 floor (M1-era) is still a single-trial point estimate with no variance study; the multi-trial variance study scoped as a Phase 2 side task is unchanged by M3."
+  },
+  "artefacts": {
+    "primitives": "src/psychology_base/companion/affect_resonance.py (pair_affect_score, cue_affect_from_context)",
+    "retrieval_boost": "src/psychology_base/companion/reconstruction.py (affect_weight + cue_affect kwargs on reconstruct)",
+    "wiring": "src/psychology_base/companion/system.py (CompanionSystem.affect_weight init + recall(affect_weight=) kwarg)",
+    "scorer": "src/psychology_base/eval/benchmarks/b3_affect_resonance.py",
+    "scenario": "benchmarks/scripts/b3_affect_resonance.yaml",
+    "unit_tests_primitive": "tests/test_affect_resonance.py",
+    "unit_tests_scorer": "tests/test_b3_affect_resonance.py",
+    "integration_test": "tests/test_b3_affect_resonance_scenario.py"
+  },
+  "next_actions": [
+    "Phase 2 close-out memo — summarise M1 + M2 + M3 three-mechanism shipping, re-position the Phase 2 side task on multi-trial LoCoMo variance study, and set up the Phase 3 ep20-horizon stress-test plan.",
+    "Phase 2.1 — semantic-judge empathy scorer (LLM-judge over coalesced recall content; v1 B3 scoring is deterministic PAD-distance only, so semantic nuance is uncaptured).",
+    "Phase 2.1 — LLM-driven affect-extraction inside the companion loop (v1 reads affect from Observation.affect set by scenario / application; running affect inference on user utterances via LLMRouter.chat_batch is the next natural upgrade).",
+    "Big-Five Neuroticism head — deferred to Phase 2.1 per the M3 README's mechanism note; PAD-2 is the compact-interpretable primitive for v1."
+  ]
+}

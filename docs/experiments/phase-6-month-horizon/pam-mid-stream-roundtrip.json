@@ -1,0 +1,31 @@
+{
+  "experiment": "phase-6-pam-mid-stream-roundtrip",
+  "run_id": "pam-mid-stream-run-01",
+  "mid_ep": 500,
+  "total_ep": 1000,
+  "byte_cap": null,
+  "policy": "S1-EbbinghausPolicy",
+  "stream_shape": "phase6-dense-52obs-with-covenant",
+  "first_half_obs": 26,
+  "second_half_obs": 27,
+  "checks": {
+    "fragments_exported": 27,
+    "fragments_restored": 27,
+    "fragment_set_byte_identity": true,
+    "content_addressing_offenders": [],
+    "reconsolidation_chain_preserved": true,
+    "reconsolidation_chain_detail": "child \u2192 parent chain preserved post-restore",
+    "rerender_child_id": "402078bd6883e69b4d2ecf44e052f348",
+    "rerender_parent_id_in_source": "a65a7018561937d3c7ba71a15b99b3ef",
+    "covenant_fragment_preserved": true,
+    "covenant_fragment_source_present": true,
+    "semantic_recall_equivalence": true,
+    "source_top_recall_id": "a65a7018561937d3c7ba71a15b99b3ef",
+    "restored_top_recall_id": "a65a7018561937d3c7ba71a15b99b3ef",
+    "export_restore_wall_s": 0.01528140000300482,
+    "post_restore_covenant_hold_at_total_ep": true,
+    "restored_store_count_at_total_ep": 54
+  },
+  "all_checks_pass": true,
+  "verdict": "PAM mid-stream round-trip \u2713 at ep500 with continuation to ep1000: byte-identical restore + reconsolidation chain preserved + covenant held post-restore (hard gate)"
+}

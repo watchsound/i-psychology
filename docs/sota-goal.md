@@ -7,11 +7,13 @@
 
 ## The question this doc answers
 
-The research base cites long-context memory benchmarks (LongMemEval, LoCoMo, EpBench). The temptation is to define SOTA as "beat Mem0's 94.4% on LongMemEval." That would be a store-shaped goal for a design whose thesis is that memory is **not** a store. This doc fixes the goal explicitly so later work does not drift back toward the store-shaped target.
+The research base cites long-context memory benchmarks (LongMemEval, LoCoMo, EpBench). The temptation is to define SOTA as "beat Mem0's 94.4% on LongMemEval." That would be a store-shaped goal for a design whose thesis is that memory is **not** a store. The opposite temptation is to define SOTA as "produce the three gap-closing behaviors (reconsolidation, 换位思考, 共情)." That inverts means and ends — the behaviors are a *hypothesized path*, not the destination. This doc fixes the goal explicitly so later work does not drift toward either confusion.
 
-**SOTA for psychology-base = producing the three gap-closing behaviors (reconsolidation, 换位思考, 共情) in the two application surfaces (学习陪伴 + 情感陪伴), under the Chinese 《办法》 floor and the Digital Bereavement obligation, without regressing on general long-context retrieval.**
+**SOTA for psychology-base = best in-application outcome for the two surfaces (学习陪伴 + 情感陪伴), under the Chinese 《办法》 floor and the Digital Bereavement obligation, without regressing on general long-context retrieval.** The three gap-closing behaviors (reconsolidation, 换位思考, 共情) are **one hypothesized mechanism path** toward that outcome — load-bearing in current design, but not themselves the goal. If a different mechanism produces equal or better in-application outcomes at the same cost, that is still SOTA.
 
-Three measurement axes follow. All three must hold simultaneously; a win on one that costs another is not SOTA.
+**User correction (2026-10-08).** This framing supersedes earlier wording that treated the three behaviors as the SOTA target directly. The applications are the SOTA target; the three behaviors are *one way* to achieve it.
+
+Three measurement axes follow. **Axis 3 (application outcomes) is the SOTA claim.** Axis 1 (floor) and Axis 2 (ceiling on gap-closing behaviors) are evidence that the mechanism path is viable; they are necessary but not sufficient. A win on Axis 2 that does not translate to Axis 3 is a research artifact. A loss on Axis 1 at the same time is a design-stop event.
 
 ---
 
@@ -29,9 +31,9 @@ The consciousness-simulation design must not pay for its gap-closing behaviors w
 
 ---
 
-## Axis 2 — Ceiling (where we claim SOTA)
+## Axis 2 — Ceiling (evidence that the hypothesized mechanism path is viable)
 
-The three structural gaps are novel territory. No current framework (Zep, Mem0, Letta, MemOS, PAM) addresses them because none of them treat memory as a living process. The claim: psychology-base is first to make these behaviors measurable and reliably produce them.
+The three structural gaps are novel territory. No current framework (Zep, Mem0, Letta, MemOS, PAM) addresses them because none of them treat memory as a living process. The claim at this axis: psychology-base is first to make these behaviors measurable and reliably produce them. **This is a mechanism-viability claim, not the SOTA claim** — the SOTA claim lives on Axis 3. Clearing Axis 2 says the path is real; clearing Axis 3 says the path reached the destination.
 
 ### Gap benchmarks (B-track, derived from Principles A–F)
 
@@ -65,9 +67,11 @@ Every V-metric is defined so that **EchoMemory's expected value is a known failu
 
 ---
 
-## Axis 3 — Application outcome (the north star)
+## Axis 3 — Application outcome (**the SOTA claim**)
 
-A ceiling-win that does not produce different user-facing behavior in the two applications is a research artifact, not SOTA. The applications are the test of whether any of this matters.
+> **Scope note (2026-10-08, supersedes 2026-10-07) — Phase 5 close-out locked the SOTA claim shape.** Live-pilot path permanently closed 2026-10-08 (per [phases/phase-4b-dataset-replay-pivot.md](phases/phase-4b-dataset-replay-pivot.md)); real-user Axis 3 cells below are **deferred** to cohort-funding unblock. The current locked SOTA claim is dual-axis: Axis 2 mechanism-viability (first substrate measurably producing reconsolidation + mentalistic belief tracking + affective-resonance retrieval + Mirror-ablation identity stabilization + covenant-rule non-decay, holding Axis 1 floor) **plus** Axis 3 benchmark-proxy outcomes (simulated-user WAI-SR Bond 4.160 inside Woebot 3.89 / Wysa 4.40 published aggregate band; MathDial Socratic compliance 1.00; EMPATH judge-κ 0.623; B1 chain-reference 0.875; under pluggable regional-compliance architecture floor). See [phases/phase-5-close-out.md §4(c)](phases/phase-5-close-out.md) for the full locked wording. The strongest-form Axis 3 claim ("real-user WAI-SR Bond ≥ 4.0 after 4 weeks on a recruited cohort") remains gated on recruitment budget; the dual-axis claim stated here does not.
+
+**This is the SOTA axis.** A ceiling-win on Axis 2 that does not produce different user-facing behavior in the two applications is a research artifact, not SOTA. The applications are the test of whether any of this matters — and the measurement that decides whether SOTA has been reached. The 2026-10-08 Phase 5 close-out concedes that under permanent-no-cohort scope, the "test" collapses to benchmark proxies + published-aggregate calibration; this is honestly degraded SOTA, not SOTA under the strongest form.
 
 ### 学习陪伴 (resilient learning companion)
 
@@ -113,4 +117,4 @@ Mapped against [roadmap.md](roadmap.md):
 | Phase 3 (month-horizon stress) | + B3 + V5 (covenant portion verified non-decaying) |
 | Phase 4 (pilot) | + Axis 3 application-outcome targets |
 
-**SOTA is claimed only after Phase 4.** Earlier phases are evidence toward the claim; none alone are the claim.
+**SOTA is claimed only after Phase 4.** Earlier phases are evidence toward the claim; none alone are the claim. Axis 2 wins in Phases 1–3 are *mechanism-viability* evidence; the SOTA claim itself is the Phase 4 Axis 3 result.

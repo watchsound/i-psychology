@@ -1,0 +1,47 @@
+{
+  "benchmark": "phase8_e_higher_order_tom",
+  "dataset": "hitom",
+  "mode": "cloud",
+  "tier": "simple",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "bigtom_shim": null,
+  "hitom_shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\hitom\\items.jsonl",
+  "order_requested": "2",
+  "bigtom_condition_filter": null,
+  "items_pooled": 100,
+  "per_dataset_counts": {
+    "hitom_order_2": 100
+  },
+  "verdicts_total": 200,
+  "per_order": [
+    {
+      "order": 2,
+      "n_mentalistic": 100,
+      "n_bare_llm": 100,
+      "accuracy_mentalistic": 0.8061224489795918,
+      "accuracy_bare_llm": 0.43,
+      "architectural_delta": 0.37612244897959185,
+      "undecidable_rate_mentalistic": 0.02,
+      "undecidable_rate_bare_llm": 0.0
+    },
+    {
+      "order": "all",
+      "n_mentalistic": 100,
+      "n_bare_llm": 100,
+      "accuracy_mentalistic": 0.8061224489795918,
+      "accuracy_bare_llm": 0.43,
+      "architectural_delta": 0.37612244897959185,
+      "undecidable_rate_mentalistic": 0.02,
+      "undecidable_rate_bare_llm": 0.0
+    }
+  ],
+  "pillar_e_gate_pass": true,
+  "judge_name": "llm_simple",
+  "responder_name": "cloud/simple",
+  "paths": [
+    "mentalistic",
+    "bare_llm"
+  ],
+  "wall_s": 150.0,
+  "generated_at": "2026-10-09T05:20:40"
+}

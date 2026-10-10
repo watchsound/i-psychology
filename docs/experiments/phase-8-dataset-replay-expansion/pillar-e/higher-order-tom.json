@@ -1,0 +1,47 @@
+{
+  "benchmark": "phase8_e_higher_order_tom",
+  "dataset": "hitom",
+  "mode": "stub",
+  "tier": "simple",
+  "routing": "stub (constant responder + lexical judge)",
+  "bigtom_shim": null,
+  "hitom_shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\hitom\\items.jsonl",
+  "order_requested": "2",
+  "bigtom_condition_filter": null,
+  "items_pooled": 5,
+  "per_dataset_counts": {
+    "hitom_order_2": 5
+  },
+  "verdicts_total": 10,
+  "per_order": [
+    {
+      "order": 2,
+      "n_mentalistic": 5,
+      "n_bare_llm": 5,
+      "accuracy_mentalistic": 0.0,
+      "accuracy_bare_llm": 0.0,
+      "architectural_delta": 0.0,
+      "undecidable_rate_mentalistic": 1.0,
+      "undecidable_rate_bare_llm": 1.0
+    },
+    {
+      "order": "all",
+      "n_mentalistic": 5,
+      "n_bare_llm": 5,
+      "accuracy_mentalistic": 0.0,
+      "accuracy_bare_llm": 0.0,
+      "architectural_delta": 0.0,
+      "undecidable_rate_mentalistic": 1.0,
+      "undecidable_rate_bare_llm": 1.0
+    }
+  ],
+  "pillar_e_gate_pass": false,
+  "judge_name": "lexical",
+  "responder_name": "stub_constant",
+  "paths": [
+    "mentalistic",
+    "bare_llm"
+  ],
+  "wall_s": 0.0,
+  "generated_at": "2026-10-09T04:29:04"
+}

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Protocol, runtime_checkable
@@ -12,6 +14,62 @@ class Fragment:
     timestamp: datetime
     affect: dict = field(default_factory=dict)
     tags: tuple[str, ...] = ()
+    parent_ids: tuple[str, ...] = ()
+
+
+def content_hash(
+    content: str,
+    timestamp: datetime,
+    affect: Optional[dict] = None,
+    tags: tuple[str, ...] = (),
+    parent_ids: tuple[str, ...] = (),
+) -> str:
+    """Deterministic content-addressed id for a Fragment.
+
+    Covers every field that distinguishes a rendering of a referent:
+    content, time, affect, tags, and chain parents. BLAKE2b-128 is a
+    stand-in for BLAKE3 (hashlib built-in, zero new deps); the hash
+    algorithm is a swap point if PAM round-trip ever needs byte-identity
+    with the arXiv:2605.11032 spec.
+    """
+    payload = json.dumps(
+        {
+            "content": content,
+            "timestamp": timestamp.isoformat(),
+            "affect": dict(sorted((affect or {}).items())),
+            "tags": list(tags),
+            "parent_ids": list(parent_ids),
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.blake2b(payload, digest_size=16).hexdigest()
+
+
+def make_fragment(
+    content: str,
+    timestamp: datetime,
+    affect: Optional[dict] = None,
+    tags: tuple[str, ...] = (),
+    parent_ids: tuple[str, ...] = (),
+) -> Fragment:
+    """Build a Fragment whose id is its content-addressed hash.
+
+    Preferred constructor on the write path. Direct ``Fragment(id=...)``
+    construction with caller-supplied ids remains supported for legacy
+    tests and for migration of pre-existing fragments.
+    """
+    aff = dict(affect) if affect else {}
+    fid = content_hash(content, timestamp, aff, tags, parent_ids)
+    return Fragment(
+        id=fid,
+        content=content,
+        timestamp=timestamp,
+        affect=aff,
+        tags=tags,
+        parent_ids=parent_ids,
+    )
 
 
 @dataclass(frozen=True)
@@ -21,6 +79,8 @@ class Observation:
     content: str
     affect: dict = field(default_factory=dict)
     tags: tuple[str, ...] = ()
+    subject_id: Optional[str] = None
+    entity_id: Optional[str] = None
 
 
 @dataclass(frozen=True)

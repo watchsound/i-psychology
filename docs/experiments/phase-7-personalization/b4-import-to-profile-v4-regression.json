@@ -1,0 +1,355 @@
+{
+  "phase": "phase-7",
+  "benchmark": "b4-import-to-profile",
+  "cells": [
+    {
+      "n_personas": 10,
+      "n_messages_per_persona": 200,
+      "mae_per_dim_mean": {
+        "openness": 8.881784197001253e-17,
+        "conscientiousness": 8.881784197001253e-17,
+        "extraversion": 8.881784197001253e-17,
+        "agreeableness": 0.0,
+        "neuroticism": 0.0
+      },
+      "mean_dims_within_half_likert": 5.0,
+      "fraction_dims_within_half_likert_mean": 1.0,
+      "pass_bar_dims_within_half_likert": 3,
+      "meets_pass_bar": true,
+      "per_persona": [
+        {
+          "persona_id": "high-openness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 5.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 4.999999999999999,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.910680994787812,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 8.881784197001252e-16,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "low-openness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 1.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 1.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.910680994787812,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "high-conscientiousness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 5.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 4.999999999999999,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.8894827535339782,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 8.881784197001252e-16,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "low-conscientiousness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 1.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 1.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.910680994787812,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "high-extraversion",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 5.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 5.000000000000001,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.910680994787812,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 8.881784197001252e-16,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "low-extraversion",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 1.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 1.0,
+            "agreeableness": 3.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.910680994787812,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "high-agreeableness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 5.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 5.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.910680994787812,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "low-agreeableness",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 1.0,
+            "neuroticism": 3.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 1.0,
+            "neuroticism": 3.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.910680994787812,
+            "neuroticism": 0.0
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "high-neuroticism",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 5.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 5.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.910680994787812
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        },
+        {
+          "persona_id": "low-neuroticism",
+          "n_messages": 200,
+          "ground_truth": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 1.0
+          },
+          "inferred": {
+            "openness": 3.0,
+            "conscientiousness": 3.0,
+            "extraversion": 3.0,
+            "agreeableness": 3.0,
+            "neuroticism": 1.0
+          },
+          "confidence": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.910680994787812
+          },
+          "mae_per_dim": {
+            "openness": 0.0,
+            "conscientiousness": 0.0,
+            "extraversion": 0.0,
+            "agreeableness": 0.0,
+            "neuroticism": 0.0
+          },
+          "dims_within_half_likert": 5
+        }
+      ]
+    }
+  ],
+  "overall_pass_at_n200": true,
+  "wall_seconds": 0.8169779777526855
+}

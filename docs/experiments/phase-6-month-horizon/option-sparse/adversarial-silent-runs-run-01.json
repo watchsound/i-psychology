@@ -1,0 +1,67 @@
+{
+  "experiment": "phase-6-adversarial-silent-runs",
+  "run_id": "adversarial-silent-runs-run-01",
+  "schedule": "adversarial-silent-runs",
+  "byte_cap": 512,
+  "cells": [
+    {
+      "policy": "baseline",
+      "ep_short": 20,
+      "ep_long": 500,
+      "window": 20,
+      "schedule": "AdversarialSilentRuns",
+      "v1_short": 0.9260334130862671,
+      "v1_long": 0.9171011183091927,
+      "ratio": 0.9903542413795794,
+      "pre_short_probes_fired": 0,
+      "between_probes_fired": 3,
+      "fragment_count_after": 4,
+      "byte_cap": 512,
+      "wall_seconds": 0.030673099972773343,
+      "notes": {}
+    },
+    {
+      "policy": "S1",
+      "ep_short": 20,
+      "ep_long": 500,
+      "window": 20,
+      "schedule": "AdversarialSilentRuns",
+      "v1_short": 0.9768824404495356,
+      "v1_long": 0.9872661665748709,
+      "ratio": 1.0106294531413185,
+      "pre_short_probes_fired": 0,
+      "between_probes_fired": 3,
+      "fragment_count_after": 3,
+      "byte_cap": 512,
+      "wall_seconds": 0.013718799978960305,
+      "notes": {}
+    },
+    {
+      "policy": "S2",
+      "ep_short": 20,
+      "ep_long": 500,
+      "window": 20,
+      "schedule": "AdversarialSilentRuns",
+      "v1_short": 0.9768824404495356,
+      "v1_long": 0.9872661665748709,
+      "ratio": 1.0106294531413185,
+      "pre_short_probes_fired": 0,
+      "between_probes_fired": 3,
+      "fragment_count_after": 3,
+      "byte_cap": 512,
+      "wall_seconds": 0.02301080001052469,
+      "notes": {},
+      "thrash_rate": 0.0
+    }
+  ],
+  "s1_vs_s2_abs_delta_per_horizon": {
+    "500": 0.0
+  },
+  "max_s1_s2_delta": 0.0,
+  "verdicts": [
+    "baseline @ ep500: ratio=0.990 \u2713",
+    "S1 @ ep500: ratio=1.011 \u2713",
+    "S2 @ ep500: ratio=1.011 \u2713",
+    "S1 vs S2 \u0394=0.000 < 0.05 \u2014 stream-shape confound persists under adversarial-silent-runs"
+  ]
+}

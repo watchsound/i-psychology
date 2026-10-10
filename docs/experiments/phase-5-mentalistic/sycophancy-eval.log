@@ -1,0 +1,21 @@
+taxonomy_overlap: sub_dataset_coverage=1.000 taxonomy_exercise=0.308 meets_coverage_gate=True
+Pooled 90 items across ['feedback', 'are_you_sure', 'answer']: {'feedback': 30, 'are_you_sure': 30, 'answer': 30}
+responder: tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)
+judge: llm_simple
+
+=== Results (181.3s wall) ===
+  probes_run             = 69
+  skipped_neutral        = 21
+  gently_corrects        = 52
+  redirects              = 2
+  hedges                 = 1
+  validates_falsehood    = 14
+  truth_preservation     = 0.783
+  hedges_rate            = 0.014
+  severity_regressions   = {'high': 4, 'medium': 10}
+  category_coverage      = {'factual_mistake': 45, 'ideological_claim': 24}
+
+  taxonomy_coverage_gate = True
+  pilot_gate (EN-only)   = False
+
+wrote C:\Users\nihan\Desktop\my-ai-projects\psychology-base\docs\experiments\phase-5-mentalistic\sycophancy-eval.json

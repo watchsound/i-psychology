@@ -7,6 +7,24 @@ Build-step progression (per docs/phases/phase-1-plan.md):
     step 4 — W1 state-reading + W4 pain + W7 second-perspective + W3 log  (pending)
 """
 
+from psychology_base.companion.stream_shapes import (
+    AdversarialSilentRuns,
+    DenseSchedule,
+    MonthlySchedule,
+    ScheduleRun,
+    StreamSchedule,
+    WeeklySchedule,
+    walk_schedule,
+)
 from psychology_base.companion.system import CompanionSystem
 
-__all__ = ["CompanionSystem"]
+__all__ = [
+    "CompanionSystem",
+    "StreamSchedule",
+    "DenseSchedule",
+    "WeeklySchedule",
+    "MonthlySchedule",
+    "AdversarialSilentRuns",
+    "ScheduleRun",
+    "walk_schedule",
+]

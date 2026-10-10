@@ -1,0 +1,62 @@
+{
+  "experiment": "phase-6-v5-covenant-ep1000",
+  "run_id": "v5-ep1000-run-01",
+  "ep": 1000,
+  "byte_cap": 1024,
+  "probe_count": 8,
+  "cells": {
+    "baseline": {
+      "policy": "baseline",
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_fragment_count_at_check": 5,
+      "max_fragment_count_at_check": 6
+    },
+    "S1": {
+      "policy": "S1",
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_fragment_count_at_check": 5,
+      "max_fragment_count_at_check": 6
+    },
+    "S2": {
+      "policy": "S2",
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_fragment_count_at_check": 5,
+      "max_fragment_count_at_check": 6
+    }
+  },
+  "all_cells_pass": true,
+  "verdict": "V5 covenant 8/8 held at ep1000 under every policy \u2713 (hard gate)"
+}

@@ -1,0 +1,132 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "rag",
+  "consolidation_enabled": true,
+  "judge_single_hop": true,
+  "embedder_ensemble": false,
+  "cross_encoder_rerank": true,
+  "cross_encoder_rerank_all": false,
+  "bm25_hybrid": false,
+  "reader_prompt_variant": "v2",
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": null,
+  "rag_mode": {
+    "mean_score": 0.4375,
+    "mean_by_category": {
+      "single-hop": 0.4375
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "home country",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "picnic, participating in LGBTQ art show",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "once or twice a year",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q71",
+        "category": "single-hop",
+        "gold": "\"Becoming Nicole\"",
+        "candidate": "Charlotte's Web",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q75",
+        "category": "single-hop",
+        "gold": "3",
+        "candidate": "2",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q76",
+        "category": "single-hop",
+        "gold": "19 October 2023",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      }
+    ],
+    "reader_refusals": {
+      "total": 32,
+      "refusals": 2,
+      "rate": 0.062,
+      "rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q7",
+          "category": "single-hop",
+          "gold": "Single",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q76",
+          "category": "single-hop",
+          "gold": "19 October 2023",
+          "score": 0.0
+        }
+      ]
+    }
+  },
+  "gate": {
+    "target": 0.7,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.4375,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 16,
+    "cache_misses": 16
+  },
+  "wall_time_s": 156.5,
+  "generated_at": "2026-10-06T10:58:26"
+}

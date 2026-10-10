@@ -1,0 +1,57 @@
+{
+  "benchmark": "locomo",
+  "scope": "single-hop variance monitor",
+  "mode": "direct",
+  "n_trials": 3,
+  "instance_ids": [
+    "conv-26",
+    "conv-30",
+    "conv-41"
+  ],
+  "consolidation": false,
+  "cross_encoder_rerank": false,
+  "full_session_reader": false,
+  "per_instance": [
+    {
+      "instance_id": "conv-26",
+      "mean": 0.0048,
+      "stderr": 0.0,
+      "ci95_lower": 0.0048,
+      "ci95_upper": 0.0048,
+      "ci_warning": "N=3 trials — normal-approximation 95% CI may be unreliable; pilot reports should quote the raw per-trial scores alongside the CI.",
+      "per_category_mean": {
+        "single-hop": 0.0048
+      }
+    },
+    {
+      "instance_id": "conv-30",
+      "mean": 0.0107,
+      "stderr": 0.0,
+      "ci95_lower": 0.0107,
+      "ci95_upper": 0.0107,
+      "ci_warning": "N=3 trials — normal-approximation 95% CI may be unreliable; pilot reports should quote the raw per-trial scores alongside the CI.",
+      "per_category_mean": {
+        "single-hop": 0.0107
+      }
+    },
+    {
+      "instance_id": "conv-41",
+      "mean": 0.0047,
+      "stderr": 0.0,
+      "ci95_lower": 0.0047,
+      "ci95_upper": 0.0047,
+      "ci_warning": "N=3 trials — normal-approximation 95% CI may be unreliable; pilot reports should quote the raw per-trial scores alongside the CI.",
+      "per_category_mean": {
+        "single-hop": 0.0047
+      }
+    }
+  ],
+  "aggregate": {
+    "mean_of_means": 0.0067,
+    "conservative_ci95_lower": 0.0047,
+    "monitor_floor": 0.514,
+    "meets_floor": false
+  },
+  "wall_time_s": 4.0,
+  "generated_at": "2026-10-07T20:51:06"
+}

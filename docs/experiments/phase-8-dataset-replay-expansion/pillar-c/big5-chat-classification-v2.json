@@ -1,0 +1,52 @@
+{
+  "benchmark": "phase8_c_big5_chat_classification",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\big5_chat\\train.jsonl",
+  "limit": 200,
+  "n_dialogs": 200,
+  "n_neutral": 69,
+  "coverage": 0.655,
+  "polarity_accuracy": 0.6564885496183206,
+  "polarity_accuracy_incl_neutral": 0.43,
+  "per_trait_polarity_accuracy": {
+    "agreeableness": 0.45,
+    "neuroticism": 0.525,
+    "openness": 0.5,
+    "extraversion": 0.5,
+    "conscientiousness": 0.175
+  },
+  "per_level_polarity_accuracy": {
+    "high": 0.61,
+    "low": 0.25
+  },
+  "confusion": {
+    "agreeableness": {
+      "high": 15,
+      "low": 6,
+      "neutral": 19
+    },
+    "neuroticism": {
+      "high": 11,
+      "low": 13,
+      "neutral": 16
+    },
+    "openness": {
+      "high": 40,
+      "low": 0,
+      "neutral": 0
+    },
+    "extraversion": {
+      "high": 37,
+      "low": 0,
+      "neutral": 3
+    },
+    "conscientiousness": {
+      "high": 0,
+      "low": 9,
+      "neutral": 31
+    }
+  },
+  "soft_gate_floor": 0.6,
+  "pillar_c_soft_pass": false,
+  "wall_s": 0.3,
+  "generated_at": "2026-10-09T00:11:52"
+}

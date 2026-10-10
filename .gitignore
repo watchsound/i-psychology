@@ -32,3 +32,7 @@ dist/
 
 # Claude Code local state (per-user, not shared)
 .claude/
+
+# Public-dataset payloads — not vendored per Phase 4b benchmark pivot §4.
+# Provisioned by scripts in `benchmarks/scripts/provision_*.py`.
+.data/

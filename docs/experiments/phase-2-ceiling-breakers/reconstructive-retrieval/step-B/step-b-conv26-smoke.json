@@ -1,0 +1,157 @@
+{
+  "benchmark": "locomo",
+  "split": "real-full",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 1,
+  "instance_id_filter": "conv-26",
+  "question_count": 32,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "rag",
+  "consolidation_enabled": true,
+  "judge_single_hop": true,
+  "embedder_ensemble": false,
+  "cross_encoder_rerank": true,
+  "cross_encoder_rerank_all": false,
+  "bm25_hybrid": false,
+  "within_session_rerank": false,
+  "within_session_top_m_sessions": 3,
+  "fact_density_tie_breaker": false,
+  "fact_source_turn_lift": false,
+  "fact_source_lift_top_facts": 15,
+  "fact_source_lift_fragment_cap": 30,
+  "fact_hybrid_retrieval": true,
+  "reader_prompt_variant": "v3",
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": null,
+  "rag_mode": {
+    "mean_score": 0.484375,
+    "mean_by_category": {
+      "single-hop": 0.484375
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "school event, LGBTQ+ pride parade, transgender conference",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "painting",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "pots",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q61",
+        "category": "single-hop",
+        "gold": "Summer Sounds, Matt Patterson",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q71",
+        "category": "single-hop",
+        "gold": "\"Becoming Nicole\"",
+        "candidate": "Charlotte's Web",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q75",
+        "category": "single-hop",
+        "gold": "3",
+        "candidate": "2",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q76",
+        "category": "single-hop",
+        "gold": "19 October 2023",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      }
+    ],
+    "reader_refusals": {
+      "total": 32,
+      "refusals": 2,
+      "rate": 0.062,
+      "rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q61",
+          "category": "single-hop",
+          "gold": "Summer Sounds, Matt Patterson",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q76",
+          "category": "single-hop",
+          "gold": "19 October 2023",
+          "score": 0.0
+        }
+      ]
+    },
+    "recall_diagnostics": {
+      "total": 32,
+      "incorrect": 7,
+      "buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 25,
+        "gold_in_pool": 7,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 7,
+        "gold_in_pool": 0,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_gold_in_pool_rows": [],
+      "incorrect_recall_missing_rows": []
+    }
+  },
+  "gate": {
+    "target": 0.7,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.484375,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 21,
+    "cache_misses": 11
+  },
+  "wall_time_s": 143.2,
+  "generated_at": "2026-10-07T00:21:34"
+}

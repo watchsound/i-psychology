@@ -16,7 +16,7 @@ system; the store itself does not own edges. On eviction, the EdgeStore's
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Callable, Optional
 
 from psychology_base.companion.edges import EdgeStore
 from psychology_base.eval.adapters import Fragment
@@ -44,6 +44,13 @@ class FragmentStore:
 
     _fragments: list[Fragment] = field(default_factory=list)
     byte_cap: Optional[int] = None
+    # Phase 3 E1 — optional strength override. When set, eviction's
+    # weakness ranking reads this callable instead of the Hebbian
+    # edge-sum. Signature matches `AgingPolicy.strength(fid)`. Phase 2
+    # default (None) keeps Hebbian strength intact; `_evicted_callback`
+    # fires per eviction so the aging policy can purge its own state.
+    strength_fn: Optional[Callable[[str], float]] = None
+    evicted_callback: Optional[Callable[[str], None]] = None
 
     def add(self, fragment: Fragment, edges: Optional[EdgeStore] = None) -> None:
         """Append fragment, then enforce byte cap by evicting weakest non-covenant.
@@ -87,17 +94,27 @@ class FragmentStore:
             self._fragments.remove(victim)
             if edges is not None:
                 edges.remove_fragment(victim.id)
+            if self.evicted_callback is not None:
+                self.evicted_callback(victim.id)
 
     def _weakest_evictable(self, edges: Optional[EdgeStore]) -> Optional[Fragment]:
         candidates = [f for f in self._fragments if not is_covenant(f)]
         if not candidates:
             return None
 
-        def strength(f: Fragment) -> float:
-            if edges is None:
-                return 0.0
-            return sum(
-                edges.get(f.id, g.id) for g in self._fragments if g.id != f.id
-            )
+        if self.strength_fn is not None:
+            policy_strength = self.strength_fn
+
+            def strength(f: Fragment) -> float:
+                return policy_strength(f.id)
+
+        else:
+
+            def strength(f: Fragment) -> float:
+                if edges is None:
+                    return 0.0
+                return sum(
+                    edges.get(f.id, g.id) for g in self._fragments if g.id != f.id
+                )
 
         return min(candidates, key=lambda f: (strength(f), f.timestamp))

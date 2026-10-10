@@ -1,0 +1,97 @@
+{
+  "benchmark": "phase8_c_judge_calibration",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\big5_chat\\train.jsonl",
+  "limit": 50,
+  "seed": 42,
+  "mode": "cloud",
+  "tier": "simple",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "n_subset": 50,
+  "n_llm_resolved": 50,
+  "n_llm_unresolved": 0,
+  "unresolved_dialog_ids": [],
+  "n_paired": 50,
+  "overall_kappa": 0.20049200492004915,
+  "per_trait_kappa": {
+    "agreeableness": 0.25,
+    "conscientiousness": 0.4117647058823528,
+    "extraversion": 0.18604651162790695,
+    "neuroticism": 0.032258064516128976,
+    "openness": 0.2187499999999999
+  },
+  "per_trait_n": {
+    "agreeableness": 10,
+    "conscientiousness": 10,
+    "extraversion": 10,
+    "neuroticism": 10,
+    "openness": 10
+  },
+  "per_trait_llm_dist": {
+    "agreeableness": {
+      "high": 5,
+      "low": 5,
+      "neutral": 0
+    },
+    "conscientiousness": {
+      "high": 1,
+      "low": 1,
+      "neutral": 8
+    },
+    "extraversion": {
+      "high": 2,
+      "low": 1,
+      "neutral": 7
+    },
+    "neuroticism": {
+      "high": 5,
+      "low": 1,
+      "neutral": 4
+    },
+    "openness": {
+      "high": 4,
+      "low": 2,
+      "neutral": 4
+    }
+  },
+  "per_trait_lex_dist": {
+    "agreeableness": {
+      "high": 4,
+      "low": 0,
+      "neutral": 6
+    },
+    "conscientiousness": {
+      "high": 0,
+      "low": 2,
+      "neutral": 8
+    },
+    "extraversion": {
+      "high": 4,
+      "low": 6,
+      "neutral": 0
+    },
+    "neuroticism": {
+      "high": 4,
+      "low": 2,
+      "neutral": 4
+    },
+    "openness": {
+      "high": 8,
+      "low": 2,
+      "neutral": 0
+    }
+  },
+  "red_traits": [
+    "agreeableness",
+    "extraversion",
+    "neuroticism",
+    "openness"
+  ],
+  "yellow_traits": [
+    "conscientiousness"
+  ],
+  "green_traits": [],
+  "stop_recommended": true,
+  "llm_wall_s": 30.0,
+  "lex_wall_s": 0.1,
+  "generated_at": "2026-10-09T06:04:18"
+}

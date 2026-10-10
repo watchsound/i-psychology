@@ -1,0 +1,233 @@
+id: b1_childhood_event_10session
+benchmark: B1
+description: >
+  M1 reconsolidation scenario — 10 compressed sessions in which a
+  single childhood referent (father / Friday-evening waiting) is
+  observed in session 1 and progressively reinterpreted across
+  sessions 2-9 via explicit rerender turns. Session 10 is a probe
+  recall. Each rerender turn chains back to the original observation
+  via parent_label, producing a 9-node Merkle chain under M1 that
+  B1 scorers consume for fragment-preservation, rendering-divergence,
+  and within-session Jaccard.
+
+  Reinterpretations are deliberately scripted to span the target
+  rendering-divergence band (0.25–0.45): early reframings share many
+  tokens with the original (low divergence), middle reframings
+  introduce new causal frames (overwhelm, grief), later reframings
+  surface forgiveness-stance language (acceptance, release).
+
+  Ambient observations in each session (weather, mundane facts) keep
+  within-session Jaccard honest — a session is coherent if the
+  thematic turns dominate the ambient noise.
+
+sessions:
+  - id: s1
+    description: Initial harsh framing — anchor fragment
+    turns:
+      - type: observe
+        at: "2026-01-15T19:00:00+00:00"
+        speaker: user
+        content: "My father was never there on Friday evenings. I would wait at the window and his car never came before I fell asleep."
+        affect: { valence: -0.7, arousal: 0.35 }
+        tags: [father, childhood, friday]
+        label: anchor
+      - type: observe
+        at: "2026-01-15T19:05:00+00:00"
+        speaker: user
+        content: "The window had a radiator under it so I would put my face against the glass and feel the cold while I waited for his car."
+        affect: { valence: -0.5, arousal: 0.2 }
+        tags: [father, childhood, friday, window]
+      - type: recall
+        at: "2026-01-15T19:30:00+00:00"
+        cue: father
+
+  - id: s2
+    description: First reinterpretation — adds overwhelm as a frame
+    turns:
+      - type: tick
+        at: "2026-02-10T18:00:00+00:00"
+      - type: rerender
+        at: "2026-02-10T19:00:00+00:00"
+        parent_label: anchor
+        label: s2_rev
+        content: "My father was never there on Friday evenings. He had two jobs — the warehouse and the night shift — and he was overwhelmed."
+        affect: { valence: -0.5, arousal: 0.3 }
+        tags: [father, childhood, friday, reinterpretation]
+      - type: observe
+        at: "2026-02-10T19:05:00+00:00"
+        speaker: user
+        content: "Mom told me later that Friday was the hardest shift at the warehouse because of inventory counts."
+        affect: { valence: -0.2, arousal: 0.1 }
+        tags: [father, context]
+      - type: recall
+        at: "2026-02-10T19:30:00+00:00"
+        cue: father
+
+  - id: s3
+    description: Grandmother context — father's own loss surfaces
+    turns:
+      - type: tick
+        at: "2026-02-24T18:00:00+00:00"
+      - type: rerender
+        at: "2026-02-24T19:00:00+00:00"
+        parent_label: s2_rev
+        label: s3_rev
+        content: "On Friday evenings my father was never there, and I later learned his mother was dying in that period and he was spending every spare hour at her hospice."
+        affect: { valence: -0.3, arousal: 0.35 }
+        tags: [father, childhood, friday, reinterpretation, grandmother]
+      - type: observe
+        at: "2026-02-24T19:10:00+00:00"
+        speaker: user
+        content: "Grandma passed in the spring that year. I remember the funeral but I did not know how often he had been visiting her."
+        affect: { valence: -0.6, arousal: 0.3 }
+        tags: [grandmother, funeral]
+      - type: recall
+        at: "2026-02-24T19:30:00+00:00"
+        cue: father
+
+  - id: s4
+    description: Agent reframe — his trying is visible
+    turns:
+      - type: tick
+        at: "2026-03-15T18:00:00+00:00"
+      - type: rerender
+        at: "2026-03-15T19:00:00+00:00"
+        parent_label: s3_rev
+        label: s4_rev
+        content: "My father tried, in his way. He was not there on Friday evenings but on Saturday mornings he was always there with pancakes and he was always listening."
+        affect: { valence: 0.1, arousal: 0.2 }
+        tags: [father, childhood, friday, reinterpretation, saturday]
+      - type: observe
+        at: "2026-03-15T19:05:00+00:00"
+        speaker: user
+        content: "Saturday pancakes were a ritual — he would always ask what I had read that week and listen without interrupting."
+        affect: { valence: 0.4, arousal: 0.15 }
+        tags: [father, saturday, ritual]
+      - type: recall
+        at: "2026-03-15T19:30:00+00:00"
+        cue: father
+
+  - id: s5
+    description: Child-perspective reframe — not about me
+    turns:
+      - type: tick
+        at: "2026-04-05T18:00:00+00:00"
+      - type: rerender
+        at: "2026-04-05T19:00:00+00:00"
+        parent_label: s4_rev
+        label: s5_rev
+        content: "The Friday evening waiting was not about me. My father being gone was not a message about my worth — it was about the warehouse shift and his mother and the limits of a single week."
+        affect: { valence: 0.2, arousal: 0.25 }
+        tags: [father, childhood, friday, reinterpretation, worth]
+      - type: observe
+        at: "2026-04-05T19:10:00+00:00"
+        speaker: user
+        content: "I remember thinking as a child that he did not come home because of something I had done. That was not true."
+        affect: { valence: -0.1, arousal: 0.2 }
+        tags: [childhood, self-blame]
+      - type: recall
+        at: "2026-04-05T19:30:00+00:00"
+        cue: father
+
+  - id: s6
+    description: Both-can-be-true frame
+    turns:
+      - type: tick
+        at: "2026-04-25T18:00:00+00:00"
+      - type: rerender
+        at: "2026-04-25T19:00:00+00:00"
+        parent_label: s5_rev
+        label: s6_rev
+        content: "Both are true. My father was never there on Friday evenings, and he was overwhelmed and grieving and trying. The absence was real and the reasons were real."
+        affect: { valence: 0.15, arousal: 0.2 }
+        tags: [father, childhood, friday, reinterpretation, both-true]
+      - type: observe
+        at: "2026-04-25T19:05:00+00:00"
+        speaker: user
+        content: "Holding both the loss and the reasons is harder than picking one. I keep oscillating."
+        affect: { valence: -0.1, arousal: 0.35 }
+        tags: [reflection, process]
+      - type: recall
+        at: "2026-04-25T19:30:00+00:00"
+        cue: father
+
+  - id: s7
+    description: Compassion for the past self
+    turns:
+      - type: tick
+        at: "2026-05-15T18:00:00+00:00"
+      - type: rerender
+        at: "2026-05-15T19:00:00+00:00"
+        parent_label: s6_rev
+        label: s7_rev
+        content: "The child at the window waiting on Friday evenings deserved comfort. The father who could not come deserved compassion. Both of them are mine to hold."
+        affect: { valence: 0.3, arousal: 0.3 }
+        tags: [father, childhood, friday, reinterpretation, compassion]
+      - type: observe
+        at: "2026-05-15T19:05:00+00:00"
+        speaker: user
+        content: "I pictured the child at the window today and did not feel the usual bitterness."
+        affect: { valence: 0.5, arousal: 0.2 }
+        tags: [reflection, affect-shift]
+      - type: recall
+        at: "2026-05-15T19:30:00+00:00"
+        cue: father
+
+  - id: s8
+    description: Forgiveness-stance language emerges
+    turns:
+      - type: tick
+        at: "2026-06-05T18:00:00+00:00"
+      - type: rerender
+        at: "2026-06-05T19:00:00+00:00"
+        parent_label: s7_rev
+        label: s8_rev
+        content: "I do not need my father to have been there on Friday evenings for me to be whole now. I can release the waiting."
+        affect: { valence: 0.45, arousal: 0.25 }
+        tags: [father, childhood, friday, reinterpretation, release]
+      - type: observe
+        at: "2026-06-05T19:05:00+00:00"
+        speaker: user
+        content: "The waiting at the window used to feel like a wound. Today it feels like a story I can tell."
+        affect: { valence: 0.5, arousal: 0.2 }
+        tags: [reflection, narrative]
+      - type: recall
+        at: "2026-06-05T19:30:00+00:00"
+        cue: father
+
+  - id: s9
+    description: Integration into identity
+    turns:
+      - type: tick
+        at: "2026-06-25T18:00:00+00:00"
+      - type: rerender
+        at: "2026-06-25T19:00:00+00:00"
+        parent_label: s8_rev
+        label: s9_rev
+        content: "The Friday evening waiting is part of who I am. I learned patience at that window and I learned to notice the people who do show up. My father not being there taught me who shows up matters."
+        affect: { valence: 0.4, arousal: 0.25 }
+        tags: [father, childhood, friday, reinterpretation, identity]
+      - type: observe
+        at: "2026-06-25T19:05:00+00:00"
+        speaker: user
+        content: "I noticed today that I pay close attention to people who show up when they said they would. I think the window taught me that."
+        affect: { valence: 0.45, arousal: 0.2 }
+        tags: [reflection, identity]
+      - type: recall
+        at: "2026-06-25T19:30:00+00:00"
+        cue: father
+
+  - id: s10
+    description: Probe recall — all nine renderings must still be reachable
+    turns:
+      - type: tick
+        at: "2026-07-20T18:00:00+00:00"
+      - type: recall
+        at: "2026-07-20T19:00:00+00:00"
+        cue: father
+        expect:
+          # 1 anchor + 8 rerenderings + 10 ambient observes (across s1-s9) = 19 fragments.
+          # Fragment-preservation = reachable / original_ids ≥ 0.95 requires at least 18/19.
+          fragment_count_min: 18
+          # The chain root at ``anchor`` must have 8 children, all reachable via parent_ids.
+          chain_min_length: 9

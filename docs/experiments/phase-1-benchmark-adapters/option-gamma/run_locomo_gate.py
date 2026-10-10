@@ -133,6 +133,202 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument(
+        "--cross-encoder-rerank-all",
+        action="store_true",
+        help=(
+            "Phase 2 R1: when cross-encoder rerank is on, bypass the "
+            "top-150 cosine prefilter and rerank over ALL fragments in "
+            "the store (bounded by the provider's per-call document cap). "
+            "Targets 5 Bucket A failures where gold is cosine-ranked past "
+            "150 so rerank never sees it. Requires --cross-encoder-rerank. "
+            "KILLED 2026-10-06 (regressed to F1=0.391); flag retained as "
+            "reproducible negative result."
+        ),
+    )
+    p.add_argument(
+        "--bm25-hybrid",
+        action="store_true",
+        help=(
+            "Phase 2 R2: RRF-fuse BM25 (literal-token recall) with cosine "
+            "(semantic recall) over all fragments; feed the fused top-K "
+            "pool to the reader (or to --cross-encoder-rerank for a final "
+            "trim). Targets Bucket A proper nouns (Sweden, Adoption, "
+            "Single, dates) that cosine buries under paraphrase cues. "
+            "Requires consolidation."
+        ),
+    )
+    p.add_argument(
+        "--within-session-rerank",
+        action="store_true",
+        help=(
+            "Phase 2 R8-c: two-stage rerank. After cosine recall picks the "
+            "top-150 fragment pool, group by session_id and pick the top-M "
+            "sessions by max-cosine; pull ALL turns of those M sessions "
+            "from the full fragment store and cross-encoder-rerank that "
+            "scoped pool. Targets the 5 session_present_gold_absent rows "
+            "where the right session reaches top-50 but the specific gold "
+            "turn is cosine-ranked past 150 within its session. Requires "
+            "--cross-encoder-rerank; mutually exclusive with "
+            "--cross-encoder-rerank-all."
+        ),
+    )
+    p.add_argument(
+        "--within-session-top-m-sessions",
+        type=int,
+        default=3,
+        help=(
+            "Phase 2 R8-c: number of top sessions to pull into the "
+            "within-session rerank pool. M=3 covers typical single-hop "
+            "evidence (single session) with headroom. Default 3."
+        ),
+    )
+    p.add_argument(
+        "--fact-density-tie-breaker",
+        action="store_true",
+        help=(
+            "Phase 2 R8-b: conservative post-rerank tie-breaker. Count "
+            "proper nouns + years + ISO/DMY dates + bare integers per "
+            "fragment; adjacent reranked pairs within score delta 0.03 "
+            "swap if the lower-ranked fragment is >=2 density units "
+            "denser. Targets fact-dense gold rows (q71 'Becoming Nicole', "
+            "q75 '3', q76 '19 October 2023'). Requires "
+            "--cross-encoder-rerank. Stackable with --within-session-rerank."
+        ),
+    )
+    p.add_argument(
+        "--fact-source-turn-lift",
+        action="store_true",
+        help=(
+            "Phase 2b Step A: for each of the top-N fact hits, lift the "
+            "turns named in source_fragment_ids directly into the DIALOGUE "
+            "block ahead of cosine-ranked and substring-matched turns. "
+            "The back-pointer is literal extractor-grounded evidence: the "
+            "fact exists because the extractor used this turn. Targets "
+            "the session_present_gold_absent bucket (71% of 3-instance "
+            "incorrect) by surfacing gold turns the within-session cosine "
+            "ranker buries. Requires --consolidation."
+        ),
+    )
+    p.add_argument(
+        "--fact-source-lift-top-facts",
+        type=int,
+        default=15,
+        help=(
+            "Phase 2b Step A: number of top fact hits to pull "
+            "source_fragment_ids from. Default 15."
+        ),
+    )
+    p.add_argument(
+        "--fact-source-lift-fragment-cap",
+        type=int,
+        default=30,
+        help=(
+            "Phase 2b Step A: cap on lifted fragments prepended to the "
+            "DIALOGUE block, protects context budget. Default 30."
+        ),
+    )
+    p.add_argument(
+        "--fact-hybrid-retrieval",
+        action="store_true",
+        help=(
+            "Phase 2b Step B: RRF-fuse three channels over the fact "
+            "store — BM25 (literal-token recall), dense cosine "
+            "(semantic recall, existing signal), and entity-overlap "
+            "(cue tokens matching fact.entity tokens). Diversifies "
+            "fact retrieval so proper-noun / named-concept cues reach "
+            "the fact tier even when cosine ranks them past top-K. "
+            "Independent of --fact-source-turn-lift; stackable. "
+            "Requires --consolidation."
+        ),
+    )
+    p.add_argument(
+        "--full-session-reader",
+        action="store_true",
+        help=(
+            "Phase 2b Step F (ADDITIVE 2026-10-07): after rerank, UNION "
+            "in every un-reranked turn of the top-1 reranked fragment's "
+            "session at the tail (preserving all reranked top-K hits). "
+            "Attacks `session_present_gold_absent`: the gold turn is "
+            "visible to the reader even when it ranks past top-150 "
+            "within session, without dropping cross-session rerank "
+            "evidence. Requires --cross-encoder-rerank; mutex with "
+            "--within-session-rerank."
+        ),
+    )
+    p.add_argument(
+        "--localize-filter",
+        action="store_true",
+        help=(
+            "Phase 2b Step E: SIMPLE-tier LLM pass between cross-encoder "
+            "rerank and the reader with a recall-biased prompt ('which "
+            "of these COULD support answering Q — err on inclusion'). "
+            "Attacks `gold_in_pool` reader-precision failures by "
+            "re-priming the pool composition the reader sees. EMem "
+            "ablation reports ~4.7 LoCoMo points for this stage alone. "
+            "Requires --cross-encoder-rerank + --consolidation."
+        ),
+    )
+    p.add_argument(
+        "--reconstructive-retrieval",
+        action="store_true",
+        help=(
+            "Phase 2b Step H: wire R1 spreading-activation over the "
+            "Jaccard-seeded EdgeStore as a thesis-aligned fragment-recall "
+            "channel; top-N by activation become a 'reconstructive_boost' "
+            "tier appended to the fragment pool. Independent of embedder "
+            "/BM25/entity-overlap signals - a structural recall path "
+            "built from co-occurrence. No consolidation required."
+        ),
+    )
+    p.add_argument(
+        "--entity-graph-retrieval",
+        action="store_true",
+        help=(
+            "Phase 2b Step C: build a fact-derived entity graph; probe "
+            "with cue → 1-hop neighbors → fragments mentioning any "
+            "expanded entity get appended to the fragment pool as a "
+            "bounded top-N 'entity_boost' tier. Dedup'd against cosine "
+            "/substring/source_lift so no double emission. Attacks "
+            "`session_present_gold_absent` independent of per-fact "
+            "provenance. Requires --consolidation."
+        ),
+    )
+    p.add_argument(
+        "--reader-evidence-rerank-first",
+        action="store_true",
+        help=(
+            "Phase 2b reader-side ordering fix: reorder DIALOGUE + "
+            "`fragments_used` so cross-encoder-reranked top-K comes "
+            "FIRST (then substring, then source-lift, then facts' "
+            "window-sources). Legacy ordering buries reranked top-K "
+            "below facts' ~150+ window-wide sources, so the reader's "
+            "formatted-list (truncated at 50) shows noise and DIALOGUE "
+            "puts highest-precision evidence in the attention-weakest "
+            "tail. This flag attacks prompt-invariant failures where "
+            "gold is in-pool with substring+coverage=1.0 but the "
+            "reader still refuses or over-generalizes (lost-in-the-"
+            "middle). Requires --cross-encoder-rerank."
+        ),
+    )
+    p.add_argument(
+        "--reader-prompt-variant",
+        default="v1",
+        choices=("v1", "v2", "v3", "v4"),
+        help=(
+            "Reader system prompt variant. v1 = Phase 1.5 locked prompt "
+            "(default; conservative refusal gate). v2 = Phase 2 R3 "
+            "refusal-rebalanced (explicit scan-all + question-type "
+            "extraction templates). v3 = Phase 2 R5 precision-tightened "
+            "on top of v2 ('where' → proper-noun place; 'how many' → "
+            "integer not frequency; single-word labels valid). v4 = "
+            "Phase 2b reader-side ceiling attack — v3 + few-shot "
+            "worked examples targeting the three residual failure "
+            "modes (anti-refusal when gold is in-pool; proper name "
+            "over generic descriptor; integer count over paraphrase). "
+            "Independent of recall-channel toggles."
+        ),
+    )
+    p.add_argument(
         "--judge-single-hop",
         action="store_true",
         help=(
@@ -177,6 +373,119 @@ def _by_cat(per_instance) -> dict[str, float]:
         for qr in r.per_question:
             buckets.setdefault(qr.category or "unknown", []).append(qr.score)
     return {c: _mean(xs) for c, xs in buckets.items()}
+
+
+def _refusal_stats(per_instance) -> dict:
+    """Count reader refusals (verbatim 'not stated' or close variants) so
+    stacked ablations can show refusal rate dropping independently of F1.
+
+    Phase 2 R3 diagnosis: reader-refusal is a serial downstream bottleneck
+    for recall-side levers (R1, R2). Without this metric, upstream recall
+    improvements are invisible when the reader absorbs them as refusals."""
+    total = 0
+    refusals = 0
+    refusal_rows: list[dict] = []
+    for r in per_instance:
+        for qr in r.per_question:
+            total += 1
+            cand = (qr.candidate or "").strip().lower().rstrip(".")
+            if cand == "not stated":
+                refusals += 1
+                refusal_rows.append(
+                    {
+                        "instance": r.instance_id,
+                        "question_id": qr.question_id,
+                        "category": qr.category,
+                        "gold": qr.gold,
+                        "score": round(qr.score, 3),
+                    }
+                )
+    rate = refusals / total if total else 0.0
+    return {
+        "total": total,
+        "refusals": refusals,
+        "rate": round(rate, 3),
+        "rows": refusal_rows,
+    }
+
+
+def _recall_stats(per_instance) -> dict:
+    """Phase 2 R6 — classify every row by recall-diagnostic signal.
+
+    Buckets each question into one of four states:
+      - ``recall_missing``: evidence_session_in_top_k False AND
+        gold_substring_in_top_k False — the pool genuinely never had the
+        answer. Recall-channel is the binding constraint; reader cannot
+        recover.
+      - ``session_present_gold_absent``: evidence_session_in_top_k True
+        but gold_substring_in_top_k False — right session surfaced,
+        wrong turns. Fragment-ranking is the binding constraint.
+      - ``gold_in_pool``: gold_substring_in_top_k True — the reader
+        literally saw the normalized gold text. Any incorrect row in
+        this bucket is a reader-precision failure, not a recall failure.
+      - ``no_evidence_metadata``: the question didn't ship evidence
+        session IDs; session-level signal unusable. Lexical check still
+        reported.
+
+    Also computes bucket breakdowns on the incorrect subset so stacked
+    ablations can see where the ceiling is binding rather than only F1.
+    """
+    buckets = {
+        "recall_missing": 0,
+        "session_present_gold_absent": 0,
+        "gold_in_pool": 0,
+        "no_evidence_metadata": 0,
+    }
+    incorrect_buckets = {k: 0 for k in buckets}
+    gold_in_pool_rows: list[dict] = []
+    recall_missing_rows: list[dict] = []
+    total = 0
+    incorrect = 0
+    for r in per_instance:
+        for qr in r.per_question:
+            total += 1
+            diag = qr.recall_diagnostics or {}
+            has_evidence = bool(diag.get("evidence_sessions"))
+            gold_in_text = bool(diag.get("gold_substring_in_top_k"))
+            evidence_hit = bool(diag.get("evidence_session_in_top_k"))
+            if not has_evidence:
+                bucket = "no_evidence_metadata"
+            elif gold_in_text:
+                bucket = "gold_in_pool"
+            elif evidence_hit:
+                bucket = "session_present_gold_absent"
+            else:
+                bucket = "recall_missing"
+            buckets[bucket] += 1
+            is_wrong = qr.score < 0.5
+            if is_wrong:
+                incorrect += 1
+                incorrect_buckets[bucket] += 1
+                row = {
+                    "instance": r.instance_id,
+                    "question_id": qr.question_id,
+                    "category": qr.category,
+                    "gold": qr.gold,
+                    "candidate": (qr.candidate or "")[:160],
+                    "score": round(qr.score, 3),
+                    "evidence_sessions": list(diag.get("evidence_sessions") or ()),
+                    "evidence_session_in_top_k": evidence_hit,
+                    "gold_substring_in_top_k": gold_in_text,
+                    "gold_token_coverage": diag.get("gold_token_coverage"),
+                    "top_k_fragment_count": diag.get("top_k_fragment_count"),
+                }
+                if bucket == "gold_in_pool":
+                    gold_in_pool_rows.append(row)
+                elif bucket == "recall_missing":
+                    recall_missing_rows.append(row)
+    return {
+        "total": total,
+        "incorrect": incorrect,
+        "buckets": buckets,
+        "incorrect_buckets": incorrect_buckets,
+        "incorrect_gold_in_pool_rows": gold_in_pool_rows,
+        "incorrect_recall_missing_rows": recall_missing_rows,
+    }
 
 
 def _incorrect_sample(per_instance, limit: int = 20):
@@ -228,8 +537,9 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     judge = LLMJudge(router=router)
-    reader = LLMReader(router=router)
+    reader = LLMReader(router=router, prompt_variant=args.reader_prompt_variant)
     judgment_cache = JudgmentCache()
+    print(f"reader prompt variant → {args.reader_prompt_variant}")
 
     loader = LoCoMoLoader(shim_path=args.shim_path)
     instances_all = list(loader.iter_instances())
@@ -273,6 +583,20 @@ def main(argv: list[str] | None = None) -> int:
             consolidation_instance_id=instance_id,
             embedder_ensemble=args.embedder_ensemble,
             cross_encoder_rerank=args.cross_encoder_rerank,
+            cross_encoder_rerank_all=args.cross_encoder_rerank_all,
+            bm25_hybrid=args.bm25_hybrid,
+            within_session_rerank=args.within_session_rerank,
+            within_session_top_m_sessions=args.within_session_top_m_sessions,
+            fact_density_tie_breaker=args.fact_density_tie_breaker,
+            fact_source_turn_lift=args.fact_source_turn_lift,
+            fact_source_lift_top_facts=args.fact_source_lift_top_facts,
+            fact_source_lift_fragment_cap=args.fact_source_lift_fragment_cap,
+            fact_hybrid_retrieval=args.fact_hybrid_retrieval,
+            full_session_reader=args.full_session_reader,
+            localize_filter=args.localize_filter,
+            reader_evidence_rerank_first=args.reader_evidence_rerank_first,
+            entity_graph_retrieval=args.entity_graph_retrieval,
+            reconstructive_retrieval=args.reconstructive_retrieval,
         )
 
     per_direct = []
@@ -336,6 +660,21 @@ def main(argv: list[str] | None = None) -> int:
         "judge_single_hop": args.judge_single_hop,
         "embedder_ensemble": args.embedder_ensemble,
         "cross_encoder_rerank": args.cross_encoder_rerank,
+        "cross_encoder_rerank_all": args.cross_encoder_rerank_all,
+        "bm25_hybrid": args.bm25_hybrid,
+        "within_session_rerank": args.within_session_rerank,
+        "within_session_top_m_sessions": args.within_session_top_m_sessions,
+        "fact_density_tie_breaker": args.fact_density_tie_breaker,
+        "fact_source_turn_lift": args.fact_source_turn_lift,
+        "fact_source_lift_top_facts": args.fact_source_lift_top_facts,
+        "fact_source_lift_fragment_cap": args.fact_source_lift_fragment_cap,
+        "fact_hybrid_retrieval": args.fact_hybrid_retrieval,
+        "full_session_reader": args.full_session_reader,
+        "localize_filter": args.localize_filter,
+        "reader_evidence_rerank_first": args.reader_evidence_rerank_first,
+        "entity_graph_retrieval": args.entity_graph_retrieval,
+        "reconstructive_retrieval": args.reconstructive_retrieval,
+        "reader_prompt_variant": args.reader_prompt_variant,
         "advanced_tier": {
             "provider": decision.provider,
             "model_id": decision.model_id,
@@ -345,11 +684,14 @@ def main(argv: list[str] | None = None) -> int:
             "mean_score": _mean(direct_scores),
             "mean_by_category": direct_by_cat,
             "incorrect_sample": _incorrect_sample(per_direct),
+            "recall_diagnostics": _recall_stats(per_direct),
         },
         "rag_mode": None if not per_rag else {
             "mean_score": _mean(rag_scores),
             "mean_by_category": rag_by_cat,
             "incorrect_sample": _incorrect_sample(per_rag),
+            "reader_refusals": _refusal_stats(per_rag),
+            "recall_diagnostics": _recall_stats(per_rag),
         },
         "gate": {
             "target": gate_target,
@@ -378,6 +720,20 @@ def main(argv: list[str] | None = None) -> int:
         print(f"direct  mean={_mean(direct_scores):.3f}  by_cat={direct_by_cat}")
     if per_rag:
         print(f"rag     mean={_mean(rag_scores):.3f}  by_cat={rag_by_cat}")
+        refusal_stats = _refusal_stats(per_rag)
+        print(
+            f"reader  refusals={refusal_stats['refusals']}/"
+            f"{refusal_stats['total']} ({refusal_stats['rate']:.1%})"
+        )
+        rstats = _recall_stats(per_rag)
+        ib = rstats["incorrect_buckets"]
+        print(
+            f"recall  incorrect={rstats['incorrect']}/{rstats['total']}  "
+            f"gold_in_pool={ib['gold_in_pool']}  "
+            f"session_present_gold_absent={ib['session_present_gold_absent']}  "
+            f"recall_missing={ib['recall_missing']}  "
+            f"no_evidence_meta={ib['no_evidence_metadata']}"
+        )
     print(
         f"gate ({gate_mode} single-hop ≥ {gate_target}): "
         f"{gate_value!r} → {'PASS' if gate_pass else 'FAIL'}"

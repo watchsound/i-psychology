@@ -1,0 +1,58 @@
+{
+  "scenario_id": "b1_childhood_event_10session",
+  "benchmark": "B1",
+  "sessions": 10,
+  "final_fragment_count": 18,
+  "anchor_chain_length": 9,
+  "original_ids_tracked": 10,
+  "scores": {
+    "fragment_preservation": 1.0,
+    "rendering_divergence": 0.7573377330476722,
+    "within_session_jaccard": 0.16246831825909275,
+    "passes_gate": false
+  },
+  "pam": {
+    "format": "pam-v1",
+    "hash_algo": "blake2b-128",
+    "roundtrip_ids_match": true,
+    "content_addressing_ok": true
+  },
+  "locomo_monitor": {
+    "config": "R5 stack (--consolidation --cross-encoder-rerank --reader-prompt-variant v3)",
+    "instance_set": [
+      "conv-26",
+      "conv-30",
+      "conv-41"
+    ],
+    "questions": 74,
+    "content_hash_id_f1": 0.4402,
+    "legacy_frag_id_f1": 0.4632,
+    "memory_baseline_f1_single_trial": 0.544,
+    "floor": 0.514,
+    "id_value_contribution": -0.023,
+    "unexplained_gap_vs_single_trial_baseline": -0.081,
+    "verdict": "informational \u2014 single-trial baseline + no variance study; monitor-floor validity itself a methodology gap, not a confirmed M1 regression",
+    "per_instance": {
+      "conv-26": {
+        "content_hash": 0.348,
+        "legacy_id": 0.37,
+        "memory_baseline": 0.469
+      },
+      "conv-30": {
+        "content_hash": 0.488,
+        "legacy_id": 0.491,
+        "memory_baseline": 0.545
+      },
+      "conv-41": {
+        "content_hash": 0.519,
+        "legacy_id": 0.55,
+        "memory_baseline": 0.621
+      }
+    },
+    "session_present_gold_absent_bucket": {
+      "content_hash": 29,
+      "legacy_id": 27,
+      "memory_baseline": 12
+    }
+  }
+}

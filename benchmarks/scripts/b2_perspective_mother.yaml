@@ -1,0 +1,215 @@
+id: b2_perspective_mother_6session
+benchmark: B2
+description: >
+  M2 perspective-taking scenario — 6 sessions in which the user
+  describes their mother across named episodes, accumulating ≥ 12
+  grounded attributes of ``mother-as-user-represents-her``. A parallel
+  self-model-gap sub-track plants a divergence: the user repeatedly
+  states "I'm not a math person" (self-explicit) while the AI observes
+  a 72% first-try solve rate (self-implicit) — the structural
+  precondition for the clinical-insight move.
+
+  Session 6 is a probe recall under ``scope=[user, mother]`` for the
+  换位思考 ask, plus a ``scope=[ai, user]`` probe for the self-model
+  gap. Attribute reconstruction is scored against the recall content;
+  grounding is scored against the fragments_used list.
+
+sessions:
+  - id: s1
+    description: Opening — mother is "impossible"; two episodes anchor two attributes
+    turns:
+      - type: observe
+        at: "2026-01-10T19:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "My mother is impossible. She called me three times today about the gas bill and I had already paid it."
+        affect: { valence: -0.5, arousal: 0.4 }
+        tags: [mother, gas-bill, worry]
+      - type: observe
+        at: "2026-01-10T19:03:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She grew up in a village where cash under the mattress was the only safe thing. Money security is her default anxiety."
+        affect: { valence: -0.2, arousal: 0.25 }
+        tags: [mother, village, money-security]
+      - type: observe
+        at: "2026-01-10T19:06:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "I'm not a math person. I never was. Numbers just don't live in my head."
+        affect: { valence: -0.3, arousal: 0.2 }
+        tags: [self, math, identity-claim]
+      - type: observe
+        at: "2026-01-10T19:10:00+00:00"
+        speaker: ai
+        subject: ai
+        entity: user
+        content: "User solved the compound-interest derivation on first try tonight — correct substitution, no scratch work needed."
+        affect: { valence: 0.3, arousal: 0.1 }
+        tags: [ai-observation, math, first-try-solve]
+
+  - id: s2
+    description: Hospital episode — control through care; health hyper-vigilance
+    turns:
+      - type: tick
+        at: "2026-01-24T18:00:00+00:00"
+      - type: observe
+        at: "2026-01-24T19:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She drove four hours to the hospital when my cousin had the flu — she brought her own thermometer because she doesn't trust the hospital ones."
+        affect: { valence: -0.1, arousal: 0.3 }
+        tags: [mother, hospital, hyper-vigilance, care-as-control]
+      - type: observe
+        at: "2026-01-24T19:05:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "When she visits me she inspects the refrigerator. Every expiration date gets checked. The yogurt I threw out last visit was still 'fine' to her."
+        affect: { valence: -0.2, arousal: 0.3 }
+        tags: [mother, refrigerator, inspection, frugality]
+      - type: observe
+        at: "2026-01-24T19:12:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "I did badly on the geometry quiz but I think the questions were worded weird. I'm not a math person anyway."
+        affect: { valence: -0.4, arousal: 0.25 }
+        tags: [self, math, identity-claim]
+      - type: observe
+        at: "2026-01-24T19:15:00+00:00"
+        speaker: ai
+        subject: ai
+        entity: user
+        content: "User's quiz had two problems scored wrong on arithmetic; the geometric reasoning in the proofs was correct and finished before the time cap."
+        affect: { valence: 0.2, arousal: 0.1 }
+        tags: [ai-observation, math, first-try-solve, geometry]
+
+  - id: s3
+    description: Phone call — directness read as criticism; immigrant frame surfaces
+    turns:
+      - type: tick
+        at: "2026-02-14T18:00:00+00:00"
+      - type: observe
+        at: "2026-02-14T19:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "On the phone today she asked why I haven't married yet. She asks every call. For her, directness is love — the only generation she knows."
+        affect: { valence: -0.3, arousal: 0.35 }
+        tags: [mother, phone, directness, marriage-question]
+      - type: observe
+        at: "2026-02-14T19:04:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She was the oldest of six and raised the other five while her mother worked the night shift. She has never had the luxury of being soft."
+        affect: { valence: -0.1, arousal: 0.3 }
+        tags: [mother, oldest-sibling, caretaker, immigrant]
+      - type: observe
+        at: "2026-02-14T19:10:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "I'll never understand statistics. I'm just not a math person. I don't know why they made us take this course."
+        affect: { valence: -0.3, arousal: 0.3 }
+        tags: [self, math, identity-claim]
+      - type: observe
+        at: "2026-02-14T19:14:00+00:00"
+        speaker: ai
+        subject: ai
+        entity: user
+        content: "User correctly derived Bayes' rule from first principles in tonight's session on the second attempt — the first attempt had the right structure, flipped conditional only."
+        affect: { valence: 0.3, arousal: 0.1 }
+        tags: [ai-observation, math, first-try-solve, statistics]
+
+  - id: s4
+    description: Birthday card — the private language of care emerges
+    turns:
+      - type: tick
+        at: "2026-03-07T18:00:00+00:00"
+      - type: observe
+        at: "2026-03-07T19:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She sent me a birthday card with a hundred-dollar bill and the words 'eat something warm' in her handwriting. She never says 'I love you' but the hundred-dollar bill is her private language."
+        affect: { valence: 0.3, arousal: 0.3 }
+        tags: [mother, birthday, hundred-dollar-bill, private-language]
+      - type: observe
+        at: "2026-03-07T19:06:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She has not taken a vacation in 22 years. Rest for her feels like letting the family down."
+        affect: { valence: -0.2, arousal: 0.25 }
+        tags: [mother, no-vacation, sacrifice]
+      - type: observe
+        at: "2026-03-07T19:12:00+00:00"
+        speaker: ai
+        subject: ai
+        entity: user
+        content: "User completed the algebra tutor's full placement test in 18 minutes, 94% correct. Pace put them in the top quartile for first-try solve rate."
+        affect: { valence: 0.3, arousal: 0.1 }
+        tags: [ai-observation, math, first-try-solve, placement]
+
+  - id: s5
+    description: Conflict — superstition and language barrier compound the gap
+    turns:
+      - type: tick
+        at: "2026-03-28T18:00:00+00:00"
+      - type: observe
+        at: "2026-03-28T19:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She refuses to let me put the number 4 on anything — gift tags, apartment numbers. Four is death-adjacent in her dialect. Superstition is a part of how she keeps the family safe in her head."
+        affect: { valence: -0.1, arousal: 0.3 }
+        tags: [mother, superstition, number-four, dialect]
+      - type: observe
+        at: "2026-03-28T19:06:00+00:00"
+        speaker: user
+        subject: user
+        entity: mother
+        content: "She says things in English that come out blunt because English isn't her first language. She means 'be careful on the highway'; it comes out as 'you'll crash the car and I'll have to bury you.'"
+        affect: { valence: -0.2, arousal: 0.35 }
+        tags: [mother, language-barrier, blunt-translation]
+      - type: observe
+        at: "2026-03-28T19:10:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "Honestly, I just can't do math. My brain is a word brain, not a number brain."
+        affect: { valence: -0.3, arousal: 0.25 }
+        tags: [self, math, identity-claim]
+      - type: observe
+        at: "2026-03-28T19:14:00+00:00"
+        speaker: ai
+        subject: ai
+        entity: user
+        content: "User walked through optimal portfolio weighting with full numeric intuition tonight — no reach-for-calculator moments, no second-guessing."
+        affect: { valence: 0.3, arousal: 0.1 }
+        tags: [ai-observation, math, first-try-solve, finance]
+
+  - id: s6
+    description: Probe — perspective-taking recall + self-model-gap recall
+    turns:
+      - type: tick
+        at: "2026-04-18T18:00:00+00:00"
+      - type: recall
+        at: "2026-04-18T19:00:00+00:00"
+        cue: "mother"
+        scope: [user, mother]
+        expect:
+          attribute_min: 10
+          grounding_min_fragments: 2
+      - type: recall
+        at: "2026-04-18T19:10:00+00:00"
+        cue: "math"
+        scope: [ai, user]
+        expect:
+          gap_expected: ["math-first-try-solve"]

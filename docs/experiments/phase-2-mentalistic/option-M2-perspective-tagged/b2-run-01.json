@@ -1,0 +1,106 @@
+{
+  "run_id": "b2-run-01",
+  "option": "M2",
+  "mechanism": "subject-perspective-tagged fragments",
+  "shipped_at": "2026-10-07",
+  "scenario": "benchmarks/scripts/b2_perspective_mother.yaml",
+  "config": {
+    "byte_cap": null,
+    "witness_active_default": true,
+    "witness_active_in_test": false,
+    "fragment_count": 23,
+    "sessions": 6,
+    "scope_tags_encoded_as": "subject:<id> / entity:<id> prefixes in Fragment.tags",
+    "schema_change": "none (M1 Fragment.tags tuple reused)"
+  },
+  "b2_scores_direct_pool": {
+    "attribute_reconstruction": 1.0,
+    "attribute_reconstruction_hits": 12,
+    "attribute_reconstruction_total": 12,
+    "notes": "Direct scope-filtered pool over all 10 (user, mother) fragments; LLM-reconstructive-recall variant tracked separately as a Phase 2.1 scorer. Deterministic token-match scoring on merged pool content."
+  },
+  "scope_filter_isolation": {
+    "user_mother_fragments": 10,
+    "ai_user_fragments": 5,
+    "user_user_fragments": 4,
+    "ai_mother_fragments": 0,
+    "scope_less_fragments": 0,
+    "disjoint_user_user_vs_ai_user": true
+  },
+  "gap_detection": {
+    "expected_gap": "math-first-try-solve",
+    "predicted": true,
+    "precision": 1.0,
+    "recall": 1.0,
+    "evidence_user_side_tokens": "I'm not a math person, numbers don't live in my head, can't do math, word brain not number brain",
+    "evidence_ai_side_tokens": "first try, correct, 94%, top quartile, first-try solve rate"
+  },
+  "m1_regression": {
+    "b1_fragment_preservation": 1.0,
+    "b1_scenario_test_green": true,
+    "notes": "B1 scenario test (18 fragments / 9-node anchor chain) re-run under M2 code; preservation + chain-length gates still 1.0 and 9."
+  },
+  "full_regression": {
+    "tests_passed": 408,
+    "tests_failed": 0,
+    "deltas_vs_m1_baseline": "+17 tests (6 B2 scenario + 11 perspective tagging)",
+    "notes": "M1 391-test substrate intact; M2 adds 17 tests covering the Observation API, write-path tag merge, scope filter, scoped recall, deterministic content-hashing of perspective-tagged fragments, and the scripted scenario."
+  },
+  "locomo_monitor": {
+    "live_run_executed": false,
+    "reason": "M2 does not touch the LoCoMo code path. LoCoMo observations do not set Observation.subject_id or Observation.entity_id, so the observe-time tag merge is a no-op (no scope tags appended). LoCoMo recall calls pass no scope kwarg, so the scope=None branch is taken, which routes through _recall_hierarchical / reconstruct unchanged. The LoCoMo F1 under M2 is therefore BYTE-IDENTICAL to the M1 content-hash run (0.440). Re-running would consume LLM budget to confirm substrate-level non-divergence that is already provable by code inspection.",
+    "equivalence_evidence": [
+      "src/psychology_base/companion/system.py::observe — tag merge is `tags = tags + (f'subject:{subject_id}',)` only when `subject_id is not None`; LoCoMo passes None.",
+      "src/psychology_base/companion/system.py::recall — scope-filter branch is `if scope is None: ... hier_hit = self._recall_hierarchical(...)` which is the pre-M2 path verbatim.",
+      "408-test regression (391 M1 tests included) is green; LoCoMo adapter tests and reader-prompt-variant tests are both unchanged."
+    ],
+    "methodology_debt_carried_over": "The 0.514 floor is still a single-trial point estimate with no variance study; the multi-trial variance study scoped as a Phase 2 side task is unchanged by M2."
+  },
+  "gates": {
+    "attribute_reconstruction": {
+      "target": ">= 10/12",
+      "actual": "12/12",
+      "passed": true
+    },
+    "grounding": {
+      "target": ">= 70% of perspective-taking recalls cite >= 2 stored fragments",
+      "actual": "deferred — grounding is measured on LLM-reconstructed answers; the deterministic unit tests exercise the scope-filter contract. End-to-end grounding scoring under the reconstructor is a Phase 2.1 scorer when the semantic-judge module lands.",
+      "passed": "not-measured"
+    },
+    "gap_detection": {
+      "target": ">= 60% precision at >= 50% recall",
+      "actual": "precision=1.0, recall=1.0",
+      "passed": true
+    },
+    "m1_regression": {
+      "target": "B1 preservation 1.0 + 391 tests green",
+      "actual": "B1 preservation 1.0; 408 tests green (391 pre-M2 + 17 M2)",
+      "passed": true
+    },
+    "locomo_monitor": {
+      "target": "informational",
+      "actual": "code-path equivalence proof instead of live re-run",
+      "passed": "informational"
+    }
+  },
+  "kill_criteria_check": {
+    "attribute_reconstruction_below_50pct": {"triggered": false, "actual": 1.0},
+    "scope_filter_breaks_m1_preservation": {"triggered": false, "evidence": "B1 scenario test still shows preservation 1.0"},
+    "regression_391_breaks": {"triggered": false, "actual_passing": 408}
+  },
+  "artefacts": {
+    "schema": "src/psychology_base/eval/scripts/schema.py (ObserveTurn.subject / ObserveTurn.entity / RecallTurn.scope)",
+    "observation_api": "src/psychology_base/eval/adapters.py (Observation.subject_id, Observation.entity_id)",
+    "write_path": "src/psychology_base/companion/system.py::CompanionSystem.observe (tag merge)",
+    "retrieval_path": "src/psychology_base/companion/system.py::CompanionSystem.recall (scope kwarg) + _filter_fragments_by_scope",
+    "scorer": "src/psychology_base/eval/benchmarks/b2_perspective_taking.py",
+    "scenario": "benchmarks/scripts/b2_perspective_mother.yaml",
+    "unit_tests": "tests/test_perspective_tagging.py",
+    "integration_tests": "tests/test_b2_perspective_mother_scenario.py"
+  },
+  "next_actions": [
+    "LLM-reconstructive grounding scorer (semantic-judge) — Phase 2.1 scope.",
+    "Multi-trial LoCoMo variance study (carried over from M1) — unblocks turning the 0.514 floor into a confidence-bounded monitor.",
+    "Start M3 build plan (Emotional-RAG dual-vector affective-resonance retrieval)."
+  ]
+}

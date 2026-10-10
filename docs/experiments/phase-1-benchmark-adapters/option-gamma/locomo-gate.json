@@ -1,0 +1,878 @@
+{
+  "benchmark": "locomo",
+  "split": "real-first3",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 3,
+  "instance_id_filter": null,
+  "question_count": 74,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "both",
+  "consolidation_enabled": true,
+  "judge_single_hop": false,
+  "embedder_ensemble": false,
+  "cross_encoder_rerank": true,
+  "cross_encoder_rerank_all": false,
+  "bm25_hybrid": false,
+  "within_session_rerank": false,
+  "within_session_top_m_sessions": 3,
+  "fact_density_tie_breaker": false,
+  "fact_source_turn_lift": false,
+  "fact_source_lift_top_facts": 15,
+  "fact_source_lift_fragment_cap": 30,
+  "fact_hybrid_retrieval": false,
+  "full_session_reader": false,
+  "localize_filter": false,
+  "reader_evidence_rerank_first": false,
+  "entity_graph_retrieval": false,
+  "reconstructive_retrieval": false,
+  "reader_prompt_variant": "v3",
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": {
+    "mean_score": 0.0036754359031668225,
+    "mean_by_category": {
+      "single-hop": 0.0036754359031668225
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "FACTS:\nCaroline activity research\nCaroline activity people\nCaroline activity promoting understanding\nCaroline activity content\nCaroline activity stories\nCarolin",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "FACTS:\nCaroline activity identity\nCaroline identity trans\nCaroline artwork 'Embracing Identity'\nCaroline subject journey of acceptance\nCaroline feeling belongin",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q7",
+        "category": "single-hop",
+        "gold": "Single",
+        "candidate": "FACTS:\nCaroline meaning love\nCaroline activity showing feelings\nCaroline subject journey of acceptance\nCaroline feeling belonging\nCaroline activity being real\nC",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q11",
+        "category": "single-hop",
+        "gold": "Sweden",
+        "candidate": "FACTS:\nCaroline experience transition\nCaroline experience changing body\nCaroline experience exploring transition\nCaroline feeling belonging\nCaroline subject jou",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q13",
+        "category": "single-hop",
+        "gold": "counseling or mental health for Transgender people",
+        "candidate": "FACTS:\nCaroline career interest counseling\nCaroline career interest mental health\nCaroline experience transition\nCaroline experience exploring transition\nCaroli",
+        "score": 0.008,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "FACTS:\nMelanie activity exploring\nMelanie activity inspiration\nMelanie activity empowering\nMelanie activity being real\nMelanie activity showing off true selves\n",
+        "score": 0.003,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q18",
+        "category": "single-hop",
+        "gold": "beach, mountains, forest",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by camping\nMel family activity camping in the mountains\nMel event camping\nMel future plan going camping next month\nMela",
+        "score": 0.003,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by kids\nMel activity spending time with kids\nMel family member 2 younger kids\nMel object kids\nMelanie activity feeling ",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q23",
+        "category": "single-hop",
+        "gold": "\"Nothing is Impossible\", \"Charlotte's Web\"",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by stories\nMelanie activity poetry reading\nMel hobby reading\nMel book stories from different cultures\nMel book educatio",
+        "score": 0.003,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q24",
+        "category": "single-hop",
+        "gold": "Running, pottery",
+        "candidate": "FACTS:\nMelanie activity tranquility\nMelanie activity feeling inspired by therapy\nMelanie activity serene vibe\nMelanie activity self-expression\nMelanie activity ",
+        "score": 0.002,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "FACTS:\nCaroline activity speaking up for LGBTQ+ community\nCaroline experience LGBTQ+ community\nCaroline activity standing up for LGBTQ rights\nCaroline activity ",
+        "score": 0.004,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "FACTS:\nCaroline activity helping people\nCaroline activity inspiring others\nCaroline activity empowerment\nCaroline commitment providing for children\nCaroline act",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by painting\nMelanie activity abstract painting\nMelanie activity painting\nMelanie activity feeling inspired by art\nMelan",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "FACTS:\nMel self care activity having fun with family\nMelanie activity trip together\nMel experience special family moments\nMel self care activity having a great ",
+        "score": 0.003,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "FACTS:\nCaroline experience LGBTQ+ community\nCaroline activity speaking up for LGBTQ+ community\nCaroline activity feeling inspired by LGBTQ+ community\nCaroline a",
+        "score": 0.011,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q40",
+        "category": "single-hop",
+        "gold": "2",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by the beach\nMel activity going to the beach\nMel location beach\nMel activity feeling inspired by the beach\nMelanie acti",
+        "score": 0.001,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "FACTS:\nCaroline activity making art\nCaroline activity creating art\nCaroline activity art\nCaroline artwork 'Embracing Identity'\nCaroline activity feeling inspire",
+        "score": 0.002,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q47",
+        "category": "single-hop",
+        "gold": "Her mentors, family, and friends",
+        "candidate": "FACTS:\nCaroline emotion community support\nCaroline support friends and mentors\nCaroline activity showing feelings\nCaroline activity feeling loved by supportive ",
+        "score": 0.005,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "FACTS:\nMelanie activity feeling inspired by pottery\nMel activity pottery\nMel activity pottery project\nMel hobby pottery\nMel passion pottery\nMel experience potte",
+        "score": 0.002,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "FACTS:\nMelanie activity painting\nMelanie activity feeling inspired by painting\nMelanie activity abstract painting\nMelanie activity art\nMelanie activity feeling ",
+        "score": 0.002,
+        "verdict": "f1-incorrect"
+      }
+    ],
+    "recall_diagnostics": {
+      "total": 74,
+      "incorrect": 74,
+      "buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 58,
+        "gold_in_pool": 16,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 58,
+        "gold_in_pool": 16,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_gold_in_pool_rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q3",
+          "category": "single-hop",
+          "gold": "Adoption agencies",
+          "candidate": "FACTS:\nCaroline activity research\nCaroline activity people\nCaroline activity promoting understanding\nCaroline activity content\nCaroline activity stories\nCarolin",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_2"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 250
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q4",
+          "category": "single-hop",
+          "gold": "Transgender woman",
+          "candidate": "FACTS:\nCaroline activity identity\nCaroline identity trans\nCaroline artwork 'Embracing Identity'\nCaroline subject journey of acceptance\nCaroline feeling belongin",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_1"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 248
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q7",
+          "category": "single-hop",
+          "gold": "Single",
+          "candidate": "FACTS:\nCaroline meaning love\nCaroline activity showing feelings\nCaroline subject journey of acceptance\nCaroline feeling belonging\nCaroline activity being real\nC",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_3",
+            "session_2"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 272
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q11",
+          "category": "single-hop",
+          "gold": "Sweden",
+          "candidate": "FACTS:\nCaroline experience transition\nCaroline experience changing body\nCaroline experience exploring transition\nCaroline feeling belonging\nCaroline subject jou",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_3",
+            "session_4"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 266
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q37",
+          "category": "single-hop",
+          "gold": "sunset",
+          "candidate": "FACTS:\nMelanie activity feeling inspired by painting\nMelanie activity abstract painting\nMelanie activity painting\nMelanie activity feeling inspired by art\nMelan",
+          "score": 0.001,
+          "evidence_sessions": [
+            "D8:6; D9:17"
+          ],
+          "evidence_session_in_top_k": false,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 224
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q55",
+          "category": "single-hop",
+          "gold": "Sunsets",
+          "candidate": "FACTS:\nCaroline art subject story\nCaroline art medium painting\nCaroline activity feeling inspired by painting\nMelanie activity feeling inspired by painting\nCaro",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_14",
+            "session_8"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 245
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q66",
+          "category": "single-hop",
+          "gold": "Roast marshmallows, tell stories",
+          "candidate": "FACTS:\nMelanie activity feeling inspired by hiking\nMel family activity camping in the mountains\nMelanie activity trip together\nMel activity family camping trip\n",
+          "score": 0.004,
+          "evidence_sessions": [
+            "session_16",
+            "session_10"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 259
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q9",
+          "category": "single-hop",
+          "gold": "Rome",
+          "candidate": "FACTS:\nJon visited Paris\nJon mentioned going\nJon described downtown location\nJon mentioned near me\nJon mentioned took a short trip last week to Rome\nJon mention",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_2",
+            "session_15"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 238
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q18",
+          "category": "single-hop",
+          "gold": "Yes",
+          "candidate": "FACTS:\nJon mentioned push to start dream business\nGina mentioned take your passion and make it into a biz\nGina mentioned an entrepreneur\nGina mentioned growing ",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_1",
+            "session_6"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 257
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q27",
+          "category": "single-hop",
+          "gold": "Yes",
+          "candidate": "FACTS:\nJon mentioned dance comp\nGina mentioned passionate about dancing\nJon mentioned dance\nJon mentioned love for dance\nGina mentioned place to express themsel",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_1",
+            "session_14",
+            "session_9"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 257
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q3",
+          "category": "single-hop",
+          "gold": "Volunteering at a homeless shelter",
+          "candidate": "FACTS:\nMaria volunteering helped make a difference\nMaria activity volunteering\nMaria volunteering fulfilling\nMaria support John's project\nMaria help John's proj",
+          "score": 0.004,
+          "evidence_sessions": [
+            "session_3",
+            "session_2"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 533
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q12",
+          "category": "single-hop",
+          "gold": "The military aptitude test",
+          "candidate": "FACTS:\nJohn military aptitude test failed\nJohn challenge tech stuff\nJohn consistency key\nJohn challenge self-doubt\nJohn activity charades\nJohn challenge workpla",
+          "score": 0.004,
+          "evidence_sessions": [
+            "session_8",
+            "session_3"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 520
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q18",
+          "category": "single-hop",
+          "gold": "Rob",
+          "candidate": "FACTS:\nJohn started weekend yoga class with a colleague\nJohn tried yoga\nJohn yoga class poses\nJohn yoga class beginner\nJohn event beginner's yoga class\nJohn yog",
+          "score": 0.001,
+          "evidence_sessions": [
+            "session_7",
+            "session_10"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 500
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q42",
+          "category": "single-hop",
+          "gold": "West County",
+          "candidate": "FACTS:\nJohn community bustling environment\nJohn West County old area\nJohn neighborhood deserve\nJohn neighborhood bustling\nJohn activity looking into shelters\nJo",
+          "score": 0.002,
+          "evidence_sessions": [
+            "session_14",
+            "session_23"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 551
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q49",
+          "category": "single-hop",
+          "gold": "Cakes",
+          "candidate": "FACTS:\nMaria participated homeless shelter\nMaria volunteer homeless shelter\nMaria volunteers homeless shelter\nMaria volunteering homeless shelter\nMaria activity",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_26",
+            "session_25"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 516
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q62",
+          "category": "single-hop",
+          "gold": "two",
+          "candidate": "FACTS:\nMaria volunteer local dog shelter\nMaria pet shelter\nMaria activity volunteering at homeless shelter\nMaria volunteering homeless shelter\nMaria volunteer h",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_30",
+            "session_31"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 509
+        }
+      ],
+      "incorrect_recall_missing_rows": []
+    }
+  },
+  "rag_mode": {
+    "mean_score": 0.4632108003017646,
+    "mean_by_category": {
+      "single-hop": 0.4632108003017646
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q4",
+        "category": "single-hop",
+        "gold": "Transgender woman",
+        "candidate": "trans",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q15",
+        "category": "single-hop",
+        "gold": "pottery, camping, painting, swimming",
+        "candidate": "exploring, inspiration, empowering, being real, showing off true selves, friendship, encouragement, freedom, feeling appreciated, support, self-expression, ongo",
+        "score": 0.031,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q19",
+        "category": "single-hop",
+        "gold": "dinosaurs, nature",
+        "candidate": "learning about animals, getting hands dirty with clay, exploring and playing at the park, roasting marshmallows, telling stories around the campfire, going on a",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q32",
+        "category": "single-hop",
+        "gold": "Pride parade, school speech, support group",
+        "candidate": "LGBTQ+ pride parade, transgender conference, LGBTQ art show",
+        "score": 0.286,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "picnic, participating in LGBTQ art show",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q37",
+        "category": "single-hop",
+        "gold": "sunset",
+        "candidate": "sunsets",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q38",
+        "category": "single-hop",
+        "gold": "Pottery, painting, camping, museum, swimming, hiking",
+        "candidate": "playing games, eating good food, hanging out, camping in the mountains, roasting marshmallows, telling stories around the campfire",
+        "score": 0.091,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q39",
+        "category": "single-hop",
+        "gold": "Joining activist group, going to pride parades, participating in an art show, mentoring program",
+        "candidate": "speaking up for LGBTQ+ community, joining LGBTQ activist group, participating in LGBTQ art show, promoting acceptance, inspiring others, sharing stories, standi",
+        "score": 0.208,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "painting",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q51",
+        "category": "single-hop",
+        "gold": "Horse, sunset, sunrise",
+        "candidate": "sunsets, abstract painting",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q55",
+        "category": "single-hop",
+        "gold": "Sunsets",
+        "candidate": "nature",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q65",
+        "category": "single-hop",
+        "gold": "Changes to her body, losing unsupportive friends",
+        "candidate": "changing body, exploring gender identity, expressing herself authentically, finding acceptance and support from friends and family, creating art to work through",
+        "score": 0.216,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q66",
+        "category": "single-hop",
+        "gold": "Roast marshmallows, tell stories",
+        "candidate": "exploring forests, hiking, roasting marshmallows, telling stories around the campfire",
+        "score": 0.308,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q71",
+        "category": "single-hop",
+        "gold": "\"Becoming Nicole\"",
+        "candidate": "Charlotte's Web",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q75",
+        "category": "single-hop",
+        "gold": "3",
+        "candidate": "2",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q76",
+        "category": "single-hop",
+        "gold": "19 October 2023",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q3",
+        "category": "single-hop",
+        "gold": "They lost their jobs and decided to start their own businesses.",
+        "candidate": "love for performing, using dance as a stress reliever, and being entrepreneurs",
+        "score": 0.091,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q9",
+        "category": "single-hop",
+        "gold": "Rome",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q17",
+        "category": "single-hop",
+        "gold": "She always loved fashion trends and finding unique pieces and she lost her job so decided it was time to start her own business.",
+        "candidate": "Gina decided to start her own clothing store after losing her job and wanting to take control of her own destiny.",
+        "score": 0.356,
+        "verdict": "f1-incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q23",
+        "category": "single-hop",
+        "gold": "worked with an artist to make unique fashion pieces, made limited-edition sweatshirts, got some new offers and promotions for online store, developed a video presentation showing how to style her pieces",
+        "candidate": "Gina launched an ad campaign and used social media channels and worked with influencers for bigger reach.",
+        "score": 0.178,
+        "verdict": "f1-incorrect"
+      }
+    ],
+    "reader_refusals": {
+      "total": 74,
+      "refusals": 6,
+      "rate": 0.081,
+      "rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q76",
+          "category": "single-hop",
+          "gold": "19 October 2023",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q9",
+          "category": "single-hop",
+          "gold": "Rome",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q31",
+          "category": "single-hop",
+          "gold": "six months",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q19",
+          "category": "single-hop",
+          "gold": "Broken windshield, Car broke down",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q40",
+          "category": "single-hop",
+          "gold": "Kyle, Sara",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q49",
+          "category": "single-hop",
+          "gold": "Cakes",
+          "score": 0.0
+        }
+      ]
+    },
+    "recall_diagnostics": {
+      "total": 74,
+      "incorrect": 34,
+      "buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 58,
+        "gold_in_pool": 16,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_buckets": {
+        "recall_missing": 0,
+        "session_present_gold_absent": 27,
+        "gold_in_pool": 7,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_gold_in_pool_rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q4",
+          "category": "single-hop",
+          "gold": "Transgender woman",
+          "candidate": "trans",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_1"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 248
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q37",
+          "category": "single-hop",
+          "gold": "sunset",
+          "candidate": "sunsets",
+          "score": 0.0,
+          "evidence_sessions": [
+            "D8:6; D9:17"
+          ],
+          "evidence_session_in_top_k": false,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 224
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q55",
+          "category": "single-hop",
+          "gold": "Sunsets",
+          "candidate": "nature",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_14",
+            "session_8"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 245
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q66",
+          "category": "single-hop",
+          "gold": "Roast marshmallows, tell stories",
+          "candidate": "exploring forests, hiking, roasting marshmallows, telling stories around the campfire",
+          "score": 0.308,
+          "evidence_sessions": [
+            "session_16",
+            "session_10"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 259
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q9",
+          "category": "single-hop",
+          "gold": "Rome",
+          "candidate": "not stated",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_2",
+            "session_15"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 238
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q49",
+          "category": "single-hop",
+          "gold": "Cakes",
+          "candidate": "not stated",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_26",
+            "session_25"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 516
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q62",
+          "category": "single-hop",
+          "gold": "two",
+          "candidate": "1",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_30",
+            "session_31"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 509
+        }
+      ],
+      "incorrect_recall_missing_rows": []
+    }
+  },
+  "gate": {
+    "target": 0.9,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.4632108003017646,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 0,
+    "cache_misses": 0
+  },
+  "wall_time_s": 269.2,
+  "generated_at": "2026-10-07T04:42:23"
+}

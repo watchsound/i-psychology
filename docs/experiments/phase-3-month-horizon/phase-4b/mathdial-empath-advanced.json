@@ -1,0 +1,19 @@
+{
+  "benchmark": "phase4b_mathdial_empath",
+  "mode": "cloud",
+  "tier": "advanced",
+  "routing": "tongyi / qwen-max (reason=advanced_tier_uses_cloud)",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\mathdial\\train.jsonl",
+  "conversations_pooled": 30,
+  "sampled_teacher_turns": 202,
+  "auto_compliance_rate": 0.9016393442622951,
+  "taxonomy_overlap_rate": 0.5742574257425742,
+  "empath_kappa": 0.6233213232885685,
+  "empath_kappa_n": 200,
+  "empath_kappa_po": 0.885,
+  "empath_kappa_pe": 0.6947000000000001,
+  "all_proxy_verdicts": false,
+  "pivot_gate_pass": false,
+  "wall_s": 325.7,
+  "generated_at": "2026-10-08T03:15:58"
+}

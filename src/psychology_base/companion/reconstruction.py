@@ -18,6 +18,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
+from psychology_base.companion.affect_resonance import pair_affect_score
 from psychology_base.companion.edges import EdgeStore
 from psychology_base.eval.adapters import Fragment
 
@@ -292,23 +293,48 @@ def reconstruct(
     top_k: int = 6,
     edges: Optional[EdgeStore] = None,
     hebbian_delta: float = 0.05,
+    *,
+    cue_affect: Optional[dict] = None,
+    affect_weight: float = 0.0,
 ) -> Reconstruction:
     """Full pipeline. State-advancing: decays residual, computes fresh activation
     (R1 — using Hebbian edges when an EdgeStore is wired), applies context
     weighting (R7), coalesces top-k (R2), writes activation back into residual,
     and bumps edges between all co-activated top-k pairs (S7 Hebbian). Saturation
-    guard is applied after bumping so hot edges can't monopolise the budget."""
+    guard is applied after bumping so hot edges can't monopolise the budget.
+
+    M3 affect resonance: when ``affect_weight > 0`` AND ``cue_affect`` is
+    provided, ``affect_weight × pair_affect_score(fragment.affect, cue_affect)``
+    is **added** to each fragment's score. Additive composition matches the
+    plan's ``γ·relevance + δ·affective-resonance`` formula and lets an
+    affect-matched fragment surface even when its cue-token overlap is
+    zero — a multiplicative boost cannot rescue a zero-relevance fragment,
+    which was wrong for the "thin semantic overlap, strong affective
+    overlap" case M3 is specifically for. Fragments without numeric
+    valence+arousal get a 0.0 pair score → no boost (not a penalty).
+    Default ``affect_weight=0.0`` leaves M1+M2 behavior byte-identical.
+    """
     state.decay()
     raw = spread_activation(fragments, cue, state, edges=edges)
-    weighted = {
-        f.id: raw.get(f.id, 0.0) * context_weight(f, context)
-        for f in fragments
-    }
+    weighted: dict[str, float] = {}
+    for f in fragments:
+        score = raw.get(f.id, 0.0) * context_weight(f, context)
+        if affect_weight > 0.0 and cue_affect is not None:
+            score += affect_weight * pair_affect_score(f.affect, cue_affect)
+        weighted[f.id] = score
     ranked = sorted(
         ((f, weighted.get(f.id, 0.0)) for f in fragments),
         key=lambda pair: pair[1],
         reverse=True,
     )
+    # Post-additive invariant: score == 0 ⟺ raw == 0 AND affect-term == 0.
+    # context_weight ≥ 1.0 always, so it can never zero out a positive raw.
+    # raw == 0 means no cue overlap AND no residual (Principle A) AND no
+    # edge-reach; affect-term == 0 means affect_weight is off, cue has no
+    # affect attached, or fragment is missing numeric valence+arousal. A
+    # fragment hitting all four conditions has nothing retrievable about
+    # it under current state — dropping it is correct and lets coalesce
+    # avoid synthesising from pure noise.
     ranked = [(f, a) for f, a in ranked if a > 0.0]
     content = coalesce(
         ranked, cue, context, state.recall_count, tick_count,

@@ -3,6 +3,15 @@ from psychology_base.eval.adapters import (
     MemorySystem,
     Observation,
     Recall,
+    content_hash,
+    make_fragment,
 )
 
-__all__ = ["Fragment", "MemorySystem", "Observation", "Recall"]
+__all__ = [
+    "Fragment",
+    "MemorySystem",
+    "Observation",
+    "Recall",
+    "content_hash",
+    "make_fragment",
+]

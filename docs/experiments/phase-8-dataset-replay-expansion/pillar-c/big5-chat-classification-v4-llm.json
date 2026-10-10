@@ -1,0 +1,58 @@
+{
+  "benchmark": "phase8_c_big5_chat_classification_v4_llm",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\big5_chat\\train.jsonl",
+  "limit": 200,
+  "mode": "cloud",
+  "tier": "simple",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "n_input": 200,
+  "n_dialogs": 200,
+  "n_neutral": 76,
+  "n_unresolved": 0,
+  "unresolved_dialog_ids": [],
+  "coverage": 0.62,
+  "polarity_accuracy": 0.9919354838709677,
+  "polarity_accuracy_incl_neutral": 0.615,
+  "per_trait_polarity_accuracy": {
+    "agreeableness": 1.0,
+    "neuroticism": 0.525,
+    "openness": 0.625,
+    "extraversion": 0.55,
+    "conscientiousness": 0.375
+  },
+  "per_level_polarity_accuracy": {
+    "high": 0.8,
+    "low": 0.43
+  },
+  "confusion": {
+    "agreeableness": {
+      "high": 20,
+      "low": 20,
+      "neutral": 0
+    },
+    "neuroticism": {
+      "high": 17,
+      "low": 4,
+      "neutral": 19
+    },
+    "openness": {
+      "high": 19,
+      "low": 7,
+      "neutral": 14
+    },
+    "extraversion": {
+      "high": 15,
+      "low": 7,
+      "neutral": 18
+    },
+    "conscientiousness": {
+      "high": 10,
+      "low": 5,
+      "neutral": 25
+    }
+  },
+  "soft_gate_floor": 0.6,
+  "pillar_c_soft_pass": true,
+  "wall_s": 79.9,
+  "generated_at": "2026-10-10T11:42:08"
+}

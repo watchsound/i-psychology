@@ -109,8 +109,10 @@ def test_byte_cap_evicts_weakest_non_covenant_fragments():
             tags=tags,
         ))
     state = sys.inspect()
-    kept_ids = [f["id"] for f in state["fragments"]]
-    assert "frag-0000" in kept_ids, "S5 covenant pin failed — covenant fragment was evicted"
+    # M1 step 2 — fragment ids are content-addressed, so identify the
+    # covenant fragment by its tags, not by the pre-M1 "frag-0000" id.
+    kept_covenant = [f for f in state["fragments"] if "covenant" in f["tags"]]
+    assert kept_covenant, "S5 covenant pin failed — covenant fragment was evicted"
     assert state["fragment_count"] < 15, "S1 cap failed — no eviction happened"
     assert state["total_bytes"] <= 500, (
         f"S1 cap failed — bytes {state['total_bytes']} exceeded cap"

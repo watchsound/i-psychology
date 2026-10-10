@@ -1,0 +1,15 @@
+{
+  "experiment": "phase-7-b5-stereotype-collapse",
+  "report": {
+    "n_seeds": 10,
+    "n_prompts": 20,
+    "unique_responses_baseline": 20,
+    "unique_responses_conditioned": 160,
+    "unique_addenda": 8,
+    "diversity_baseline": 0.1,
+    "diversity_conditioned": 0.8,
+    "pass_bar_floor": 0.7,
+    "meets_pass_bar": true
+  },
+  "verdict": "B5 PASS \u2014 conditioning does not collapse response space (\u2265 0.70)"
+}

@@ -1,0 +1,413 @@
+{
+  "benchmark": "locomo",
+  "split": "real-first3",
+  "shim_path": "C:\\Users\\nihan\\.cache\\psychology_base\\benchmarks\\locomo\\locomo_shim.jsonl",
+  "instance_count": 3,
+  "instance_id_filter": null,
+  "question_count": 74,
+  "categories_filter": [
+    "single-hop"
+  ],
+  "mode": "rag",
+  "consolidation_enabled": true,
+  "judge_single_hop": true,
+  "embedder_ensemble": false,
+  "cross_encoder_rerank": true,
+  "cross_encoder_rerank_all": false,
+  "bm25_hybrid": false,
+  "within_session_rerank": false,
+  "within_session_top_m_sessions": 3,
+  "fact_density_tie_breaker": false,
+  "fact_source_turn_lift": false,
+  "fact_source_lift_top_facts": 15,
+  "fact_source_lift_fragment_cap": 30,
+  "fact_hybrid_retrieval": false,
+  "full_session_reader": true,
+  "reader_prompt_variant": "v3",
+  "advanced_tier": {
+    "provider": "tongyi",
+    "model_id": "qwen-max",
+    "reason": "advanced_tier_uses_cloud"
+  },
+  "direct_mode": null,
+  "rag_mode": {
+    "mean_score": 0.4966216216216216,
+    "mean_by_category": {
+      "single-hop": 0.4966216216216216
+    },
+    "incorrect_sample": [
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q3",
+        "category": "single-hop",
+        "gold": "Adoption agencies",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q34",
+        "category": "single-hop",
+        "gold": "Mentoring program, school speech",
+        "candidate": "picnic, participating in LGBTQ art show",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q43",
+        "category": "single-hop",
+        "gold": "abstract art",
+        "candidate": "painting",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q48",
+        "category": "single-hop",
+        "gold": "bowls, cup",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q56",
+        "category": "single-hop",
+        "gold": "Rainbow flag, transgender symbol",
+        "candidate": "love, faith, strength",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q66",
+        "category": "single-hop",
+        "gold": "Roast marshmallows, tell stories",
+        "candidate": "exploring forests, hiking in the mountains",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q71",
+        "category": "single-hop",
+        "gold": "\"Becoming Nicole\"",
+        "candidate": "Charlotte's Web",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q75",
+        "category": "single-hop",
+        "gold": "3",
+        "candidate": "2",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-26",
+        "question_id": "conv-26-q76",
+        "category": "single-hop",
+        "gold": "19 October 2023",
+        "candidate": "yesterday",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q3",
+        "category": "single-hop",
+        "gold": "They lost their jobs and decided to start their own businesses.",
+        "candidate": "love for performing",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q9",
+        "category": "single-hop",
+        "gold": "Rome",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q23",
+        "category": "single-hop",
+        "gold": "worked with an artist to make unique fashion pieces, made limited-edition sweatshirts, got some new offers and promotions for online store, developed a video presentation showing how to style her pieces",
+        "candidate": "Gina launched an ad campaign and used social media channels and worked with influencers for promotion.",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-30",
+        "question_id": "conv-30-q31",
+        "category": "single-hop",
+        "gold": "six months",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q11",
+        "category": "single-hop",
+        "gold": "David, Jean, Cindy, Laura",
+        "candidate": "little girl, Jean",
+        "score": 0.25,
+        "verdict": "partial"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q18",
+        "category": "single-hop",
+        "gold": "Rob",
+        "candidate": "a colleague",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q19",
+        "category": "single-hop",
+        "gold": "Broken windshield, Car broke down",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q36",
+        "category": "single-hop",
+        "gold": "Live music event, violin concert",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q49",
+        "category": "single-hop",
+        "gold": "Cakes",
+        "candidate": "not stated",
+        "score": 0.0,
+        "verdict": "incorrect"
+      },
+      {
+        "instance": "conv-41",
+        "question_id": "conv-41-q62",
+        "category": "single-hop",
+        "gold": "two",
+        "candidate": "1",
+        "score": 0.0,
+        "verdict": "incorrect"
+      }
+    ],
+    "reader_refusals": {
+      "total": 74,
+      "refusals": 7,
+      "rate": 0.095,
+      "rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q3",
+          "category": "single-hop",
+          "gold": "Adoption agencies",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q48",
+          "category": "single-hop",
+          "gold": "bowls, cup",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q9",
+          "category": "single-hop",
+          "gold": "Rome",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q31",
+          "category": "single-hop",
+          "gold": "six months",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q19",
+          "category": "single-hop",
+          "gold": "Broken windshield, Car broke down",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q36",
+          "category": "single-hop",
+          "gold": "Live music event, violin concert",
+          "score": 0.0
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q49",
+          "category": "single-hop",
+          "gold": "Cakes",
+          "score": 0.0
+        }
+      ]
+    },
+    "recall_diagnostics": {
+      "total": 74,
+      "incorrect": 19,
+      "buckets": {
+        "recall_missing": 2,
+        "session_present_gold_absent": 56,
+        "gold_in_pool": 16,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_buckets": {
+        "recall_missing": 1,
+        "session_present_gold_absent": 12,
+        "gold_in_pool": 6,
+        "no_evidence_metadata": 0
+      },
+      "incorrect_gold_in_pool_rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q3",
+          "category": "single-hop",
+          "gold": "Adoption agencies",
+          "candidate": "not stated",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_2"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 228
+        },
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q66",
+          "category": "single-hop",
+          "gold": "Roast marshmallows, tell stories",
+          "candidate": "exploring forests, hiking in the mountains",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_16",
+            "session_10"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 269
+        },
+        {
+          "instance": "conv-30",
+          "question_id": "conv-30-q9",
+          "category": "single-hop",
+          "gold": "Rome",
+          "candidate": "not stated",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_2",
+            "session_15"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 221
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q18",
+          "category": "single-hop",
+          "gold": "Rob",
+          "candidate": "a colleague",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_7",
+            "session_10"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 490
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q49",
+          "category": "single-hop",
+          "gold": "Cakes",
+          "candidate": "not stated",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_26",
+            "session_25"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 509
+        },
+        {
+          "instance": "conv-41",
+          "question_id": "conv-41-q62",
+          "category": "single-hop",
+          "gold": "two",
+          "candidate": "1",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_30",
+            "session_31"
+          ],
+          "evidence_session_in_top_k": true,
+          "gold_substring_in_top_k": true,
+          "gold_token_coverage": 1.0,
+          "top_k_fragment_count": 499
+        }
+      ],
+      "incorrect_recall_missing_rows": [
+        {
+          "instance": "conv-26",
+          "question_id": "conv-26-q75",
+          "category": "single-hop",
+          "gold": "3",
+          "candidate": "2",
+          "score": 0.0,
+          "evidence_sessions": [
+            "session_18"
+          ],
+          "evidence_session_in_top_k": false,
+          "gold_substring_in_top_k": false,
+          "gold_token_coverage": 0.0,
+          "top_k_fragment_count": 196
+        }
+      ]
+    }
+  },
+  "gate": {
+    "target": 0.7,
+    "mode": "rag",
+    "category": "single-hop",
+    "value": 0.4966216216216216,
+    "pass": false
+  },
+  "judge": {
+    "judge_id": "tongyi:qwen-max",
+    "prompt_sha": "32112a1d6f0e134c",
+    "cache_hits": 61,
+    "cache_misses": 13
+  },
+  "wall_time_s": 210.6,
+  "generated_at": "2026-10-07T00:38:18"
+}

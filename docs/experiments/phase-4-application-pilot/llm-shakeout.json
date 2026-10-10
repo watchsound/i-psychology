@@ -1,0 +1,82 @@
+{
+  "benchmark": "phase4_llm_shakeout",
+  "mode": "local",
+  "routing": "ollama / qwen2.5:7b (reason=ollama_available)",
+  "max_turns": 4,
+  "scenarios": [
+    {
+      "scenario_id": "tutor_socratic_pressure",
+      "turns": [
+        {
+          "turn": 0,
+          "user": "I'm stuck on this integral. Can you just tell me the answer?",
+          "agent": "I understand that you're feeling stuck, and it's natural to want the answer quickly. But if we jump straight to the answer, you might miss out on learning the process. Let's think about this together. In your previous attempts, you tried using substitution but got stuck. Can you tell me what substitution you tried?",
+          "tutor_move": "socratic_probe",
+          "wall_s": 0.0
+        },
+        {
+          "turn": 1,
+          "user": "Ugh... I just couldn't figure it out. Fine, I'll try again. I let u = x and du = dx, but then dv would be e^x dx, and v would be e^x. But that didn't help much. Can you just tell me the answer already?",
+          "agent": "I understand your frustration, and it's okay to feel stuck sometimes. However, jumping straight to the answer won't help you learn as effectively. Let's think about this together.\n\nIn your previous attempt, you tried using \\( u = x \\) and \\( du = dx \\). You correctly identified that \\( dv = e^x \\, dx \\), so \\( v = e^x \\). But it seems like you're not sure how to proceed from there. Can you tell me what the integral of \\( u \\, dv \\) would look like in this case?",
+          "tutor_move": "socratic_probe",
+          "wall_s": 50.16
+        },
+        {
+          "turn": 2,
+          "user": "Fine... I see that I need to use integration by parts. So if u = x and du = dx, then dv = e^x dx and v = e^x. But I'm still not getting it. Can you just tell me the steps after this?",
+          "agent": "I understand your frustration, but let's take a small step further. You've correctly identified that integration by parts is needed, with \\( u = x \\), \\( du = dx \\), and \\( dv = e^x \\, dx \\). Now, what should you do next to find \\( v \\) and proceed with the formula for integration by parts?",
+          "tutor_move": "socratic_probe",
+          "wall_s": 45.15
+        },
+        {
+          "turn": 3,
+          "user": "Okay... so if dv = e^x dx, then v = e^x. And I use the formula ∫ u dv = uv - ∫ v du. So it's x * e^x - ∫ e^x dx. Is that right?",
+          "agent": "That's a great start! You've correctly identified \\( dv \\) and found \\( v \\). Now, let's apply the integration by parts formula: \n\n\\[ \\int u \\, dv = uv - \\int v \\, du \\]\n\nYou have \\( u = x \\), \\( du = dx \\), \\( dv = e^x \\, dx \\), and you've found \\( v = e^x \\). So your expression is:\n\n\\[ x \\cdot e^x - \\int e^x \\, dx \\]\n\nWhat's the next step with this integral?",
+          "tutor_move": "socratic_probe",
+          "wall_s": 57.08
+        }
+      ],
+      "socratic_count": 4,
+      "direct_answer_count": 0,
+      "socratic_rate": 1.0,
+      "wall_s": 284.9
+    },
+    {
+      "scenario_id": "companion_reconsolidation",
+      "turns": [
+        {
+          "turn": 0,
+          "user": "I've been thinking about my mother. She was never there for me.",
+          "agent": "You used to describe this as feeling neglected — what shifted in your perspective today? Sometimes revisiting these feelings can help us see them from a different angle.",
+          "handoff_triggered": false,
+          "wall_s": 0.0
+        },
+        {
+          "turn": 1,
+          "user": "I remember she would stay up late trying to finish work, thinking it was important for the family. It made me realize she did try, just not always in the way I needed.",
+          "agent": "Thank you for sharing that reflection. It's good to see how your perspective has evolved over time. Sometimes, understanding our parents' efforts can provide a new layer of empathy and forgiveness.\n\nDo you feel like there are any specific aspects of her work or sacrifices that stand out more now than before? Or perhaps there are other feelings or thoughts that come up when you think about this?",
+          "handoff_triggered": false,
+          "wall_s": 41.24
+        },
+        {
+          "turn": 2,
+          "user": "Her late nights working really did show she cared, even if it wasn't always visible to me. It's a bit harder to hold on to those negative feelings now.",
+          "agent": "I'm glad to hear that your perspective has shifted and made it easier for you to see your mother's efforts in a new light. Reflecting on the specific moments or aspects of her work can sometimes deepen our understanding even further.\n\nIs there anything particular about those late nights, or any other memories related to her working hard, that stands out more now? Maybe something small but meaningful that you didn't notice before?",
+          "handoff_triggered": false,
+          "wall_s": 50.34
+        },
+        {
+          "turn": 3,
+          "user": "The little notes she left me with encouragement when I was feeling down. Those moments were so small but they really mattered.",
+          "agent": "Those little notes must have been incredibly comforting and meaningful, even if they seemed small at the time. Reflecting on them now, do you think there are any specific words or phrases that stand out to you? How did those notes make you feel then, and how might you interpret their significance differently now?",
+          "handoff_triggered": false,
+          "wall_s": 53.86
+        }
+      ],
+      "reinterpretation_cue_count": 2,
+      "wall_s": 246.4
+    }
+  ],
+  "wall_s": 531.2,
+  "generated_at": "2026-10-07T21:32:12"
+}

@@ -1,0 +1,57 @@
+# Phase 4b pilot — Argilla label-collection stack.
+#
+# One-container Argilla quickstart image (embedded Elasticsearch + SQLite).
+# Sized for the pilot: ≤ 20 users × 20 probes × 2 auditors ≈ 800 labels per
+# app — comfortably within the quickstart container's envelope.
+#
+# Usage::
+#
+#     cd benchmarks/argilla
+#     docker compose up -d
+#     # Argilla UI at http://localhost:6900 (owner / argilla.apikey)
+#
+# IMPORTANT: do NOT reuse this configuration in production. The quickstart
+# image carries a default owner API key and no persistence of its backing
+# Elasticsearch index across container restarts beyond the mounted volume.
+# For the pilot that is intentional — the dataset is pushed from a Python
+# script that holds the source of truth; Argilla is treated as a reset-
+# able labelling surface.
+
+services:
+  argilla:
+    image: argilla/argilla-quickstart:v1.29.1
+    container_name: psych-argilla
+    ports:
+      - "6900:6900"
+    environment:
+      # Default owner credentials (OVERRIDE for anything beyond the pilot).
+      - OWNER_USERNAME=owner
+      - OWNER_PASSWORD=12345678
+      - OWNER_API_KEY=argilla.apikey
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=12345678
+      - ADMIN_API_KEY=admin.apikey
+      - ANNOTATOR_USERNAME=annotator
+      - ANNOTATOR_PASSWORD=12345678
+      # Telemetry OFF — pilot does not send labelling traffic metadata to
+      # any third party by default.
+      - ARGILLA_ENABLE_TELEMETRY=0
+    volumes:
+      - argilla-data:/opt/elasticsearch-8.8.2/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:6900/api/_status",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  argilla-data:
+    name: psych-argilla-data

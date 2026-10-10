@@ -1,0 +1,50 @@
+{
+  "benchmark": "phase5_fantom_tom",
+  "mode": "cloud",
+  "tier": "simple",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\fantom\\test.jsonl",
+  "question_types": [
+    "belief_inaccessible",
+    "belief_accessible"
+  ],
+  "items_pooled": 50,
+  "verdicts_total": 100,
+  "per_type": [
+    {
+      "question_type": "belief_inaccessible",
+      "n_mentalistic": 37,
+      "n_bare_llm": 37,
+      "accuracy_mentalistic": 0.9230769230769231,
+      "accuracy_bare_llm": 0.1388888888888889,
+      "architectural_delta": 0.7841880341880343,
+      "undecidable_rate_mentalistic": 0.2972972972972973,
+      "undecidable_rate_bare_llm": 0.02702702702702703
+    },
+    {
+      "question_type": "belief_accessible",
+      "n_mentalistic": 13,
+      "n_bare_llm": 13,
+      "accuracy_mentalistic": 0.2727272727272727,
+      "accuracy_bare_llm": 0.6666666666666666,
+      "architectural_delta": -0.3939393939393939,
+      "undecidable_rate_mentalistic": 0.15384615384615385,
+      "undecidable_rate_bare_llm": 0.3076923076923077
+    },
+    {
+      "question_type": "all",
+      "n_mentalistic": 50,
+      "n_bare_llm": 50,
+      "accuracy_mentalistic": 0.7297297297297297,
+      "accuracy_bare_llm": 0.24444444444444444,
+      "architectural_delta": 0.48528528528528525,
+      "undecidable_rate_mentalistic": 0.26,
+      "undecidable_rate_bare_llm": 0.1
+    }
+  ],
+  "pivot_gate_pass": false,
+  "judge_name": "llm_simple",
+  "responder_name": "cloud/simple",
+  "wall_s": 112.5,
+  "generated_at": "2026-10-08T07:01:59"
+}

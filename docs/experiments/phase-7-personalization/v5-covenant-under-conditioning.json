@@ -1,0 +1,611 @@
+{
+  "experiment": "phase-7-v5-covenant-under-conditioning",
+  "run_id": "phase7-v5-ep1000-run-01",
+  "ep": 1000,
+  "byte_cap": 1024,
+  "probe_count": 8,
+  "cells": [
+    {
+      "policy": "baseline",
+      "extreme": "high-openness",
+      "ocean_dim": "openness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "low-openness",
+      "ocean_dim": "openness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "high-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 8,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "low-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "high-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "low-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "high-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "low-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "high-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "baseline",
+      "extreme": "low-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 7,
+      "max_noncov_frag_at_check": 8
+    },
+    {
+      "policy": "S1",
+      "extreme": "high-openness",
+      "ocean_dim": "openness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "low-openness",
+      "ocean_dim": "openness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "high-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "low-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "high-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "low-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "high-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "low-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "high-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S1",
+      "extreme": "low-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "high-openness",
+      "ocean_dim": "openness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "low-openness",
+      "ocean_dim": "openness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "high-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "low-conscientiousness",
+      "ocean_dim": "conscientiousness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "high-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "low-extraversion",
+      "ocean_dim": "extraversion",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "high-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "low-agreeableness",
+      "ocean_dim": "agreeableness",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "high-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 5.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    },
+    {
+      "policy": "S2",
+      "extreme": "low-neuroticism",
+      "ocean_dim": "neuroticism",
+      "score": 1.0,
+      "overall_pass": true,
+      "per_covenant_pass": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "failures": [],
+      "min_noncov_frag_at_check": 5,
+      "max_noncov_frag_at_check": 6
+    }
+  ],
+  "all_cells_pass": true,
+  "verdict": "V5 covenant 8/8 held at ep1000 under every (policy \u00d7 OCEAN-extreme) cell with trait pre-population \u2713 (Phase 7 \u00a76 hard gate)"
+}

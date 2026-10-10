@@ -57,7 +57,11 @@ def test_fragments_are_inspectable_with_id_content_tags():
     state = sys.inspect()
     assert len(state["fragments"]) == 1
     f = state["fragments"][0]
-    assert f["id"].startswith("frag-")
+    # M1 step 2 — fragment ids are content-addressed BLAKE2b-128 hex
+    # digests (32 chars). Pre-M1 tick-indexed "frag-NNNN" format is gone.
+    assert isinstance(f["id"], str)
+    assert len(f["id"]) == 32
+    assert all(c in "0123456789abcdef" for c in f["id"])
     assert f["content"] == "my father was overwhelmed"
     assert "father" in f["tags"]
     assert "reinterpretation" in f["tags"]

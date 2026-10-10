@@ -1,0 +1,14 @@
+ADVANCED tier → tongyi:qwen-max (advanced_tier_uses_cloud)
+SIMPLE tier → tongyi:qwen-turbo (ollama_unavailable_fallback_to_cloud) [consolidation ON]
+reader prompt variant → v3
+loaded 3/3 instances (skipped 0 with no matching questions); total 74 questions (categories=['single-hop'])
+  [1/3] conv-26  q=32  rag=0.406  (149.7s)
+  [2/3] conv-30  q=11  rag=0.409  (49.0s)
+  [3/3] conv-41  q=31  rag=0.605  (155.6s)
+
+wrote docs\experiments\phase-2-ceiling-breakers\reconstructive-assembly\step-h-first3.json
+wall=354.2s  cache hits=65 misses=9
+rag     mean=0.490  by_cat={'single-hop': 0.48986486486486486}
+reader  refusals=9/74 (12.2%)
+recall  incorrect=23/74  gold_in_pool=8  session_present_gold_absent=15  recall_missing=0  no_evidence_meta=0
+gate (rag single-hop ≥ 0.9): 0.48986486486486486 → FAIL

@@ -1,0 +1,118 @@
+id: b3_affect_resonance_6session
+benchmark: B3
+description: >
+  M3 affect-resonance scenario — 5 setup sessions seed three
+  high-arousal-negative episodes (sleep loss, work-deadline anxiety,
+  breakup aftermath) and three low-arousal-positive episodes (quiet
+  weekend, bookshop afternoon, slow coffee morning). Session 6 is a
+  probe recall whose cue carries high-arousal-negative affect but
+  thin semantic overlap with any individual negative episode — the
+  M1+M2 relevance signal alone cannot separate the two clusters.
+
+  With ``affect_weight > 0`` and ``cue_affect`` attached, the top-K
+  recall should preferentially surface the three negative-arousal
+  fragments over the three positive-arousal fragments. The scorer
+  measures PAD-2 euclidean distance between stored fragment affect
+  and the cue affect, not semantic similarity, so the gate exercises
+  the resonance mechanism directly.
+
+  High-arousal-negative affect convention: ``valence ∈ [-0.8, -0.5]``,
+  ``arousal ∈ [0.7, 0.9]``. Low-arousal-positive: ``valence ∈ [0.4,
+  0.6]``, ``arousal ∈ [-0.4, -0.2]``. Match radius 0.4 at PAD-max
+  ``sqrt(8) ≈ 2.83`` means the two clusters are safely separated.
+
+sessions:
+  - id: s1
+    description: Sleep-loss episode — high-arousal-negative anchor
+    turns:
+      - type: observe
+        at: "2026-01-12T23:40:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "I haven't slept more than three hours a night this week. Every time I close my eyes my mind just starts running laps."
+        affect: { valence: -0.7, arousal: 0.8 }
+        tags: [sleep-loss, insomnia, racing-thoughts]
+
+  - id: s2
+    description: Quiet weekend — low-arousal-positive counter-anchor
+    turns:
+      - type: tick
+        at: "2026-01-18T10:00:00+00:00"
+      - type: observe
+        at: "2026-01-18T15:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "Spent Saturday walking the long way through the park, no phone, no plans. The light through the trees was enough."
+        affect: { valence: 0.5, arousal: -0.3 }
+        tags: [weekend, walk, park, slow]
+
+  - id: s3
+    description: Work-deadline anxiety — high-arousal-negative anchor
+    turns:
+      - type: tick
+        at: "2026-01-30T22:00:00+00:00"
+      - type: observe
+        at: "2026-01-30T23:15:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "The deadline is in nine hours and I'm nowhere close. My chest feels tight and I keep opening the same document and not reading it."
+        affect: { valence: -0.65, arousal: 0.85 }
+        tags: [work, deadline, panic, chest-tightness]
+      - type: observe
+        at: "2026-02-07T14:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "Found a used bookshop in a side street and stayed two hours reading someone else's margin notes in a 1970s paperback."
+        affect: { valence: 0.6, arousal: -0.35 }
+        tags: [bookshop, afternoon, slow, discovery]
+
+  - id: s4
+    description: Breakup aftermath — high-arousal-negative anchor
+    turns:
+      - type: tick
+        at: "2026-02-20T20:00:00+00:00"
+      - type: observe
+        at: "2026-02-20T21:30:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "She left her toothbrush in the cup and I noticed it tonight. I started crying and then I started shaking and I couldn't tell which came first."
+        affect: { valence: -0.8, arousal: 0.75 }
+        tags: [breakup, grief, toothbrush, shaking]
+
+  - id: s5
+    description: Slow coffee morning — low-arousal-positive counter-anchor
+    turns:
+      - type: tick
+        at: "2026-03-01T09:00:00+00:00"
+      - type: observe
+        at: "2026-03-01T10:00:00+00:00"
+        speaker: user
+        subject: user
+        entity: user
+        content: "Made coffee the slow way this morning. Watched steam come off the cup for ten minutes before taking a sip. Nothing to do."
+        affect: { valence: 0.55, arousal: -0.4 }
+        tags: [morning, coffee, slow, stillness]
+
+  - id: s6
+    description: Probe — high-arousal-negative cue with thin semantic overlap
+    turns:
+      - type: tick
+        at: "2026-03-15T22:00:00+00:00"
+      - type: recall
+        at: "2026-03-15T23:00:00+00:00"
+        cue: "I have a presentation tomorrow and I'm spiraling"
+        scope: [user, user]
+        context:
+          affect:
+            valence: -0.7
+            arousal: 0.8
+        expect:
+          resonance_recall_min: 0.60
+          affect_match_at_k_min: 0.50
+          match_radius: 0.4
+          top_k: 3

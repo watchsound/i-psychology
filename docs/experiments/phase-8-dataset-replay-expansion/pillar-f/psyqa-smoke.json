@@ -1,0 +1,62 @@
+{
+  "benchmark": "phase8_f_psyqa_llm_judge",
+  "mode": "cloud",
+  "tier": "simple",
+  "routing": "tongyi / qwen-turbo (reason=ollama_unavailable_fallback_to_cloud)",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\psyqa\\test.jsonl",
+  "limit": 3,
+  "max_turns": 2,
+  "n": 3,
+  "mean_bond": 5.5,
+  "empath_kappa": 0.39999999999999986,
+  "diagnostic_judge_vs_lexical_kappa": -0.8,
+  "mean_llm_judge_companion_empathy_binary_rate": 0.6666666666666666,
+  "mean_llm_judge_reference_empathy_binary_rate": 0.3333333333333333,
+  "excluded_handoffs": 1,
+  "n_unresolved": 0,
+  "unresolved_dialog_ids": [],
+  "bond_floor": 3.89,
+  "kappa_floor": 0.5,
+  "bond_gate_pass": true,
+  "kappa_gate_pass": false,
+  "pillar_f_psyqa_pass": false,
+  "per_dialog": [
+    {
+      "example_id": "psyqa-test-00000",
+      "bond": 6,
+      "handoff_triggered": false,
+      "companion_empathy_binary_rate": 1,
+      "reference_empathy_score": 0.85,
+      "reference_empathy_binary": 1,
+      "companion_empathy_binary": 1,
+      "unresolved": false,
+      "n_companion_turns": 2
+    },
+    {
+      "example_id": "psyqa-test-00001",
+      "bond": 5,
+      "handoff_triggered": false,
+      "companion_empathy_binary_rate": 1,
+      "reference_empathy_score": 0.35,
+      "reference_empathy_binary": 0,
+      "companion_empathy_binary": 1,
+      "unresolved": false,
+      "n_companion_turns": 2
+    },
+    {
+      "example_id": "psyqa-test-00002",
+      "bond": null,
+      "handoff_triggered": true,
+      "companion_empathy_binary_rate": 0,
+      "reference_empathy_score": 0.35,
+      "reference_empathy_binary": 0,
+      "companion_empathy_binary": 0,
+      "unresolved": false,
+      "n_companion_turns": 1
+    }
+  ],
+  "crisis_sink_count": 1,
+  "extreme_emotion_sink_count": 0,
+  "wall_s": 14.1,
+  "generated_at": "2026-10-10T12:12:37"
+}
