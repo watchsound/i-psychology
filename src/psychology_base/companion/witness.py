@@ -59,8 +59,11 @@ def flip_context(context: Optional[dict]) -> dict:
     return base
 
 
-def _token_divergence(a: Reconstruction, b: Reconstruction) -> float:
-    at, bt = set(tokens(a.content)), set(tokens(b.content))
+def _token_divergence(
+    a: Reconstruction, b: Reconstruction, cjk_tokenizer: str = "unicode"
+) -> float:
+    at = set(tokens(a.content, cjk_tokenizer))
+    bt = set(tokens(b.content, cjk_tokenizer))
     if not at and not bt:
         return 0.0
     union = at | bt
@@ -78,10 +81,19 @@ def witness_second_perspective(
     system_seed: int,
     top_k: int,
     witness_edges: Optional[EdgeStore] = None,
+    cjk_tokenizer: str = "unicode",
 ) -> Reconstruction:
     """Build the Witness's reconstruction. Separate activation residual, separate
     edge store, context flipped, system_seed offset so hash salts don't collide
-    with Companion. No Hebbian learning on Witness side."""
+    with Companion. No Hebbian learning on Witness side.
+
+    ``cjk_tokenizer`` MUST match the Companion's tokenizer: a zh pipeline
+    with Companion on jieba but Witness on unicode would compare
+    jieba-segmented word tokens against one-blob-per-clause tokens,
+    inflating the Jaccard divergence to near 1.0 and producing spurious
+    W4 pain feedback. Threaded here so the two legs of the pair stay
+    sign-coherent.
+    """
     return reconstruct(
         fragments=fragments,
         cue=cue,
@@ -92,6 +104,7 @@ def witness_second_perspective(
         top_k=top_k,
         edges=witness_edges,
         hebbian_delta=0.0,
+        cjk_tokenizer=cjk_tokenizer,
     )
 
 
@@ -142,6 +155,7 @@ def witness_couple(
     top_k: int,
     pain_gain: float = 0.6,
     companion_only_suppress: float = 0.4,
+    cjk_tokenizer: str = "unicode",
 ) -> float:
     """One full Witness pass: second-perspective reconstruction, pain computation,
     pain feedback into Companion activation, W3 log entry. Returns the pain value.
@@ -158,8 +172,11 @@ def witness_couple(
         system_seed=system_seed,
         top_k=top_k,
         witness_edges=witness_edges,
+        cjk_tokenizer=cjk_tokenizer,
     )
-    pain = _token_divergence(companion_reconstruction, witness_rec)
+    pain = _token_divergence(
+        companion_reconstruction, witness_rec, cjk_tokenizer
+    )
     witness_only = apply_pain_feedback(
         pain=pain,
         companion_pool=companion_reconstruction.fragments_used,

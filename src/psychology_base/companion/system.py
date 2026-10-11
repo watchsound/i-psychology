@@ -978,6 +978,7 @@ class CompanionSystem:
                 top_k=self.top_k,
                 pain_gain=self.pain_gain,
                 companion_only_suppress=self.companion_only_suppress,
+                cjk_tokenizer=self.cjk_tokenizer,
             )
         return Recall(
             cue=cue,

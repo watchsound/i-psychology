@@ -38,7 +38,9 @@ from dataclasses import dataclass, field
 from typing import Iterable, Optional
 
 
-_ENTITY_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'\-]*")
+_ENTITY_TOKEN_RE = re.compile(
+    r"[A-Za-z0-9\u4e00-\u9fff][A-Za-z0-9'\-\u4e00-\u9fff]*"
+)
 
 
 def _normalize(entity: str) -> str:
@@ -52,7 +54,14 @@ def _normalize(entity: str) -> str:
 
 def _tokens(text: str) -> list[str]:
     """Same shape as system._bm25_tokenize but kept local so the module
-    is standalone. Lowercased alphanumeric runs."""
+    is standalone. Lowercased alphanumeric runs; CJK letter-run included
+    so Chinese-language entities (e.g. "焦虑", "用户") tokenise at all.
+    Without the CJK range, the ASCII-only pattern silently dropped every
+    non-Latin character so a Chinese consolidation pipeline could never
+    reach any entity_graph node — the mono-token letter-run that reaches
+    reconstruction.py by default is correct here too, and jieba-level
+    word segmentation is deferred until fact entities become long enough
+    to benefit (today's extraction emits 2-4 char CJK entities already)."""
     return [m.group(0).lower() for m in _ENTITY_TOKEN_RE.finditer(text)]
 
 
