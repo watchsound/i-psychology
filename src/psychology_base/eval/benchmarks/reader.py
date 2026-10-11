@@ -29,6 +29,7 @@ from dataclasses import dataclass
 from typing import Protocol, Sequence, runtime_checkable
 
 from psychology_base.eval.adapters import Fragment
+from psychology_base.i18n.prompts import reader_language_directive
 from psychology_base.llm.router import LLMRouter
 from psychology_base.llm.types import ChatMessage, TaskTier
 
@@ -270,10 +271,18 @@ class LLMReader:
         question_type: str = "",
     ) -> str:
         frag_block = _format_fragments(fragments)
+        # reader_language_directive returns "" for English / unknown, so the
+        # pre-i18n LoCoMo + LongMemEval + EpBench user content is byte-
+        # identical. For a non-English fragment block it appends a
+        # LANGUAGE: ... directive that pins the 'not stated' sentinel in
+        # English (locomo._normalize matches the literal). Routed through
+        # the user content, not the system prompt, so the locked prompt
+        # variants' sha identity is unaffected.
         user = (
             f"Question: {question}\n\n"
             f"Memory system reconstruction:\n{recall_content or '(empty reconstruction)'}\n\n"
-            f"Memory fragments surfaced by the system:\n{frag_block}\n\n"
+            f"Memory fragments surfaced by the system:\n{frag_block}"
+            f"{reader_language_directive(frag_block)}\n\n"
             f"Short-form answer:"
         )
         completion = self.router.chat(

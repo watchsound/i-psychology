@@ -28,6 +28,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Protocol, runtime_checkable
 
+from psychology_base.i18n.prompts import judge_language_directive
+
 
 DEFAULT_CACHE_DIR = Path(
     os.environ.get(
@@ -197,12 +199,24 @@ class LLMJudge:
     ) -> Judgment:
         from psychology_base.llm.types import ChatMessage, TaskTier
 
+        # judge_language_directive returns "" for English / unknown, so the
+        # pre-i18n user content for LongMemEval / LoCoMo / EpBench is
+        # byte-identical and prior cached judgments stay valid. For a
+        # non-English gold+candidate pair it appends a LANGUAGE: ...
+        # directive that pins the JSON envelope + verdict labels in
+        # English (parser requirement at _parse_judge_response).
+        # Detected on gold + candidate because either may carry the
+        # locale signal (gold is the ground-truth text; candidate echoes
+        # the reader's output). Routed through user content, not system,
+        # so _judge_prompt_sha is unaffected.
+        lang_directive = judge_language_directive(f"{gold}\n{candidate}")
         user = (
             f"Benchmark: {benchmark}\n"
             f"Question type: {question_type or 'unspecified'}\n"
             f"Question: {question}\n"
             f"Gold answer: {gold}\n"
-            f"Candidate answer: {candidate}\n\n"
+            f"Candidate answer: {candidate}"
+            f"{lang_directive}\n\n"
             "Grade the candidate against the gold using the rubric. "
             "Respond with the JSON object only."
         )
