@@ -41,6 +41,13 @@ class OllamaProvider:
     # backward compatibility, but chat LLMs produce non-retrieval-tuned
     # vectors — set this to bge-m3 / mxbai-embed-large / bge-small-zh.
     embedding_model: Optional[str] = None
+    # Multilingual slot — Phase 9+ i18n reserved knob. ``LLMRouter.embed``
+    # routes here instead of ``embedding_model`` when
+    # ``i18n.embedder_multilingual`` is true in the top-level config.
+    # Default None preserves single-slot behavior for pre-i18n configs.
+    # Set to ``bge-m3`` (1024-dim, 100+ languages, retrieval-tuned) for
+    # Chinese-first application deployments.
+    embedding_model_multilingual: Optional[str] = None
     # Populated by ``probe`` and consulted by the router before dispatch
     # so a cold cache doesn't retry per-call when Ollama is down.
     _server_up: Optional[bool] = field(default=None, repr=False)

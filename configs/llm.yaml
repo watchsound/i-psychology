@@ -57,6 +57,13 @@ providers:
     # Chinese-leaning alternative the Phase 1.5 plan originally
     # proposed. Pull one before enabling consolidation.
     embedding_model: mxbai-embed-large
+    # Multilingual slot. Consulted only when ``i18n.embedder_multilingual``
+    # (below) is true. bge-m3 is BAAI's retrieval-tuned multilingual
+    # embedder — 1024-dim, 100+ languages, SOTA on MIRACL/MKQA for
+    # Chinese + mixed-script corpora. Pull with ``ollama pull bge-m3``
+    # before flipping ``i18n.embedder_multilingual`` to true. Default
+    # English-only deployments keep ``mxbai-embed-large`` unchanged.
+    embedding_model_multilingual: bge-m3
     # Local 7B generation on CPU/mid-GPU can take minutes for 500-2000
     # output tokens (Phase 1.5 fact extraction on long sessions). Default
     # 120s is tuned for cloud; raise it for local runs.
@@ -124,8 +131,14 @@ i18n:
   # imported until the user flips it on, so no new dependency ships
   # unused.
   tokenizer: unicode
-  # When true, the LLM router will prefer a multilingual embedder
-  # (bge-m3 / multilingual-e5-large) over the English-leaning default
-  # (mxbai-embed-large / text-embedding-v3). Not yet wired to the
-  # router — set only when the i18n-aware embedding route lands.
+  # When true, ``LLMRouter.embed`` prefers each provider's
+  # ``embedding_model_multilingual`` slot over its default
+  # ``embedding_model`` — but only when the provider defines one.
+  # Providers whose default embedder is already multilingual-strong
+  # (DashScope ``text-embedding-v3``) leave the multilingual slot
+  # null, so flipping this flag has no effect on them. For local
+  # Ollama the default ``mxbai-embed-large`` is English-leaning; the
+  # multilingual slot is ``bge-m3`` (1024-dim, 100+ languages). Live
+  # knob — read at every ``LLMRouter.embed`` call. Default false
+  # preserves the pre-i18n byte-identical English pipeline.
   embedder_multilingual: false

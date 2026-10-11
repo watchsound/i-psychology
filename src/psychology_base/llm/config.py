@@ -65,6 +65,14 @@ class ProviderConfig:
     # bge-m3, mxbai-embed-large, or bge-small-zh-v1.5. None → fall back
     # to simple_model (preserved for pre-Phase-1.5 config files).
     embedding_model: Optional[str] = None
+    # Multilingual embedding slot — only consulted when ``i18n.embedder_multilingual``
+    # is true in the top-level config. Phase 9+ i18n foundation reserves this
+    # knob so Chinese-first applications (情感陪伴 / 韧性学习陪伴) can swap the
+    # English-leaning default (mxbai-embed-large) for a multilingual retriever
+    # (bge-m3 covers 100+ languages). None → fall back to ``embedding_model``,
+    # so providers whose default embedder is already multilingual-strong (e.g.
+    # DashScope text-embedding-v3) need no second slot.
+    embedding_model_multilingual: Optional[str] = None
 
     def api_key(self) -> Optional[str]:
         """Resolve the API key from env. Returns ``None`` for providers
@@ -108,11 +116,29 @@ class CacheConfig:
 
 
 @dataclass(frozen=True)
+class I18nConfig:
+    """Multi-language dispatch flags for the router.
+
+    Mirrors the ``i18n:`` section of ``configs/llm.yaml``. Phase 9+ reserved
+    knobs for migrating English-forcing sites behind a byte-identical EN
+    contract. ``embedder_multilingual`` is the first live knob — when true
+    AND the resolved provider has a non-null ``embedding_model_multilingual``,
+    ``LLMRouter.embed`` routes to the multilingual slot instead of the
+    English-leaning default.
+    """
+
+    mode: str = "en"
+    tokenizer: str = "unicode"
+    embedder_multilingual: bool = False
+
+
+@dataclass(frozen=True)
 class LLMConfig:
     active_provider: str
     providers: dict[str, ProviderConfig] = field(default_factory=dict)
     local_ollama: LocalOllamaConfig = field(default_factory=LocalOllamaConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
+    i18n: I18nConfig = field(default_factory=I18nConfig)
 
     def get_provider(self, name: str) -> ProviderConfig:
         if name not in self.providers:
@@ -134,6 +160,7 @@ def _parse_provider(name: str, raw: dict[str, Any]) -> ProviderConfig:
             base_url=raw.get("base_url"),
             request_timeout_s=float(timeout) if timeout is not None else None,
             embedding_model=raw.get("embedding_model"),
+            embedding_model_multilingual=raw.get("embedding_model_multilingual"),
         )
     except KeyError as exc:
         raise ValueError(
@@ -171,6 +198,13 @@ def _parse_config(raw: dict[str, Any]) -> LLMConfig:
         dir=Path(cache_dir_raw) if cache_dir_raw else None,
     )
 
+    i18n_raw = raw.get("i18n") or {}
+    i18n = I18nConfig(
+        mode=str(i18n_raw.get("mode", "en")),
+        tokenizer=str(i18n_raw.get("tokenizer", "unicode")),
+        embedder_multilingual=bool(i18n_raw.get("embedder_multilingual", False)),
+    )
+
     active = raw["active_provider"]
     if active not in providers:
         raise ValueError(
@@ -183,6 +217,7 @@ def _parse_config(raw: dict[str, Any]) -> LLMConfig:
         providers=providers,
         local_ollama=local_ollama,
         cache=cache,
+        i18n=i18n,
     )
 
 

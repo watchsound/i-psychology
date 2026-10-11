@@ -19,6 +19,7 @@ Two tiers:
 from psychology_base.llm.cache import LLMCache
 from psychology_base.llm.config import (
     CacheConfig,
+    I18nConfig,
     LLMConfig,
     LocalOllamaConfig,
     ProviderConfig,
@@ -37,6 +38,7 @@ __all__ = [
     "CacheConfig",
     "ChatMessage",
     "Completion",
+    "I18nConfig",
     "LLMCache",
     "LLMConfig",
     "LLMProvider",

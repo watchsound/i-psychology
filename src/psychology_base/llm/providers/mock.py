@@ -27,6 +27,8 @@ class MockProvider:
     name: str = "mock"
     simple_model: str = "mock-simple"
     advanced_model: str = "mock-advanced"
+    embedding_model: Optional[str] = None
+    embedding_model_multilingual: Optional[str] = None
     simple_embed_dim: int = 8
     responder: Optional[Responder] = None
     calls: list[tuple[list[ChatMessage], TaskTier]] = field(default_factory=list)
@@ -59,13 +61,20 @@ class MockProvider:
             finish_reason="stop",
         )
 
-    def embed(self, text: str) -> list[float]:
+    def embed(self, text: str, *, model: Optional[str] = None) -> list[float]:
         self.embed_calls.append(text)
         # Deterministic cheap pseudo-embedding keyed on text hash — not a
         # real semantic vector, just useful for cache + batching tests.
+        # The ``model`` kwarg exists for interface uniformity across
+        # providers (OllamaProvider / AlibabaTongyiProvider also accept it)
+        # so ``LLMRouter.embed`` can pass an override. For the Mock we
+        # fold ``model`` into the hash so segregated cache keys produce
+        # distinct vectors — lets the test suite verify multilingual-slot
+        # dispatch end-to-end.
         import hashlib
 
-        digest = hashlib.sha256(text.encode("utf-8")).digest()
+        payload = text if model is None else f"{model}\x00{text}"
+        digest = hashlib.sha256(payload.encode("utf-8")).digest()
         return [b / 255.0 for b in digest[: self.simple_embed_dim]]
 
     @staticmethod

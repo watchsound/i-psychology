@@ -54,6 +54,12 @@ class AlibabaTongyiProvider:
     # v3 showed mxbai inverted "origin Sweden" vs "experience transition"
     # — the semantic-nearest-neighbor miss that drove the swap).
     embedding_model: str = "text-embedding-v3"
+    # Multilingual slot — Phase 9+ i18n reserved knob. DashScope v3 is
+    # already strong on Chinese + English, so the default stays None and
+    # ``LLMRouter.embed`` keeps using ``embedding_model`` for both EN and
+    # ZH on this provider. Only set to a different model if a future
+    # DashScope embedder outperforms v3 on non-EN specifically.
+    embedding_model_multilingual: Optional[str] = None
     embedding_url: str = DASHSCOPE_EMBED_URL
     # Cross-encoder reranker. Takes (query, [documents]) and returns ranked
     # [{index, relevance_score}]. Phase 1.5-prime P3 uses this to re-score
@@ -156,7 +162,7 @@ class AlibabaTongyiProvider:
             metadata={"request_id": data.get("request_id", "")},
         )
 
-    def embed(self, text: str) -> list[float]:
+    def embed(self, text: str, *, model: Optional[str] = None) -> list[float]:
         """Return a 1024-dim embedding via DashScope text-embedding-v3.
 
         Shape:
@@ -166,14 +172,20 @@ class AlibabaTongyiProvider:
             "parameters": {} }
         Response: output.embeddings[0].embedding is the vector.
 
+        Model precedence: explicit ``model`` kwarg > ``self.embedding_model``.
+        The kwarg path lets ``LLMRouter.embed`` swap in the multilingual
+        slot when ``i18n.embedder_multilingual`` is true without mutating
+        provider state.
+
         Single-text per call: the batch surface is handled by
         ``LLMRouter.embed_batch`` running concurrent single calls, so the
         router's SHA-keyed cache stays per-text. If this becomes a
         throughput bottleneck we can switch to native batch here.
         """
         key = self._ensure_key()
+        chosen_model = model or self.embedding_model
         payload = {
-            "model": self.embedding_model,
+            "model": chosen_model,
             "input": {"texts": [text]},
             "parameters": {},
         }

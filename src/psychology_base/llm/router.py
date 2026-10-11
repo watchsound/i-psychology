@@ -75,6 +75,8 @@ def _build_provider(cfg: ProviderConfig) -> LLMProvider:
             kwargs["request_timeout_s"] = cfg.request_timeout_s
         if cfg.embedding_model is not None:
             kwargs["embedding_model"] = cfg.embedding_model
+        if cfg.embedding_model_multilingual is not None:
+            kwargs["embedding_model_multilingual"] = cfg.embedding_model_multilingual
         return OllamaProvider(**kwargs)
     if cfg.name == "openai":
         return OpenAIProvider(
@@ -98,6 +100,8 @@ def _build_provider(cfg: ProviderConfig) -> LLMProvider:
         )
         if cfg.embedding_model is not None:
             kwargs["embedding_model"] = cfg.embedding_model
+        if cfg.embedding_model_multilingual is not None:
+            kwargs["embedding_model_multilingual"] = cfg.embedding_model_multilingual
         # Rerank is Phase 1.5-prime P3 only; defaults set by provider.
         # Env overrides exist because DashScope migrated reranker hosting
         # to maas.aliyuncs.com with WorkspaceId-scoped URLs in 2026, and
@@ -368,10 +372,24 @@ class LLMRouter:
         # fall back to the simple-tier chat model for providers that don't
         # distinguish (e.g. MockProvider in tests). This is the recall-
         # quality lever Phase 1.5 E1 v1 exposed.
-        model_id = (
+        #
+        # Phase 9+ i18n hook: when ``i18n.embedder_multilingual`` is true
+        # AND the resolved provider exposes a non-null
+        # ``embedding_model_multilingual``, prefer that slot. The default
+        # path (flag OFF, slot None) is byte-identical to the pre-i18n
+        # dispatch — ``multilingual`` only overrides when both conditions
+        # hold, so providers whose default embedder is already strongly
+        # multilingual (DashScope text-embedding-v3) need no second slot.
+        default_model = (
             getattr(provider, "embedding_model", None)
             or provider.model_for(TaskTier.SIMPLE)
         )
+        multilingual_slot = getattr(provider, "embedding_model_multilingual", None)
+        if self.config.i18n.embedder_multilingual and multilingual_slot:
+            model_id = multilingual_slot
+        else:
+            model_id = default_model
+
         if self.cache is not None and use_cache:
             key = embedding_cache_key(
                 provider=provider.name,
@@ -382,7 +400,11 @@ class LLMRouter:
             if cached is not None:
                 return cached
 
-        vector = provider.embed(text)
+        # Only pass ``model=`` to providers that accept the kwarg — the
+        # three real providers (Ollama / AlibabaTongyi / Mock) do; keeping
+        # the no-kwarg call for providers that don't would be a wart, so
+        # we standardize all three to accept it in this i18n slice.
+        vector = provider.embed(text, model=model_id)
 
         if self.cache is not None and use_cache:
             self.cache.put_embedding(key, vector, model_id=model_id)
