@@ -37,13 +37,20 @@ from psychology_base.eval.benchmarks.instance import (
     BenchmarkQuestion,
     BenchmarkTurn,
 )
+from psychology_base.i18n import detect_lang
 
 
 # ---------- answer-string parsing ----------
 
 # EpBench formats gold as "item1, item2, and item3" (Oxford comma) or
 # "item1 and item2" for pairs or just "item1" for singletons. We parse all three.
-_AND_SEP = re.compile(r",?\s+and\s+", flags=re.IGNORECASE)
+_AND_SEP_EN = re.compile(r",?\s+and\s+", flags=re.IGNORECASE)
+
+# Chinese conjunction / enumeration separators: "、" (ideographic enumeration
+# comma), "，" (fullwidth comma), "以及" / "及" / "和" (equivalents of "and").
+# Order matters inside the alternation: longer tokens before single-char
+# fallbacks so "以及" is not split by "及".
+_AND_SEP_ZH = re.compile(r"、|，|以及|及|和")
 
 
 def parse_answer_items(answer: str) -> tuple[str, ...]:
@@ -52,6 +59,11 @@ def parse_answer_items(answer: str) -> tuple[str, ...]:
     Normalization is deliberately mild — EpBench's gold strings carry mixed
     case (place names, entity names) and we lower-case + strip to merge
     trivial variants without crushing meaningful tokens.
+
+    i18n dispatch: English/unknown input routes through the Oxford-comma
+    regex (byte-identical to pre-i18n behavior, preserving published
+    EpBench F1 numbers). Chinese input additionally splits on "、/，/以及/
+    及/和" so localized gold strings do not degenerate into one token.
     """
     if not answer:
         return ()
@@ -59,10 +71,17 @@ def parse_answer_items(answer: str) -> tuple[str, ...]:
     s = answer.strip().strip('"').strip("'")
     if not s:
         return ()
-    # Split on "and" first (handles the final conjunction), then commas.
     parts: list[str] = []
-    for chunk in _AND_SEP.split(s):
-        parts.extend(chunk.split(","))
+    if detect_lang(s) == "zh":
+        # Chinese: split on CN conjunctions + enumeration/fullwidth commas,
+        # then still fall through to ASCII comma split for mixed-script lists.
+        for chunk in _AND_SEP_ZH.split(s):
+            parts.extend(chunk.split(","))
+    else:
+        # English/default path: split on "and" first (handles the final
+        # conjunction), then ASCII commas. Byte-identical to pre-i18n.
+        for chunk in _AND_SEP_EN.split(s):
+            parts.extend(chunk.split(","))
     cleaned = tuple(p.strip().lower() for p in parts if p.strip())
     return cleaned
 

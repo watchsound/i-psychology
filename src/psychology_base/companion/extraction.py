@@ -222,6 +222,10 @@ def _relevant_prior_facts(
     the most-recently-updated facts if the entity filter is empty."""
     if not prior_facts:
         return []
+    # i18n-safe: .lower() is a no-op on CJK characters and substring
+    # matching works for whitespace-less scripts, so this loose filter
+    # behaves correctly for Chinese/Japanese/Korean windows without
+    # routing through psychology_base.i18n.tokenize.
     text = " ".join(f.content for f in window).lower()
     entity_match = [f for f in prior_facts if f.entity.lower() in text]
     if entity_match:

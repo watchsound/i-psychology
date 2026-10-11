@@ -7,10 +7,15 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from psychology_base.eval.adapters import MemorySystem, Observation
+from psychology_base.i18n import tokenize
 
 
 def _tokens(text: str) -> set[str]:
-    return set(text.lower().split())
+    # i18n dispatch: English/unknown -> text.split() byte-identical;
+    # non-English scripts -> Unicode letter-run regex so CJK/Thai/etc.
+    # produce non-empty token sets instead of silently returning the
+    # whole string as one "token".
+    return set(tokenize(text.lower()))
 
 
 def _jaccard(a: set[str], b: set[str]) -> float:
@@ -22,7 +27,7 @@ def _jaccard(a: set[str], b: set[str]) -> float:
 
 
 def _cosine_bow(a: str, b: str) -> float:
-    ca, cb = Counter(a.lower().split()), Counter(b.lower().split())
+    ca, cb = Counter(tokenize(a.lower())), Counter(tokenize(b.lower()))
     shared = set(ca) & set(cb)
     dot = sum(ca[t] * cb[t] for t in shared)
     na = sum(v * v for v in ca.values()) ** 0.5

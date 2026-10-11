@@ -87,6 +87,7 @@ from psychology_base.eval.benchmarks.instance import (
     BenchmarkQuestion,
     BenchmarkTurn,
 )
+from psychology_base.i18n import tokenize
 
 
 # ---------- categories ----------
@@ -129,9 +130,16 @@ def _normalize(text: str) -> str:
 
 def token_f1(gold: str, candidate: str) -> float:
     """Token-level F1 after normalization. Returns 1.0 when both normalize
-    to empty, 0.0 when exactly one does."""
-    g = _normalize(gold).split()
-    c = _normalize(candidate).split()
+    to empty, 0.0 when exactly one does.
+
+    i18n dispatch via psychology_base.i18n.tokenize: English/unknown input
+    routes through text.split() (byte-identical to pre-i18n behavior, so
+    the Mem0-commensurable 92.5% single-hop F1 is preserved exactly). CJK
+    and other whitespace-less scripts route through a Unicode letter-run
+    regex so the metric is not silently returning 0 or 1 on non-English
+    gold/candidate pairs."""
+    g = tokenize(_normalize(gold))
+    c = tokenize(_normalize(candidate))
     if not g and not c:
         return 1.0
     if not g or not c:
