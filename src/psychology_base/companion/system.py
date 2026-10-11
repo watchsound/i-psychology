@@ -42,6 +42,7 @@ from psychology_base.eval.adapters import (
     Recall,
     make_fragment,
 )
+from psychology_base.llm.config import LLMConfig
 from psychology_base.llm.router import LLMRouter
 from psychology_base.llm.types import ChatMessage, TaskTier
 
@@ -768,6 +769,31 @@ class CompanionSystem:
             self.companion.store.evicted_callback = aging_policy.on_evict
             self.witness.store.strength_fn = aging_policy.strength
             self.witness.store.evicted_callback = aging_policy.on_evict
+
+    @classmethod
+    def from_llm_config(cls, cfg: LLMConfig, **overrides) -> "CompanionSystem":
+        """Construct a ``CompanionSystem`` with i18n knobs sourced from an
+        ``LLMConfig``.
+
+        The only knob consulted today is ``cfg.i18n.tokenizer`` → mapped to
+        the ``cjk_tokenizer`` kwarg. Explicit ``cjk_tokenizer`` in
+        ``overrides`` wins over the config, so a caller can force the
+        legacy "unicode" path (e.g. an English-forcing benchmark that
+        happens to load the YAML for provider slots) by passing
+        ``cjk_tokenizer="unicode"`` explicitly.
+
+        Factory is deliberately NOT the default construction path —
+        benchmark instance.py, b4/b5, fantom/big5 scorers construct
+        ``CompanionSystem()`` directly to stay English-forcing by design.
+        Only the Chinese-first application entry points
+        (companion_cli / tutor_cli / pam_cli / argilla_pipeline) route
+        through this factory, so flipping ``i18n.tokenizer: jieba`` in
+        the YAML affects the user-facing surfaces without silently
+        disturbing the benchmark reproducibility guarantees.
+        """
+        if "cjk_tokenizer" not in overrides:
+            overrides["cjk_tokenizer"] = cfg.i18n.tokenizer
+        return cls(**overrides)
 
     def observe(self, event: Observation) -> None:
         self.heartbeat.wake()

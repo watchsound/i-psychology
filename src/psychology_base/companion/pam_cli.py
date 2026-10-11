@@ -108,8 +108,17 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "restore":
+        # Phase 9+ i18n: route the fresh system through the factory so
+        # configs/llm.yaml i18n.tokenizer (e.g. "jieba") flows into the
+        # restored system's recall path. Direct CompanionSystem() here
+        # would silently drop the YAML knob.
+        from psychology_base.llm.config import load_config
+
+        cfg = load_config()
         try:
-            system, offenders = restore_system_from_path(args.in_path)
+            system, offenders = restore_system_from_path(
+                args.in_path, system=CompanionSystem.from_llm_config(cfg)
+            )
         except (ValueError, OSError) as exc:
             print(f"restore failed: {exc}", file=sys.stderr)
             return 2

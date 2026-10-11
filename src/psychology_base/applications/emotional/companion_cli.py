@@ -110,12 +110,21 @@ def _resume_or_init_system(
     user_id: str,
     manifest: UserManifest,
 ) -> CompanionSystem:
+    """Phase 9+ i18n: construction routed through
+    :meth:`CompanionSystem.from_llm_config` so the YAML
+    ``i18n.tokenizer`` flag (e.g. ``"jieba"``) flows through to the
+    companion's recall path. Mirrors the tutor-CLI shape."""
+    from psychology_base.llm.config import load_config
+
+    cfg = load_config()
     aging_policy = build_aging_policy(manifest.policy_id)
     latest = pam_latest_path(layout, user_id)
     if latest.exists():
         system, offenders = restore_system_from_path(
             latest,
-            system=CompanionSystem(aging_policy=aging_policy),
+            system=CompanionSystem.from_llm_config(
+                cfg, aging_policy=aging_policy
+            ),
         )
         if offenders:
             sys.stderr.write(
@@ -123,7 +132,7 @@ def _resume_or_init_system(
                 f"addressing on resume (first id: {offenders[0]})\n"
             )
         return system
-    return CompanionSystem(aging_policy=aging_policy)
+    return CompanionSystem.from_llm_config(cfg, aging_policy=aging_policy)
 
 
 def _save_pam(

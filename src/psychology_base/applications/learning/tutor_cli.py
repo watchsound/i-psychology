@@ -108,13 +108,23 @@ def _resume_or_init_system(
 
     Uses the manifest's policy_id to select the aging policy; the
     reconstructive-retrieval knobs stay at defaults.
+
+    Phase 9+ i18n: routes construction through
+    :meth:`CompanionSystem.from_llm_config` so ``i18n.tokenizer`` in
+    ``configs/llm.yaml`` (e.g. ``"jieba"``) flows through to the live
+    tutor's recall path without the CLI having to re-plumb the knob.
     """
+    from psychology_base.llm.config import load_config
+
+    cfg = load_config()
     aging_policy = build_aging_policy(manifest.policy_id)
     latest = pam_latest_path(layout, user_id)
     if latest.exists():
         system, offenders = restore_system_from_path(
             latest,
-            system=CompanionSystem(aging_policy=aging_policy),
+            system=CompanionSystem.from_llm_config(
+                cfg, aging_policy=aging_policy
+            ),
         )
         if offenders:
             # Not fatal; the pilot auditor flags these downstream. Print
@@ -124,7 +134,7 @@ def _resume_or_init_system(
                 f"addressing on resume (first id: {offenders[0]})\n"
             )
         return system
-    return CompanionSystem(aging_policy=aging_policy)
+    return CompanionSystem.from_llm_config(cfg, aging_policy=aging_policy)
 
 
 def _save_pam(

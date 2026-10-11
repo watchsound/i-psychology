@@ -684,6 +684,7 @@ def _build_agent_probe_responder(
         load_manifest,
     )
     from psychology_base.companion.system import CompanionSystem
+    from psychology_base.llm.config import load_config
 
     if app == "learning_tutor":
         pilot_app = PilotApp.LEARNING_TUTOR
@@ -695,7 +696,11 @@ def _build_agent_probe_responder(
 
     llm_responder = _build_llm_resp(mode)
     aging_policy = build_aging_policy(manifest.policy_id)
-    system = CompanionSystem(aging_policy=aging_policy)
+    # Phase 9+ i18n: route through factory so configs/llm.yaml
+    # i18n.tokenizer flows into recall (same contract as tutor/companion
+    # CLIs; see _resume_or_init_system).
+    cfg = load_config()
+    system = CompanionSystem.from_llm_config(cfg, aging_policy=aging_policy)
 
     if app == "learning_tutor":
         from psychology_base.applications.learning.tutor_cli import (
