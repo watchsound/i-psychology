@@ -19,7 +19,11 @@
   "kappa_floor": 0.5,
   "bond_gate_pass": true,
   "kappa_gate_pass": false,
+  "rate_matched_gate_pass": true,
+  "rate_matched_abs_floor": 0.3,
+  "rate_matched_baseline_fraction": 0.5,
   "pillar_f_psydial_d4_pass": false,
+  "pillar_f_psydial_d4_rate_matched_pass": true,
   "per_dialog": [
     {
       "example_id": "psydial-d4-00000",
@@ -1125,5 +1129,7 @@
   "crisis_sink_count": 3,
   "extreme_emotion_sink_count": 0,
   "wall_s": 969.3,
-  "generated_at": "2026-10-10T13:21:01"
+  "generated_at": "2026-10-10T13:21:01",
+  "rate_matched_augmentation_note": "Augmented post-hoc 2026-10-10 with rate-matched sibling gate (AnnoMI-shape: companion rate >= 0.30 absolute OR >= 0.5 * reference rate). Original run byte-identical; computed deterministically from existing summary stats. See scorer: counseling_depth_scorer._rate_matched_empathy_pass.",
+  "rate_matched_augmented_at": "2026-10-10T23:02:49"
 }

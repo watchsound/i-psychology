@@ -209,6 +209,7 @@ def main(argv: list[str] | None = None) -> int:
 
     bond_pass = report.meets_bond_gate(args.bond_floor)
     kappa_pass = report.meets_kappa_gate(args.kappa_floor)
+    rate_matched_pass = report.meets_rate_matched_empathy_gate()
 
     # Diagnostic: judge-vs-lexical κ. Not a halt condition — reported
     # so the close-out can decide whether the κ miss was a scorer
@@ -224,7 +225,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(
         f"  bond_gate(floor={args.bond_floor}) PASS={bond_pass}  "
-        f"kappa_gate(floor={args.kappa_floor}) PASS={kappa_pass}"
+        f"kappa_gate(floor={args.kappa_floor}) PASS={kappa_pass}  "
+        f"rate_matched_gate PASS={rate_matched_pass}"
     )
     print(
         f"  mean_companion_empathy_binary_rate="
@@ -261,7 +263,9 @@ def main(argv: list[str] | None = None) -> int:
         "kappa_floor": args.kappa_floor,
         "bond_gate_pass": bond_pass,
         "kappa_gate_pass": kappa_pass,
+        "rate_matched_gate_pass": rate_matched_pass,
         "pillar_f_extes_pass": bond_pass and kappa_pass,
+        "pillar_f_extes_rate_matched_pass": bond_pass and rate_matched_pass,
         "diagnostic_judge_vs_lexical_kappa": diag_kappa,
         "per_dialog": [
             {

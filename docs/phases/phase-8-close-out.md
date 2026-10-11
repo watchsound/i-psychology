@@ -270,4 +270,20 @@ Not a Phase 8 gate contribution; recorded here because it uses the Pillar A MSC 
 
 ### 9.5 Test suite growth 2026-10-09 → 2026-10-10
 
-1563 (LOCKED FINAL above) → 1593 (Phase 9+ perspective substrate consolidation +30) → 1612 (Pillar F PsyQA +19) → 1628 (Pillar F PsyDial-D4 +16) → 1656 (Pillar C v4 LLM-judge full rollout, cumulative) → **1684 (Phase 9+ attachment overlay +28)**.
+1563 (LOCKED FINAL above) → 1593 (Phase 9+ perspective substrate consolidation +30) → 1612 (Pillar F PsyQA +19) → 1628 (Pillar F PsyDial-D4 +16) → 1656 (Pillar C v4 LLM-judge full rollout, cumulative) → … → 1659 (Phase 9+ attachment overlay slice, cumulative on this trunk) → **1671 (Pillar F rate-matched sibling gate +12, verified by `pytest tests/ --collect-only`)**.
+
+Historical note on Phase 9+ attachment-overlay memory entry: the memory file cites 1684/1687 at interim points, but those counts included transient scaffolding tests consolidated during landing; the authoritative post-landing count on this trunk is 1659, verified against `pytest --collect-only`.
+
+### 9.6 Pillar F rate-matched sibling gate (2026-10-10, dual-gate not goalpost-move)
+
+**Does not change this rollup.** Pillar F stays ⊡ (κ gate FAIL). Phase 8 rollup stays **4-of-6**.
+
+What landed: a parallel rate-matched gate (AnnoMI MI-fidelity shape, `companion_rate ≥ 0.30 OR ≥ 0.5 × reference_rate`) shipped side-by-side with the κ gate on all 3 κ-ceiling corpora (ExTES / PsyQA / PsyDial-D4). Augmentation of existing JSON artefacts (no reruns — pure function of persisted summary stats):
+
+| Corpus | Companion rate | Reference rate | κ gate | Rate-matched gate |
+|---|---:|---:|:---:|:---:|
+| ExTES (EN) | 0.7575 | 0.4800 | ✗ (0.026) | ✓ |
+| PsyQA (CN) | 0.7825 | 0.2200 | ✗ (0.027) | ✓ |
+| PsyDial-D4 (CN) | 0.7775 | 0.3600 | ✗ (0.026) | ✓ |
+
+Reads: under a semantically-correct gate shape the Pillar F cross-corpus κ-ceiling flips from FAIL to PASS on 3-of-3 corpora without a single Companion response changing. The κ FAIL and the rate-matched PASS co-exist because they measure different things on the same transcripts (per-dialog agreement vs rate-density on a conversant). Documented in full at [docs/phases/phase-8-f-close-out.md](phase-8-f-close-out.md) §13. **Rollup accounting kept conservative** (κ gate stays plan-of-record FAIL; rate-matched is a diagnostic finding, not a rollup lift) to avoid a goalpost move. If a future Pillar F v3 elects to promote the rate-matched gate to plan-of-record, the artefact + test infrastructure to swap it in is shipped and ready.

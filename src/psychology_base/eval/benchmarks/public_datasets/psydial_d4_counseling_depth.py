@@ -61,8 +61,11 @@ from psychology_base.applications.llm_responders import (
 )
 from psychology_base.applications.measurement.wai_sr import score_wai_sr
 from psychology_base.eval.benchmarks.public_datasets.counseling_depth_scorer import (
+    _RATE_MATCHED_EMPATHY_ABS_FLOOR,
+    _RATE_MATCHED_EMPATHY_BASELINE_FRACTION,
     _cohens_kappa_binary,
     _lexical_empathy_score,
+    _rate_matched_empathy_pass,
     run_counseling_session,
 )
 from psychology_base.eval.benchmarks.public_datasets.counseling_depth_llm_judge import (
@@ -220,6 +223,21 @@ class LLMPsyDialD4Report:
 
     def meets_kappa_gate(self, floor: float = _EMPATH_KAPPA_FLOOR) -> bool:
         return self.n > 0 and self.empath_kappa >= floor
+
+    def meets_rate_matched_empathy_gate(
+        self,
+        *,
+        absolute_floor: float = _RATE_MATCHED_EMPATHY_ABS_FLOOR,
+        baseline_fraction: float = _RATE_MATCHED_EMPATHY_BASELINE_FRACTION,
+    ) -> bool:
+        if self.n == 0:
+            return False
+        return _rate_matched_empathy_pass(
+            self.mean_llm_judge_companion_empathy_binary_rate,
+            self.mean_llm_judge_reference_empathy_binary_rate,
+            absolute_floor=absolute_floor,
+            baseline_fraction=baseline_fraction,
+        )
 
 
 # ---------------------------------------------------------------------------

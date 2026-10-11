@@ -86,6 +86,36 @@ from psychology_base.llm.types import TaskTier
 _WOEBOT_BOND_FLOOR: float = 3.89
 _EMPATH_KAPPA_FLOOR: float = 0.50
 _MI_FIDELITY_FLOOR: float = 0.30
+_RATE_MATCHED_EMPATHY_ABS_FLOOR: float = 0.30
+_RATE_MATCHED_EMPATHY_BASELINE_FRACTION: float = 0.50
+
+
+def _rate_matched_empathy_pass(
+    companion_rate: float,
+    reference_rate: float,
+    *,
+    absolute_floor: float = _RATE_MATCHED_EMPATHY_ABS_FLOOR,
+    baseline_fraction: float = _RATE_MATCHED_EMPATHY_BASELINE_FRACTION,
+) -> bool:
+    """Rate-matched sibling to κ-across-conversants Pillar F gate.
+
+    Companion passes iff its empathic-turn rate clears the absolute floor
+    OR clears ``baseline_fraction`` of the reference-counselor rate on
+    this corpus. Mirrors the AnnoMI ``meets_mi_fidelity_gate`` shape so
+    both gates have the same conceptual contract: *does Companion emit at
+    a rate consistent with high-quality counseling baselines*, rather
+    than *does Companion agree per-dialog with the dataset reference*.
+
+    Documented across §10.6 / §11.3 / §12.6 of the Pillar F close-out as
+    the methodological rework the κ-ceiling signature kept flagging.
+    This is NOT a κ gate replacement — both gates ship side-by-side and
+    the rollup-of-record remains the κ gate.
+    """
+    if companion_rate >= absolute_floor:
+        return True
+    if reference_rate > 0.0 and companion_rate >= baseline_fraction * reference_rate:
+        return True
+    return False
 
 
 # ---------------------------------------------------------------------------

@@ -581,3 +581,93 @@ def test_judge_vs_lexical_kappa_agreement_is_one() -> None:
 def test_judge_vs_lexical_kappa_doesnt_raise_on_empty() -> None:
     report = LLMExTESReport(per_dialog=())
     assert judge_vs_lexical_kappa(report, []) == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Pillar F rate-matched sibling gate (parallel to κ-across-conversants)
+# ---------------------------------------------------------------------------
+
+
+def _mk_dialog(
+    example_id: str,
+    *,
+    companion_rate: float,
+    reference_binary: int,
+) -> LLMExTESDialogResult:
+    """Minimal dialog fixture — only the fields the rate-matched gate reads."""
+    return LLMExTESDialogResult(
+        example_id=example_id,
+        bond=4.0,
+        handoff_triggered=False,
+        companion_turns=("x",),
+        reference_response="y",
+        companion_empathy_scores=(companion_rate,),
+        companion_empathy_binary_rate=companion_rate,
+        reference_empathy_score=float(reference_binary),
+        reference_empathy_binary=reference_binary,
+        companion_empathy_binary=1 if companion_rate >= 0.5 else 0,
+        unresolved=False,
+    )
+
+
+def test_rate_matched_gate_empty_report_fails_closed() -> None:
+    report = LLMExTESReport(per_dialog=())
+    assert report.meets_rate_matched_empathy_gate() is False
+
+
+def test_rate_matched_gate_passes_on_absolute_floor() -> None:
+    # Companion rate well above 0.30 absolute floor — passes regardless of
+    # reference rate. This is the ExTES/PsyQA/PsyDial-D4 κ-ceiling case:
+    # Companion ~0.78 clears the absolute floor by a wide margin.
+    dialogs = tuple(
+        _mk_dialog(f"d{i}", companion_rate=0.78, reference_binary=i % 2)
+        for i in range(10)
+    )
+    report = LLMExTESReport(per_dialog=dialogs)
+    assert report.meets_rate_matched_empathy_gate() is True
+
+
+def test_rate_matched_gate_fails_below_absolute_and_below_half_baseline() -> None:
+    # Companion 0.10 < 0.30 absolute; also < 0.5 * 0.80 = 0.40.
+    dialogs = tuple(
+        _mk_dialog(f"d{i}", companion_rate=0.10, reference_binary=1)
+        for i in range(10)
+    )
+    report = LLMExTESReport(per_dialog=dialogs)
+    assert report.meets_rate_matched_empathy_gate() is False
+
+
+def test_rate_matched_gate_passes_below_absolute_via_half_baseline() -> None:
+    # Companion 0.20 < 0.30 absolute, but ≥ 0.5 * 0.30 = 0.15 → OR clause fires.
+    # Reference mean = 0.30 (3-of-10 dialogs reference-empathic).
+    dialogs = tuple(
+        _mk_dialog(f"d{i}", companion_rate=0.20, reference_binary=1 if i < 3 else 0)
+        for i in range(10)
+    )
+    report = LLMExTESReport(per_dialog=dialogs)
+    # Sanity: this is the "below absolute, above half-baseline" lane.
+    assert report.mean_llm_judge_companion_empathy_binary_rate < 0.30
+    assert report.meets_rate_matched_empathy_gate() is True
+
+
+def test_rate_matched_gate_absolute_floor_wins_when_reference_zero() -> None:
+    # Reference-rate zero → half-baseline clause can't fire; only absolute
+    # clause can pass. 0.35 ≥ 0.30 → PASS.
+    dialogs = tuple(
+        _mk_dialog(f"d{i}", companion_rate=0.35, reference_binary=0)
+        for i in range(10)
+    )
+    report = LLMExTESReport(per_dialog=dialogs)
+    assert report.meets_rate_matched_empathy_gate() is True
+
+
+def test_rate_matched_gate_custom_floors_respected() -> None:
+    # Companion 0.25 fails default (0.30 absolute, 0.5 * reference), but
+    # passes with absolute_floor=0.20.
+    dialogs = tuple(
+        _mk_dialog(f"d{i}", companion_rate=0.25, reference_binary=0)
+        for i in range(10)
+    )
+    report = LLMExTESReport(per_dialog=dialogs)
+    assert report.meets_rate_matched_empathy_gate() is False
+    assert report.meets_rate_matched_empathy_gate(absolute_floor=0.20) is True

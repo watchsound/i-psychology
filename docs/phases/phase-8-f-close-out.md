@@ -420,3 +420,68 @@ Inspection of per-dialog records confirms the PsyDial-D4 `counselor_response` fi
 - **Pillar F cross-corpus κ-FAIL signature now 3-corpus audit-quality**: ExTES (EN, 0.026) + PsyQA (CN, 0.027) + PsyDial-D4 (CN, 0.026). Three corpora, two judges, three distinct reference-counselor registers — all converge on κ ≈ 0 by rater-distribution independence while the Companion holds ~0.78 register-invariant. This signature is now a stable finding about the measurement surface, not a one-off.
 - **AnnoMI MI-fidelity PASS unchanged**: Pillar F's single full-contract clear; its gate shape (reflection-rate density on a single conversant) is the architectural pattern a future Pillar F rework should generalise to the other 3 corpora.
 - **Honest-labeling invariant held**: no code / config / artefact / docstring in this change refers to PsyDial-D4 as "D4". The paper D4 remains externally gated; what shipped is the counseling-training derivative, labeled as such throughout.
+
+## 13. Rate-matched sibling gate (same-day follow-on, 2026-10-10)
+
+### 13.1 What landed and why
+
+Shipped a **rate-matched sibling gate** parallel to κ-across-conversants on all three κ-ceiling corpora (ExTES / PsyQA / PsyDial-D4). This is the methodological rework §10.6 / §11.3 / §12.6 kept flagging — the κ-ceiling signature is a *rater-distribution-independence* artefact, not a Companion-performance failure, and κ cannot clear 0.50 when the Companion holds ~0.78 against reference registers at 0.22-0.48 by independence math. A rate-matched gate (AnnoMI MI-fidelity shape) is semantically correct for "does Companion emit empathic responses at a rate consistent with high-quality counseling baselines", which is what the Pillar F sub-gate was always trying to measure.
+
+**Not a plan-of-record change.** The κ gate stays shipped exactly as the Pillar F rollup-of-record FAIL. The rate-matched gate is a **diagnostic sibling** that ships alongside κ — same report, same JSON, same CLI — so the measurement geometry is auditable both ways. Phase 8 rollup accounting stays at **4 of 6** (κ gate still FAIL, rate-matched is diagnostic finding). This is a non-goalpost-move: dual-gate side-by-side, honest-partial reading.
+
+### 13.2 Gate shape (identical to AnnoMI MI-fidelity)
+
+```
+rate_matched_pass := companion_rate >= 0.30
+                     OR (reference_rate > 0 AND companion_rate >= 0.5 * reference_rate)
+```
+
+Floors chosen to match AnnoMI's `_MI_FIDELITY_FLOOR = 0.30` absolute + 0.5-of-baseline OR semantics byte-identical. One scorer-level helper, three Report-level methods:
+
+- Scorer: `counseling_depth_scorer._rate_matched_empathy_pass(companion_rate, reference_rate)` — private module helper, next to the existing `_WOEBOT_BOND_FLOOR` / `_EMPATH_KAPPA_FLOOR` / `_MI_FIDELITY_FLOOR` constants.
+- Reports: `LLMExTESReport.meets_rate_matched_empathy_gate()`, `LLMPsyQAReport.meets_rate_matched_empathy_gate()`, `LLMPsyDialD4Report.meets_rate_matched_empathy_gate()` — all three delegate to the same scorer helper over `mean_llm_judge_companion_empathy_binary_rate` + `mean_llm_judge_reference_empathy_binary_rate`.
+- Runners: all three CLI runners (`phase8_f_extes_llm_run.py`, `phase8_f_psyqa_run.py`, `phase8_f_psydial_d4_run.py`) now emit `rate_matched_gate_pass` alongside `kappa_gate_pass` + `bond_gate_pass`, plus a combined `pillar_f_<corpus>_rate_matched_pass = bond ∧ rate_matched` field.
+
+### 13.3 Verdict table — all three κ-ceiling corpora pre-pass on existing summary stats
+
+Augmented post-hoc from existing JSON summary stats (no rerun needed — rate-matched is a pure function of the mean binary rates already computed and persisted):
+
+| Corpus | Companion rate | Reference rate | κ gate (0.50) | Rate-matched gate | Bond ∧ rate-matched |
+|---|---:|---:|:---:|:---:|:---:|
+| ExTES (EN role-play) | 0.7575 | 0.4800 | ✗ (0.026) | ✓ | ✓ |
+| PsyQA (CN real-counselor) | 0.7825 | 0.2200 | ✗ (0.027) | ✓ | ✓ |
+| PsyDial-D4 (CN AI-training) | 0.7775 | 0.3600 | ✗ (0.026) | ✓ | ✓ |
+
+All three corpora clear the rate-matched sibling gate on the absolute floor alone (companion ≥ 0.30 by wide margin), independent of the OR clause. Reads: *under a semantically-correct gate shape, Pillar F's cross-corpus κ-ceiling signature flips from FAIL to PASS on 3-of-3 corpora without changing a single Companion response*. The κ FAIL and the rate-matched PASS co-exist because they measure different things on the same transcripts.
+
+### 13.4 Artefact augmentation
+
+The three JSON artefacts under `docs/experiments/phase-8-dataset-replay-expansion/pillar-f/` (`extes-llm-judge.json`, `psyqa-llm-judge.json`, `psydial-d4-llm-judge.json`) each gained:
+
+- `rate_matched_gate_pass: true`
+- `rate_matched_abs_floor: 0.3`
+- `rate_matched_baseline_fraction: 0.5`
+- `pillar_f_<corpus>_rate_matched_pass: true`
+- `rate_matched_augmentation_note` (provenance line) + `rate_matched_augmented_at` (ISO timestamp)
+
+Original run fields unchanged (bond / kappa / per-dialog / wall / etc.). This is a non-destructive augmentation, deterministic from existing summary stats; no cloud compute was spent re-running the sweeps.
+
+### 13.5 Rollup accounting (unchanged)
+
+**Phase 8 rollup stays at 4 of 6: A ✓ / B ⊡ / C ✓ / D ✓ / E ✓ / F ⊡.**
+
+The κ gate remains the Pillar F plan-of-record and remains FAIL. The rate-matched sibling is a diagnostic finding, not a rollup lift. Flipping the rollup via a parallel gate shape without an explicit plan-level methodology change would be a goalpost move; dual-gate side-by-side is the honest path.
+
+If Phase 9 (or a future Pillar F v3) elects to promote the rate-matched gate to plan-of-record, the artefact + test infrastructure to swap it in is already shipped. For now, the κ gate stays the gate; the rate-matched gate is the finding.
+
+### 13.6 Tests added
+
+- 6 tests in `tests/test_counseling_depth_llm_judge.py` covering: empty-report fails-closed, absolute-floor pass, both-clauses-miss fail, below-absolute-via-half-baseline pass, absolute-floor-only path when reference zero, custom-floor plumbing.
+- 3 tests in `tests/test_psyqa.py` + 3 tests in `tests/test_psydial_d4.py` covering empty-report + live-result-mirror + both-clauses-miss on each CN sibling.
+- Total: **12 new tests**, all green.
+
+### 13.7 Suite + rollup
+
+- **Full test suite green: 1671 tests** (1659 pre-change + 12 new rate-matched tests, verified by `pytest tests/ --collect-only`).
+- **Phase 8 rollup unchanged at 4 of 6** (deliberate — see §13.5).
+- **Pillar F ⊡ status unchanged** on the κ gate; sibling-gate finding documented as the methodological reading of the κ-ceiling 3-corpus audit.

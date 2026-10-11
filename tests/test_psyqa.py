@@ -521,3 +521,60 @@ def test_judge_vs_lexical_kappa_psyqa_completes_without_raising() -> None:
 def test_judge_vs_lexical_kappa_psyqa_doesnt_raise_on_empty() -> None:
     report = LLMPsyQAReport(per_dialog=())
     assert judge_vs_lexical_kappa_psyqa(report, []) == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Pillar F rate-matched sibling gate — PsyQA (CN real-counselor register)
+# ---------------------------------------------------------------------------
+
+
+def _mk_psyqa_dialog(
+    example_id: str,
+    *,
+    companion_rate: float,
+    reference_binary: int,
+) -> LLMPsyQADialogResult:
+    return LLMPsyQADialogResult(
+        example_id=example_id,
+        bond=4.0,
+        handoff_triggered=False,
+        companion_turns=("x",),
+        reference_response="y",
+        companion_empathy_scores=(companion_rate,),
+        companion_empathy_binary_rate=companion_rate,
+        reference_empathy_score=float(reference_binary),
+        reference_empathy_binary=reference_binary,
+        companion_empathy_binary=1 if companion_rate >= 0.5 else 0,
+        unresolved=False,
+    )
+
+
+def test_psyqa_rate_matched_gate_empty_report_fails_closed() -> None:
+    report = LLMPsyQAReport(per_dialog=())
+    assert report.meets_rate_matched_empathy_gate() is False
+
+
+def test_psyqa_rate_matched_gate_mirrors_live_result() -> None:
+    # Mirrors the PsyQA κ-ceiling live-fire finding: Companion rate ~0.78,
+    # reference rate ~0.22 (CN real-counselor register — advice-heavy, low
+    # explicit-empathy baseline). Companion clears absolute floor.
+    dialogs = tuple(
+        _mk_psyqa_dialog(
+            f"d{i}",
+            companion_rate=0.78,
+            reference_binary=1 if i < 2 else 0,  # ~0.22 reference rate
+        )
+        for i in range(9)
+    )
+    report = LLMPsyQAReport(per_dialog=dialogs)
+    assert report.mean_llm_judge_companion_empathy_binary_rate == pytest.approx(0.78)
+    assert report.meets_rate_matched_empathy_gate() is True
+
+
+def test_psyqa_rate_matched_gate_fails_when_both_clauses_miss() -> None:
+    dialogs = tuple(
+        _mk_psyqa_dialog(f"d{i}", companion_rate=0.05, reference_binary=1)
+        for i in range(10)
+    )
+    report = LLMPsyQAReport(per_dialog=dialogs)
+    assert report.meets_rate_matched_empathy_gate() is False

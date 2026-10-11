@@ -194,6 +194,7 @@ def main(argv: list[str] | None = None) -> int:
 
     bond_pass = report.meets_bond_gate(args.bond_floor)
     kappa_pass = report.meets_kappa_gate(args.kappa_floor)
+    rate_matched_pass = report.meets_rate_matched_empathy_gate()
     diag_kappa = judge_vs_lexical_kappa_psyqa(report, examples)
     print(
         f"\nn={report.n} mean_bond={report.mean_bond:.3f} "
@@ -203,7 +204,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(
         f"  bond_gate(floor={args.bond_floor}) PASS={bond_pass}  "
-        f"kappa_gate(floor={args.kappa_floor}) PASS={kappa_pass}"
+        f"kappa_gate(floor={args.kappa_floor}) PASS={kappa_pass}  "
+        f"rate_matched_gate PASS={rate_matched_pass}"
     )
     print(
         f"  diagnostic_judge_vs_lexical_kappa={diag_kappa:.3f} "
@@ -237,7 +239,9 @@ def main(argv: list[str] | None = None) -> int:
         "kappa_floor": args.kappa_floor,
         "bond_gate_pass": bond_pass,
         "kappa_gate_pass": kappa_pass,
+        "rate_matched_gate_pass": rate_matched_pass,
         "pillar_f_psyqa_pass": bond_pass and kappa_pass,
+        "pillar_f_psyqa_rate_matched_pass": bond_pass and rate_matched_pass,
         "per_dialog": [
             {
                 "example_id": d.example_id,
