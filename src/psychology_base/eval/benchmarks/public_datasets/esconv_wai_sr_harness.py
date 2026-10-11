@@ -246,6 +246,7 @@ def administer_wai_sr_simulated(
     user_id: str,
     administered_at_seconds: float,
     subject_noun: str = "Companion",
+    scope_hint: str | None = None,
 ) -> WAISRResponseSet:
     """Administer the 5-item WAI-SR to a simulated seeker.
 
@@ -253,14 +254,24 @@ def administer_wai_sr_simulated(
     the question; the seeker's reply is parsed to an int in [1, 7].
     ``source="llm_simulated"`` is stamped so cohort aggregates stay
     distinguishable from any later human-administered data.
+
+    ``scope_hint`` is prepended before the rating instruction when set.
+    Pass session-scoped text (e.g. "rate only your experience in THIS
+    session, not overall") to test whether the LLM-reported Bond series
+    recovers within-user variance across sessions. Default ``None``
+    preserves byte-identity with Pillar A and prior Pillar F baselines.
     """
     responses: list[WAISRResponse] = []
     for item_id, subscale, wording in WAI_SR_ITEMS:
         rendered = wording.format(subject=subject_noun)
-        prompt = (
+        rating_line = (
             f"Please rate this statement on a scale from 1 (seldom) to 7 "
             f'(always). Answer with just the number. "{rendered}"'
         )
+        if scope_hint:
+            prompt = f"{scope_hint} {rating_line}"
+        else:
+            prompt = rating_line
         reply = seeker(prompt)
         score = _parse_likert(reply)
         responses.append(

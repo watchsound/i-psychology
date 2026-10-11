@@ -196,6 +196,45 @@ def test_administer_subject_noun_passes_through() -> None:
     assert rs.subject_noun == "AI"
 
 
+def test_administer_default_prompt_has_no_scope_hint() -> None:
+    seeker = ScriptedSeeker(["5"] * 5)
+    administer_wai_sr_simulated(
+        seeker,
+        user_id="u1",
+        administered_at_seconds=TS.timestamp(),
+    )
+    assert len(seeker.received) == 5
+    for prompt in seeker.received:
+        assert prompt.startswith("Please rate this statement on a scale")
+
+
+def test_administer_prepends_scope_hint_when_provided() -> None:
+    seeker = ScriptedSeeker(["5"] * 5)
+    hint = "Only rate THIS session."
+    administer_wai_sr_simulated(
+        seeker,
+        user_id="u1",
+        administered_at_seconds=TS.timestamp(),
+        scope_hint=hint,
+    )
+    assert len(seeker.received) == 5
+    for prompt in seeker.received:
+        assert prompt.startswith(hint)
+        assert "Please rate this statement on a scale" in prompt
+
+
+def test_administer_empty_scope_hint_falls_back_to_default_prompt() -> None:
+    seeker = ScriptedSeeker(["5"] * 5)
+    administer_wai_sr_simulated(
+        seeker,
+        user_id="u1",
+        administered_at_seconds=TS.timestamp(),
+        scope_hint="",
+    )
+    for prompt in seeker.received:
+        assert prompt.startswith("Please rate this statement on a scale")
+
+
 # ---------------------------------------------------------------------------
 # aggregate_cohort_bond
 # ---------------------------------------------------------------------------
