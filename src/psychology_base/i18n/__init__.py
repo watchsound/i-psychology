@@ -15,16 +15,30 @@ Design contract:
     * `detect_lang` is a Unicode-block heuristic, not a replacement for
       langdetect/fastText — correct for mono-script utterances, imperfect
       on code-switched text.
+    * `tokenizer="jieba"` opts into finer-grained Chinese word
+      segmentation (zh only); other languages fall through to the
+      Unicode letter-run path. English stays byte-identical regardless.
+      Jieba is an optional soft dependency — a missing import degrades
+      gracefully to the Unicode path with a one-time module-level warning
+      rather than raising, so partial installs don't crash the pipeline.
 """
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Literal
+
+logger = logging.getLogger(__name__)
 
 LangTag = Literal[
     "en", "zh", "ja", "ko", "ar", "he", "hi", "th", "ru", "el", "unknown"
 ]
+
+_SUPPORTED_TOKENIZERS = ("unicode", "jieba")
+_jieba_import_attempted = False
+_jieba_module = None
+_jieba_warned_missing = False
 
 _UNICODE_LETTER_RUN = re.compile(
     r"[A-Za-z"
@@ -105,7 +119,32 @@ def detect_lang(text: str) -> LangTag:
     return "unknown"
 
 
-def tokenize(text: str, lang: str | None = None) -> list[str]:
+def _load_jieba():
+    """Lazy, one-shot jieba import. Returns module or None.
+
+    Centralized here so the import cost (dict-build on first use) is
+    paid once per process, and the "missing jieba" warning fires at
+    most once instead of per-tokenize-call.
+    """
+    global _jieba_import_attempted, _jieba_module, _jieba_warned_missing
+    if _jieba_import_attempted:
+        return _jieba_module
+    _jieba_import_attempted = True
+    try:
+        import jieba  # type: ignore
+
+        _jieba_module = jieba
+    except ImportError:
+        _jieba_module = None
+    return _jieba_module
+
+
+def tokenize(
+    text: str,
+    lang: str | None = None,
+    *,
+    tokenizer: str = "unicode",
+) -> list[str]:
     """Language-aware tokenization with English byte-identical dispatch.
 
     The English branch returns ``text.split()`` verbatim so legacy call
@@ -114,11 +153,44 @@ def tokenize(text: str, lang: str | None = None) -> list[str]:
     pre-processing around this call. The non-English branch extracts
     runs of Unicode letters, which splits whitespace-less scripts
     (CJK/Thai/Khmer) correctly and strips punctuation uniformly.
+
+    When ``tokenizer="jieba"`` is passed AND ``lang`` resolves to ``zh``,
+    the Chinese branch routes through jieba's word-segmentation instead
+    of the one-token-per-clause Unicode letter-run. All other languages
+    (including English) are unaffected — jieba only ships Chinese
+    segmentation, so threading the flag through other langs would be a
+    silent no-op. A missing jieba install degrades to the Unicode path
+    with a logged warning (fires once per process) rather than raising.
     """
+    global _jieba_warned_missing
+    if tokenizer not in _SUPPORTED_TOKENIZERS:
+        raise ValueError(
+            f"Unknown tokenizer {tokenizer!r}; "
+            f"expected one of {_SUPPORTED_TOKENIZERS}"
+        )
     if lang is None:
         lang = detect_lang(text)
     if lang == "en" or lang == "unknown":
         return text.split()
+    if tokenizer == "jieba" and lang == "zh":
+        jieba = _load_jieba()
+        if jieba is None:
+            if not _jieba_warned_missing:
+                logger.warning(
+                    "i18n.tokenizer='jieba' requested but jieba is not "
+                    "installed; falling back to unicode letter-run "
+                    "tokenization. Install with `pip install jieba`."
+                )
+                _jieba_warned_missing = True
+        else:
+            # jieba.cut yields punctuation + whitespace as separate
+            # tokens; filter to pure Unicode-letter runs so the jieba
+            # path and the unicode path share the "letters only, no
+            # punct" output contract. Comma / period / spaces drop out.
+            return [
+                tok for tok in jieba.cut(text, cut_all=False)
+                if _UNICODE_LETTER_RUN.fullmatch(tok)
+            ]
     return _UNICODE_LETTER_RUN.findall(text)
 
 

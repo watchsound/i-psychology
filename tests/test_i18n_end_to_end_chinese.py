@@ -120,7 +120,8 @@ def test_chinese_end_to_end_response_and_extraction() -> None:
     # so "焦虑" by itself does not match the full-clause token
     # "我最近感到很焦虑" — a known honest limit flagged in the Phase 9+
     # i18n close-out ("mono-sentence CJK one token"; jieba is a deferred
-    # tokenizer: knob). Use the full-clause cue to hit the dispatch path.
+    # tokenizer: knob — see test_jieba_knob_live_shortens_cjk_cue below for
+    # the knob-on recovery). Use the full-clause cue to hit the dispatch path.
     recall = cs.recall("我最近感到很焦虑")
     recalled_texts = [f.content for f in recall.fragments_used]
     assert any("焦虑" in t for t in recalled_texts)
@@ -212,3 +213,81 @@ def test_english_end_to_end_byte_identical_control() -> None:
     assert len(ops) == 1
     assert ops[0].fact.entity == "user"
     assert ops[0].fact.value == "anxious"
+
+
+# ---------- Phase 9+ i18n follow-on: jieba live-wiring at recall path ----------
+
+
+def test_jieba_knob_live_shortens_cjk_cue() -> None:
+    """`CompanionSystem(cjk_tokenizer="jieba")` lifts the "mono-sentence
+    CJK one-token" honest limit documented above.
+
+    Baseline (``cjk_tokenizer="unicode"``, the shipped default): the cue
+    "焦虑" and the stored clause "我最近感到很焦虑" tokenise under
+    `[A-Za-z\\u4e00-\\u9fff]+` to one token each with no shared element,
+    so R1 spreading activation seeds zero and the fragment is NOT
+    returned. Knob on: jieba segments the stored clause into word
+    tokens including "焦虑", R1 seed overlaps, and the fragment is
+    retrieved. English pipeline must remain unaffected on either knob
+    position (regression lock).
+    """
+    import pytest
+
+    pytest.importorskip("jieba")
+
+    # Baseline — unicode default: short cue does NOT hit the stored clause.
+    cs_default = CompanionSystem(top_k=4)
+    agent_default = CompanionAgent(
+        user_id="u1",
+        session_id="s1",
+        companion_system=cs_default,
+        llm_responder=lambda sp, cb, uu: "ok",
+    )
+    agent_default.respond("我最近感到很焦虑,工作压力很大。", timestamp=TS)
+    baseline_recall = cs_default.recall("焦虑")
+    baseline_texts = [f.content for f in baseline_recall.fragments_used]
+    assert not any("焦虑" in t for t in baseline_texts), (
+        "unicode-tokenizer baseline must NOT retrieve on short CJK cue; "
+        "if this starts passing the honest-limit documentation is stale."
+    )
+
+    # Knob on — jieba: same short cue DOES hit via shared word tokens.
+    cs_jieba = CompanionSystem(top_k=4, cjk_tokenizer="jieba")
+    agent_jieba = CompanionAgent(
+        user_id="u1",
+        session_id="s1",
+        companion_system=cs_jieba,
+        llm_responder=lambda sp, cb, uu: "ok",
+    )
+    agent_jieba.respond("我最近感到很焦虑,工作压力很大。", timestamp=TS)
+    jieba_recall = cs_jieba.recall("焦虑")
+    jieba_texts = [f.content for f in jieba_recall.fragments_used]
+    assert any("焦虑" in t for t in jieba_texts), (
+        "jieba knob should segment the stored clause into words so '焦虑' "
+        "matches via shared tokens — the whole point of the knob."
+    )
+
+
+def test_jieba_knob_english_recall_byte_identical() -> None:
+    """Threading ``cjk_tokenizer="jieba"`` through a system that only
+    ever sees English utterances must leave the recall path
+    byte-identical to the default. Jieba routes zh-only; English
+    content keeps the legacy letter-run tokenizer, so the pool and
+    ranking must be unchanged."""
+    import pytest
+
+    pytest.importorskip("jieba")
+
+    def _run(tokenizer: str) -> tuple[str, ...]:
+        cs = CompanionSystem(top_k=4, cjk_tokenizer=tokenizer)
+        agent = CompanionAgent(
+            user_id="u1",
+            session_id="s1",
+            companion_system=cs,
+            llm_responder=lambda sp, cb, uu: "I hear you.",
+        )
+        agent.respond("I've been feeling anxious about work.", timestamp=TS)
+        recall = cs.recall("anxious work")
+        return tuple(f.id for f in recall.fragments_used)
+
+    assert _run("unicode") == _run("jieba")

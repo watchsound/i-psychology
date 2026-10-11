@@ -21,13 +21,26 @@ from typing import Optional
 from psychology_base.companion.affect_resonance import pair_affect_score
 from psychology_base.companion.edges import EdgeStore
 from psychology_base.eval.adapters import Fragment
+from psychology_base.i18n import detect_lang, tokenize as i18n_tokenize
 
 
 _TOKEN_RE = re.compile(r"[A-Za-z\u4e00-\u9fff]+")
 
 
-def tokens(text: str) -> list[str]:
-    """Lowercased alpha / CJK token stream. Shared across R1 edges + R2 coalescence."""
+def tokens(text: str, cjk_tokenizer: str = "unicode") -> list[str]:
+    """Lowercased alpha / CJK token stream. Shared across R1 edges + R2 coalescence.
+
+    ``cjk_tokenizer="jieba"`` opts into finer-grained Chinese segmentation
+    for CJK content only — zh text routes through ``i18n.tokenize`` with
+    jieba, splitting "我最近感到很焦虑" into word tokens so a shorter cue
+    ("焦虑") can match through shared tokens. Non-CJK text (including
+    English) keeps the legacy letter-run path to preserve byte-identity
+    with the pre-i18n reconstruction behavior — ``_TOKEN_RE.findall("it's")``
+    returns ``["it", "s"]`` which ``i18n.tokenize("it's", "en")`` does not,
+    so a naive migration would drift the English pipeline.
+    """
+    if cjk_tokenizer == "jieba" and detect_lang(text) == "zh":
+        return [t.lower() for t in i18n_tokenize(text, "zh", tokenizer="jieba")]
     return [t.lower() for t in _TOKEN_RE.findall(text)]
 
 
@@ -89,10 +102,11 @@ class ActivationState:
         return self.residual.get(fid, 0.0)
 
 
-def jaccard_prior(a: Fragment, b: Fragment) -> float:
+def jaccard_prior(a: Fragment, b: Fragment, cjk_tokenizer: str = "unicode") -> float:
     """Token-overlap Jaccard + tag-overlap Jaccard, averaged. The initial edge
     weight stored on observe; Hebbian co-activation adjusts it from there."""
-    at, bt = set(tokens(a.content)), set(tokens(b.content))
+    at = set(tokens(a.content, cjk_tokenizer))
+    bt = set(tokens(b.content, cjk_tokenizer))
     tok_j = len(at & bt) / len(at | bt) if (at | bt) else 0.0
     aa, bb = set(a.tags), set(b.tags)
     tag_j = len(aa & bb) / len(aa | bb) if (aa | bb) else 0.0
@@ -100,7 +114,10 @@ def jaccard_prior(a: Fragment, b: Fragment) -> float:
 
 
 def effective_edge_weight(
-    a: Fragment, b: Fragment, edges: Optional[EdgeStore]
+    a: Fragment,
+    b: Fragment,
+    edges: Optional[EdgeStore],
+    cjk_tokenizer: str = "unicode",
 ) -> float:
     """Edge weight used by spreading activation. When an EdgeStore is wired
     (step 3+) its learned weight replaces the Jaccard prior — initial Jaccard
@@ -108,7 +125,7 @@ def effective_edge_weight(
     pairs that would have had one under step 2."""
     if edges is not None:
         return edges.get(a.id, b.id)
-    return jaccard_prior(a, b)
+    return jaccard_prior(a, b, cjk_tokenizer)
 
 
 def spread_activation(
@@ -119,6 +136,7 @@ def spread_activation(
     hop_decay: float = 0.5,
     seed_boost: float = 1.0,
     edges: Optional[EdgeStore] = None,
+    cjk_tokenizer: str = "unicode",
 ) -> dict[str, float]:
     """R1 — one call ⇒ one activation profile across fragments.
 
@@ -127,12 +145,12 @@ def spread_activation(
     to neighbors weighted by effective_edge_weight. Residual state from prior
     recalls is included.
     """
-    cue_tokens = set(tokens(cue))
+    cue_tokens = set(tokens(cue, cjk_tokenizer))
     activation: dict[str, float] = dict(state.residual)
 
     # Seed: cue-token overlap
     for f in fragments:
-        if cue_tokens & set(tokens(f.content)):
+        if cue_tokens & set(tokens(f.content, cjk_tokenizer)):
             activation[f.id] = activation.get(f.id, 0.0) + seed_boost
 
     # Spread
@@ -146,7 +164,7 @@ def spread_activation(
             for dst in fragments:
                 if dst.id == src.id:
                     continue
-                w = effective_edge_weight(src, dst, edges)
+                w = effective_edge_weight(src, dst, edges, cjk_tokenizer)
                 if w <= 0.0:
                     continue
                 delta[dst.id] = delta.get(dst.id, 0.0) + src_act * w * hop_decay
@@ -236,6 +254,7 @@ def coalesce(
     tick_count: int,
     system_seed: int = 0,
     top_k: int = 6,
+    cjk_tokenizer: str = "unicode",
 ) -> str:
     """R2 — stitch the top-k activated fragments into a reconstruction.
 
@@ -250,7 +269,7 @@ def coalesce(
     token_order: list[str] = []
     token_weight: dict[str, float] = {}
     for frag, act in pool:
-        for t in tokens(frag.content):
+        for t in tokens(frag.content, cjk_tokenizer):
             if t not in token_weight:
                 token_order.append(t)
                 token_weight[t] = 0.0
@@ -264,7 +283,7 @@ def coalesce(
             kept.append(t)
 
     # Floor-regression guard: always include the cue token if any fragment has it.
-    cue_toks = [t for t in tokens(cue) if t in token_weight]
+    cue_toks = [t for t in tokens(cue, cjk_tokenizer) if t in token_weight]
     if cue_toks and not any(t in cue_toks for t in kept):
         kept.insert(0, cue_toks[0])
 
@@ -296,6 +315,7 @@ def reconstruct(
     *,
     cue_affect: Optional[dict] = None,
     affect_weight: float = 0.0,
+    cjk_tokenizer: str = "unicode",
 ) -> Reconstruction:
     """Full pipeline. State-advancing: decays residual, computes fresh activation
     (R1 — using Hebbian edges when an EdgeStore is wired), applies context
@@ -315,7 +335,9 @@ def reconstruct(
     Default ``affect_weight=0.0`` leaves M1+M2 behavior byte-identical.
     """
     state.decay()
-    raw = spread_activation(fragments, cue, state, edges=edges)
+    raw = spread_activation(
+        fragments, cue, state, edges=edges, cjk_tokenizer=cjk_tokenizer
+    )
     weighted: dict[str, float] = {}
     for f in fragments:
         score = raw.get(f.id, 0.0) * context_weight(f, context)
@@ -338,7 +360,7 @@ def reconstruct(
     ranked = [(f, a) for f, a in ranked if a > 0.0]
     content = coalesce(
         ranked, cue, context, state.recall_count, tick_count,
-        system_seed=system_seed, top_k=top_k,
+        system_seed=system_seed, top_k=top_k, cjk_tokenizer=cjk_tokenizer,
     )
 
     # Write back residual: current recall's activation becomes next recall's seed.

@@ -125,3 +125,101 @@ def test_langtag_type_is_literal() -> None:
     args = get_args(LangTag)
     for required in ("en", "zh", "ja", "ko", "ar", "th", "unknown"):
         assert required in args
+
+
+# ---------- Phase 9+ follow-on: jieba CJK tokenizer knob ----------
+
+
+# These lock the i18n.tokenizer="jieba" opt-in path. Jieba is the
+# deferred tokenizer called out in the Phase 9+ i18n close-out
+# "mono-sentence CJK one-token" honest limit. The invariants:
+#   - "unicode" default stays byte-identical (regression lock)
+#   - "jieba" + zh produces finer word segmentation than the Unicode
+#     letter-run (so recall-cue "焦虑" can now hit a stored "我最近
+#     感到很焦虑" fragment through shared tokens)
+#   - non-zh langs ignore the knob (jieba ships zh only; silent
+#     thread-through would create a false expectation)
+#   - unknown-tokenizer rejects
+#   - missing-jieba falls back to unicode (graceful)
+
+
+def test_default_tokenizer_is_unicode_byte_identical() -> None:
+    """Explicit tokenizer='unicode' must equal the legacy no-kwarg call."""
+    text = "我最近感到很焦虑,工作压力很大。"
+    assert tokenize(text, "zh", tokenizer="unicode") == tokenize(text, "zh")
+
+
+def test_jieba_segments_chinese_finer_than_unicode() -> None:
+    """Mono-sentence CJK → unicode gives 2 clauses; jieba gives words."""
+    pytest.importorskip("jieba")
+    text = "我最近感到很焦虑,工作压力很大。"
+    unicode_tokens = tokenize(text, "zh", tokenizer="unicode")
+    jieba_tokens = tokenize(text, "zh", tokenizer="jieba")
+    assert len(unicode_tokens) == 2  # ['我最近感到很焦虑', '工作压力很大']
+    assert len(jieba_tokens) > len(unicode_tokens)
+    # The specific word we need for the end-to-end recall round-trip.
+    assert "焦虑" in jieba_tokens
+
+
+def test_jieba_filters_punctuation() -> None:
+    """jieba.cut yields punct as separate tokens — tokenize must drop
+    them so the jieba path and the unicode path share the same
+    'letters only' output contract."""
+    pytest.importorskip("jieba")
+    tokens = tokenize("你好,世界!", "zh", tokenizer="jieba")
+    assert "," not in tokens
+    assert "!" not in tokens
+    assert all(t.strip() for t in tokens)
+
+
+def test_jieba_knob_english_byte_identical() -> None:
+    """Threading tokenizer='jieba' through an English call stays
+    byte-identical. Jieba ships Chinese segmentation only; letting it
+    affect English would silently drift every migrated metric."""
+    text = "it's a cat and the mat"
+    assert tokenize(text, "en", tokenizer="jieba") == text.split()
+
+
+def test_jieba_knob_non_zh_langs_fall_through_to_unicode() -> None:
+    """Japanese / Korean / Arabic ignore the jieba knob — jieba is
+    zh-only. Non-zh langs route through the Unicode letter-run as if
+    the knob were 'unicode'."""
+    pytest.importorskip("jieba")
+    for text, lang in [
+        ("私は東京に住んでいます。", "ja"),
+        ("저는 서울에 살고 있습니다", "ko"),
+        ("أنا أعيش في القاهرة", "ar"),
+    ]:
+        assert tokenize(text, lang, tokenizer="jieba") == tokenize(
+            text, lang, tokenizer="unicode"
+        )
+
+
+def test_tokenize_rejects_unknown_tokenizer() -> None:
+    """Typo-protection: unknown values raise rather than silently
+    falling through to unicode."""
+    with pytest.raises(ValueError, match="Unknown tokenizer"):
+        tokenize("hello", "en", tokenizer="mecab")
+
+
+def test_jieba_fallback_when_missing(monkeypatch, caplog) -> None:
+    """If jieba import fails at runtime, tokenize must degrade to the
+    Unicode path (not raise) and emit a single warning. Caller code
+    must not need to defensively check availability."""
+    import psychology_base.i18n as i18n_mod
+
+    # Reset the one-shot import state and force the module to look
+    # missing. monkeypatch restores on test teardown.
+    monkeypatch.setattr(i18n_mod, "_jieba_import_attempted", True)
+    monkeypatch.setattr(i18n_mod, "_jieba_module", None)
+    monkeypatch.setattr(i18n_mod, "_jieba_warned_missing", False)
+
+    text = "我最近感到很焦虑,工作压力很大。"
+    with caplog.at_level("WARNING", logger="psychology_base.i18n"):
+        tokens = tokenize(text, "zh", tokenizer="jieba")
+    # Fallback output matches the unicode path.
+    assert tokens == tokenize(text, "zh", tokenizer="unicode")
+    # Warning fired exactly once; the module-level flag is now set so
+    # subsequent calls stay silent.
+    warnings = [r for r in caplog.records if "jieba" in r.message]
+    assert len(warnings) == 1

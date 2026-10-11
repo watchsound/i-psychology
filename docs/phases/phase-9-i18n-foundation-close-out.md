@@ -155,3 +155,24 @@ Each migration is a 1-line append or a 2-line conditional under the byte-identic
 Per CLAUDE.md: *"a mechanism on tracks 1–2 that cannot be used by the learning tutor or the companion is out of scope."* The i18n foundation is explicitly scoped to the two Chinese-first applications. The extraction-site migration directly addresses the hypothesized failure mode: Chinese user → silently-anglicized facts in memory → affect loss → 共情 degradation. The remaining migrations (judge/reader/application-agent prompts, metric tokenizers, embedder) are the queue; each unblocks either a specific application behavior or a specific measurement correctness property.
 
 Per [docs/sota-goal.md](../sota-goal.md): *"SOTA is defined by application outcomes — best in-application result for the two surfaces."* Multi-language support is a precondition for the Chinese-first applications to even measure correctly; without it, the SOTA claim would be made on an English stand-in that doesn't reflect the actual deployment surface.
+
+---
+
+## 8. Follow-on — jieba CJK tokenizer live-wired at recall path (2026-10-11)
+
+The "mono-sentence CJK one-token" honest limit from §6 is now recoverable at the recall path. Scope:
+
+- [`psychology_base.i18n.tokenize`](../../src/psychology_base/i18n/__init__.py) accepts `tokenizer="unicode"|"jieba"`. The jieba branch runs only when `lang=="zh"`; English stays `text.split()`; non-zh non-en keeps the Unicode letter-run. Missing jieba install degrades to the Unicode path with one module-level warning rather than raising. Unknown tokenizer values raise `ValueError`.
+- [`companion.reconstruction.tokens`](../../src/psychology_base/companion/reconstruction.py#L29) accepts `cjk_tokenizer="unicode"|"jieba"` and dispatches zh content through `i18n.tokenize(text, "zh", tokenizer="jieba")` only when the knob is set to `"jieba"` AND `detect_lang(text) == "zh"`. English content is never routed through `i18n.tokenize` because `text.split()` is NOT byte-identical to `_TOKEN_RE.findall(text.lower())` on apostrophe-bearing input (`"it's"` → `["it's"]` vs `["it", "s"]`) — the dispatch stays zh-only to protect the English pipeline.
+- `cjk_tokenizer` threads through `jaccard_prior`, `effective_edge_weight`, `spread_activation`, `coalesce`, and `reconstruct`. [`CompanionSystem.__init__`](../../src/psychology_base/companion/system.py) accepts `cjk_tokenizer="unicode"` default and threads it into both the main `reconstruct(...)` call in `recall()` and the Phase 2b Step H `spread_activation(...)` call in `_recall_hierarchical`.
+- Secondary paths NOT migrated this ship: `companion.witness._tokens` (W4 pain divergence — orthogonal to cue→content matching), `companion.entity_graph._tokens` (consolidation-tier only). Both default to `"unicode"` for zero regression; follow-up migration if a specific Chinese-register gap surfaces there.
+
+Behavior lock (`tests/test_i18n_end_to_end_chinese.py:test_jieba_knob_live_shortens_cjk_cue`):
+
+- Baseline (`CompanionSystem()`, default `cjk_tokenizer="unicode"`): `recall("焦虑")` against a stored `"我最近感到很焦虑,工作压力很大。"` returns NO fragment — the stored clause tokenizes as one CJK run under the letter-run regex, shares zero tokens with the short cue.
+- Knob on (`CompanionSystem(cjk_tokenizer="jieba")`): same cue, same stored content — fragment IS retrieved via shared "焦虑" word token.
+- English control (`test_jieba_knob_english_recall_byte_identical`): `cjk_tokenizer="jieba"` on an English-only system produces identical fragment IDs to `"unicode"`. Byte-identical regression lock holds.
+
+Configuration surface: [`configs/llm.yaml`](../../configs/llm.yaml) already reserves `i18n.tokenizer:`; wiring from the config to `CompanionSystem(cjk_tokenizer=...)` is a 1-line read-and-pass at the construction sites but intentionally not plumbed yet — the knob is an opt-in behavior at the call site, not a global default, so Phase 2b Step H and B2 scope-filter recalls keep their byte-identical control runs.
+
+Tests: 1749 → 1758 green (+7 i18n unit tests exercising the jieba branch + fallback + typo-protection + non-zh pass-through; +2 end-to-end tests covering the knob-on retrieval recovery and the English byte-identity control).

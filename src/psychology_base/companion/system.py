@@ -491,6 +491,7 @@ class CompanionSystem:
         reconstructive_hop_decay: float = HIERARCHICAL_RECONSTRUCTIVE_HOP_DECAY,
         affect_weight: float = 0.0,
         aging_policy: Optional[AgingPolicy] = None,
+        cjk_tokenizer: str = "unicode",
     ) -> None:
         self.companion = Companion()
         self.witness = Witness()
@@ -741,6 +742,20 @@ class CompanionSystem:
         # context["affect"]). See companion/affect_resonance.py.
         self.affect_weight = affect_weight
 
+        # Phase 9+ i18n follow-on — CJK tokenizer knob. Default
+        # "unicode" (letter-run `[A-Za-z\u4e00-\u9fff]+`) keeps every
+        # pre-i18n recall path byte-identical. "jieba" routes zh content
+        # through finer-grained word segmentation during R1 edge-seeding
+        # and R2 coalescence so a shorter CJK cue (e.g. "焦虑") can hit
+        # a longer stored clause ("我最近感到很焦虑") via shared tokens.
+        # Threaded via `reconstruct(..., cjk_tokenizer=...)`; non-CJK
+        # content (including English) always keeps the legacy letter-run
+        # tokenizer because `i18n.tokenize(text, "en") == text.split()`
+        # which is NOT byte-identical to `_TOKEN_RE.findall(text.lower())`
+        # on apostrophe-bearing English ("it's" → ["it's"] vs
+        # ["it", "s"]). Keeping the dispatch zh-only sidesteps that.
+        self.cjk_tokenizer = cjk_tokenizer
+
         # Phase 3 E1 — optional aging policy (S1 Decay / S2 Capacity /
         # S3 Metabolism / S4 Tiered). Default None keeps Phase 2 behaviour
         # byte-identical. When set, the FragmentStore's eviction strength
@@ -932,6 +947,7 @@ class CompanionSystem:
             edges=self.edges,
             cue_affect=cue_affect,
             affect_weight=effective_affect_weight,
+            cjk_tokenizer=self.cjk_tokenizer,
         )
         # Phase 3 E1 — reconsolidate on recall. Every fragment that
         # entered the top-K pool gets its retention curve reset + boosted
@@ -1282,6 +1298,7 @@ class CompanionSystem:
                 hops=self.reconstructive_hops,
                 hop_decay=self.reconstructive_hop_decay,
                 edges=self.edges,
+                cjk_tokenizer=self.cjk_tokenizer,
             )
             seen_recon_ids = (
                 cosine_frag_ids
