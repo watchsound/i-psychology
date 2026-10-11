@@ -41,6 +41,7 @@ from psychology_base.applications.safety.minor_exclusion import (
 )
 from psychology_base.companion.system import CompanionSystem
 from psychology_base.eval.adapters import Observation
+from psychology_base.i18n.prompts import response_language_directive
 
 
 LLMResponder = Callable[[str, str, str], str]
@@ -432,8 +433,16 @@ class TutorAgent:
             )
         )
 
+        # Per-turn language dispatch: English user utterance → directive
+        # is "" so the system prompt is byte-identical to the pre-i18n
+        # version. Non-English utterance → appended directive tells the
+        # model to reply in the user's language, which is load-bearing
+        # for the 韧性学习陪伴 Chinese-first target.
+        localized_system = self.system_prompt + response_language_directive(
+            user_utterance
+        )
         response_text = self.llm_responder(
-            self.system_prompt, context_block, user_utterance
+            localized_system, context_block, user_utterance
         )
         tutor_move = classify_tutor_move(response_text)
 

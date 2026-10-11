@@ -23,7 +23,10 @@ from psychology_base.companion.extraction import (
     EXTRACTION_SYSTEM_PROMPT,
     MAX_FACTS_PER_WINDOW,
 )
-from psychology_base.i18n.prompts import fact_language_directive
+from psychology_base.i18n.prompts import (
+    fact_language_directive,
+    response_language_directive,
+)
 
 
 def test_english_text_returns_empty_directive() -> None:
@@ -105,4 +108,79 @@ def test_chinese_extraction_system_prompt_is_strict_superset() -> None:
     )
     assert with_i18n.startswith(legacy)
     assert len(with_i18n) > len(legacy)
+    assert "Chinese" in with_i18n
+
+
+# ---------- response_language_directive ----------
+
+
+def test_response_english_text_returns_empty_directive() -> None:
+    """Byte-identical append contract preserved for the agent-response
+    pipeline the same way fact_language_directive preserves it for
+    extraction. Any TutorAgent / CompanionAgent that appends this helper
+    to its system prompt is bit-stable when the user writes in English.
+    """
+    assert response_language_directive("How do I solve this integral?") == ""
+
+
+def test_response_unknown_text_returns_empty_directive() -> None:
+    assert response_language_directive("12345") == ""
+    assert response_language_directive("") == ""
+    assert response_language_directive("!!! ???") == ""
+
+
+def test_response_chinese_directive_names_chinese() -> None:
+    directive = response_language_directive("我今天感觉有点焦虑,能聊聊吗?")
+    assert directive != ""
+    assert "Chinese" in directive
+
+
+def test_response_japanese_directive() -> None:
+    assert "Japanese" in response_language_directive("今日は少し不安です。")
+
+
+def test_response_korean_directive() -> None:
+    assert "Korean" in response_language_directive("오늘 조금 불안해요.")
+
+
+def test_response_directive_omits_extraction_grammar() -> None:
+    """Agent-response directive must NOT mention entity/relation/value
+    fields or op tokens — those are extraction-pipeline grammar and
+    appending them to a tutor/companion system prompt would mislead the
+    model into emitting pipe-separated facts instead of a natural reply.
+    """
+    directive = response_language_directive("我今天感觉有点焦虑。")
+    assert "entity" not in directive
+    assert "relation" not in directive
+    assert "ADD" not in directive
+    assert "UPDATE" not in directive
+    assert "NOOP" not in directive
+    assert "pipe-separated" not in directive
+
+
+def test_response_explicit_lang_tag_bypasses_detection() -> None:
+    assert response_language_directive("en", is_lang_tag=True) == ""
+    assert "Chinese" in response_language_directive("zh", is_lang_tag=True)
+    assert "Japanese" in response_language_directive("ja", is_lang_tag=True)
+
+
+def test_response_english_system_prompt_byte_identical() -> None:
+    """Append contract on an agent system prompt: English user utterance
+    + response_language_directive == original system prompt bytes. Locks
+    the TutorAgent / CompanionAgent English pipeline against drift.
+    """
+    base_system = "You are a Socratic tutor. Do not reveal answers directly."
+    with_i18n = base_system + response_language_directive(
+        "I don't understand this proof."
+    )
+    assert with_i18n == base_system
+
+
+def test_response_chinese_system_prompt_is_strict_superset() -> None:
+    base_system = "You are a long-term emotional companion."
+    with_i18n = base_system + response_language_directive(
+        "我今天过得很糟糕,感觉自己什么都做不好。"
+    )
+    assert with_i18n.startswith(base_system)
+    assert len(with_i18n) > len(base_system)
     assert "Chinese" in with_i18n

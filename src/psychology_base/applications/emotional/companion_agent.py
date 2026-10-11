@@ -51,6 +51,7 @@ from psychology_base.applications.safety.minor_exclusion import (
 )
 from psychology_base.companion.system import CompanionSystem
 from psychology_base.eval.adapters import Observation
+from psychology_base.i18n.prompts import response_language_directive
 
 
 LLMResponder = Callable[[str, str, str], str]
@@ -286,8 +287,17 @@ class CompanionAgent:
             self.trait_profile,
             self.trait_conditioning_flag,
         )
+        # Per-turn language dispatch applied AFTER trait conditioning so
+        # the directive sits at the tail of the composed system prompt.
+        # English user utterance → directive is "" → byte-identical to
+        # the pre-i18n composition. Non-English → appended directive
+        # tells the model to reply in the user's language, load-bearing
+        # for the 情感陪伴 Chinese-first target.
+        localized_prompt = conditioned_prompt + response_language_directive(
+            user_utterance
+        )
         response_text = self.llm_responder(
-            conditioned_prompt, context_block, user_utterance
+            localized_prompt, context_block, user_utterance
         )
 
         self.companion_system.observe(
