@@ -99,3 +99,33 @@ cache:
   enabled: true
   # null => ~/.cache/psychology_base/llm/ (or $PSYCHOLOGY_BASE_LLM_CACHE_DIR).
   dir: null
+
+# Multi-language dispatch surface. Fully additive today — no call site in
+# companion/, eval/, or llm/ reads this section yet. It defines the knobs
+# that the four English-forcing sites (extraction prompt examples,
+# consolidation prompt examples, judge rubric, metric tokenizers) will
+# consult when they are migrated piecewise behind the i18n helper at
+# ``psychology_base.i18n``. Defaults preserve the English-only pipeline
+# bit-for-bit; flipping ``mode`` to "auto" (detect per utterance) or an
+# explicit tag ("zh", "ja", ...) activates the dispatch at the migrated
+# site without disturbing the others.
+i18n:
+  # "en"   -> legacy behavior; every migrated site uses str.split()
+  #           tokenization and English-example prompts.
+  # "auto" -> detect per utterance via Unicode-block heuristic in
+  #           ``psychology_base.i18n.detect_lang``; migrated sites adapt.
+  # "<tag>"-> force a specific language tag ("zh", "ja", "ko", "ar",
+  #           "th", "ru", "he", "hi", "el"); useful for single-locale
+  #           deployments where auto-detect latency is unwelcome.
+  mode: en
+  # Tokenizer backend selector. "unicode" is the house default and
+  # covers every supported script via a regex letter-run. "jieba" is a
+  # future opt-in for finer-grained Chinese word segmentation; not
+  # imported until the user flips it on, so no new dependency ships
+  # unused.
+  tokenizer: unicode
+  # When true, the LLM router will prefer a multilingual embedder
+  # (bge-m3 / multilingual-e5-large) over the English-leaning default
+  # (mxbai-embed-large / text-embedding-v3). Not yet wired to the
+  # router — set only when the i18n-aware embedding route lands.
+  embedder_multilingual: false

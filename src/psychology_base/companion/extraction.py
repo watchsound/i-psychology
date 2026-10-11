@@ -28,6 +28,7 @@ from typing import Optional, Sequence
 
 from psychology_base.companion.facts import Fact, FactOp, FactOperation
 from psychology_base.eval.adapters import Fragment
+from psychology_base.i18n.prompts import fact_language_directive
 from psychology_base.llm.router import LLMRouter
 from psychology_base.llm.types import ChatMessage, TaskTier
 
@@ -245,10 +246,19 @@ def extract_facts(
         return []
 
     relevant_priors = _relevant_prior_facts(prior_facts, window)
-    system = EXTRACTION_SYSTEM_PROMPT.format(max_facts=MAX_FACTS_PER_WINDOW)
+    window_block = _format_window(window)
+    # fact_language_directive returns "" for English / unknown input, so
+    # the English pipeline's system prompt is byte-identical to the
+    # pre-i18n version. Non-English windows get an appended directive
+    # instructing the model to keep entity/relation/value in the
+    # speaker's language.
+    system = (
+        EXTRACTION_SYSTEM_PROMPT.format(max_facts=MAX_FACTS_PER_WINDOW)
+        + fact_language_directive(window_block)
+    )
     user = EXTRACTION_USER_TEMPLATE.format(
         prior_block=_format_prior_facts(relevant_priors, MAX_PRIOR_FACTS_INCLUDED),
-        window_block=_format_window(window),
+        window_block=window_block,
     )
     messages = [
         ChatMessage(role="system", content=system),
