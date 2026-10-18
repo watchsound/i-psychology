@@ -64,6 +64,7 @@ from typing import Optional, Sequence
 from psychology_base.eval.benchmarks.public_datasets.counseling_depth_scorer import (
     _lexical_empathy_score,
 )
+from psychology_base.i18n import detect_lang
 
 
 # ---------------------------------------------------------------------------
@@ -216,12 +217,164 @@ _CONSISTENCY_CUES: tuple[str, ...] = (
 
 
 # ---------------------------------------------------------------------------
+# Chinese (zh) sibling cue banks — Phase 9+ i18n migration (2026-10-11)
+#
+# Dispatched via :func:`detect_lang` inside :func:`_cue_hit` and
+# :func:`_mirror_hit`. Non-zh text (including English, mixed-register
+# dominated by Latin, and any ``unknown``) continues to route through
+# the EN banks above — byte-identical to the pre-migration pipeline by
+# construction, since ``detect_lang`` returns ``"zh"`` only when CJK is
+# the dominant script and no Hiragana/Katakana/Hangul precedes it.
+#
+# Scope: the attachment overlay is Chinese-first application substrate
+# per [CLAUDE.md] (情感陪伴 is Chinese-first). Shipping EN-only banks
+# meant Chinese sessions scored 0 on every behavior dimension — honest
+# limitation documented in [docs/phases/phase-9-attachment-overlay-close-out.md].
+# These sibling banks close that gap at the lexical tier; LLM-judge
+# upgrade remains a separate follow-on.
+# ---------------------------------------------------------------------------
+
+
+_RUPTURE_CUES_ZH: tuple[str, ...] = (
+    "其实不是",
+    "不是这样",
+    "你搞错了",
+    "你错了",
+    "不对",
+    "打断一下",
+    "等等,不",
+    "你应该",
+    "你需要",
+    "换个话题",
+    "我们聊点别的",
+    "这不重要",
+    "别再说",
+    "够了",
+    "你想太多",
+    "你太戏剧化",
+    "没什么大不了",
+    "放下吧",
+    "别钻牛角尖",
+)
+
+
+_REPAIR_CUES_ZH: tuple[str, ...] = (
+    "对不起",
+    "抱歉",
+    "我道歉",
+    "我现在听到了",
+    "让我再试一次",
+    "让我重新说",
+    "我没听清",
+    "你是对的",
+    "我应该",
+    "我误会了",
+    "我的错",
+    "我错了",
+    "谢谢你指出",
+    "谢谢你告诉我",
+    "我没抓住重点",
+)
+
+
+_SYCOPHANCY_CUES_ZH: tuple[str, ...] = (
+    "你完全正确",
+    "说得太好了",
+    "太棒了",
+    "真聪明",
+    "好有见解",
+    "你抓住了重点",
+    "完全同意",
+    "太厉害了",
+    "好有智慧",
+    "简直完美",
+    "太赞了",
+    "你是对的,就是",
+    "100%正确",
+    "我太爱这个想法",
+    "绝了",
+)
+
+
+_OVER_DISCLOSURE_CUES_ZH: tuple[str, ...] = (
+    "三次会话前",
+    "很久以前你",
+    "几周前你",
+    "上个月你",
+    "几个月前你",
+    "回到我们第一次聊天",
+    "我们第一次聊的时候",
+    "很久以前你说过",
+    "我记得你曾经",
+    "我一直在想你说的话",
+    "从我们早期的对话",
+)
+
+
+_CONSISTENCY_CUES_ZH: tuple[str, ...] = (
+    "你提到",
+    "你之前说",
+    "你说过",
+    "上次",
+    "上个会话",
+    "之前你",
+    "我们聊过",
+    "你一直在",
+    "我们讨论过",
+    "你一直在处理",
+    "像你说的",
+)
+
+
+# Chinese empathy-mirror cues — flat bank for the binary mirror-hit path.
+# The EN mirror path uses the three-family :func:`_lexical_empathy_score`
+# (recognition / presence / validation) thresholded at 1/3. The ZH path
+# is a flat substring check: any cue match = hit. This simplification is
+# accepted because the mirror dimension already binarises to {0, 1}
+# downstream — graded empathy ∈ (0, 1) was never carried through.
+_MIRROR_CUES_ZH: tuple[str, ...] = (
+    "我理解",
+    "我明白",
+    "我听到了",
+    "我感受到",
+    "听起来",
+    "我在这里",
+    "我陪着你",
+    "你不是一个人",
+    "不孤单",
+    "慢慢来",
+    "不急",
+    "没有评判",
+    "这确实很难",
+    "这很难",
+    "很痛苦",
+    "让人难受",
+    "压得人喘不过气",
+    "这说得通",
+    "任何人都会",
+    "没关系",
+    "你有权",
+    "这是正常的",
+    "你很重要",
+)
+
+
+# ---------------------------------------------------------------------------
 # Per-turn cue scorers
 # ---------------------------------------------------------------------------
 
 
-def _cue_hit(text: str, cues: tuple[str, ...]) -> int:
+def _cue_hit(
+    text: str,
+    cues_en: tuple[str, ...],
+    cues_zh: tuple[str, ...],
+) -> int:
     """Return 1 iff any cue appears in ``text`` (case-insensitive). 0 otherwise.
+
+    Dispatch by :func:`detect_lang`: ``"zh"`` → ``cues_zh``, else → ``cues_en``.
+    English (and every other non-zh script) routes to ``cues_en``
+    byte-identical to the pre-i18n pipeline — the dispatch only diverts
+    when the dominant script is CJK (no Hiragana/Katakana/Hangul).
 
     One hit per turn — multiple cues in the same turn don't double-count
     (matches the family-hit semantics of counseling_depth_scorer so the
@@ -229,6 +382,7 @@ def _cue_hit(text: str, cues: tuple[str, ...]) -> int:
     """
     if not text:
         return 0
+    cues = cues_zh if detect_lang(text) == "zh" else cues_en
     low = text.lower()
     for cue in cues:
         if cue in low:
@@ -237,7 +391,24 @@ def _cue_hit(text: str, cues: tuple[str, ...]) -> int:
 
 
 def _mirror_hit(text: str) -> int:
-    """Mirror hit iff empathy score ≥ 1/3 (at least one empathy family present)."""
+    """Mirror hit iff empathy signal is present.
+
+    EN (and non-zh): empathy score ≥ 1/3 (at least one empathy family
+    present via :func:`_lexical_empathy_score`). Byte-identical to the
+    pre-i18n behavior for any text whose detected language is not ``"zh"``.
+
+    ZH: flat-bank substring hit on :data:`_MIRROR_CUES_ZH`. Zero graded
+    empathy signal is carried through because the mirror dimension
+    binarises to {0, 1} downstream regardless.
+    """
+    if not text:
+        return 0
+    if detect_lang(text) == "zh":
+        low = text.lower()
+        for cue in _MIRROR_CUES_ZH:
+            if cue in low:
+                return 1
+        return 0
     return 1 if _lexical_empathy_score(text) >= _MIRROR_HIT_THRESHOLD else 0
 
 
@@ -370,13 +541,22 @@ def score_session_attachment(
     """
     n_turns = len(companion_turns)
     mirror_hits = sum(_mirror_hit(t) for t in companion_turns)
-    rupture_hits = sum(_cue_hit(t, _RUPTURE_CUES) for t in companion_turns)
-    repair_hits = sum(_cue_hit(t, _REPAIR_CUES) for t in companion_turns)
-    sycophancy_hits = sum(_cue_hit(t, _SYCOPHANCY_CUES) for t in companion_turns)
-    over_disclosure_hits = sum(
-        _cue_hit(t, _OVER_DISCLOSURE_CUES) for t in companion_turns
+    rupture_hits = sum(
+        _cue_hit(t, _RUPTURE_CUES, _RUPTURE_CUES_ZH) for t in companion_turns
     )
-    consistency_hits = sum(_cue_hit(t, _CONSISTENCY_CUES) for t in companion_turns)
+    repair_hits = sum(
+        _cue_hit(t, _REPAIR_CUES, _REPAIR_CUES_ZH) for t in companion_turns
+    )
+    sycophancy_hits = sum(
+        _cue_hit(t, _SYCOPHANCY_CUES, _SYCOPHANCY_CUES_ZH) for t in companion_turns
+    )
+    over_disclosure_hits = sum(
+        _cue_hit(t, _OVER_DISCLOSURE_CUES, _OVER_DISCLOSURE_CUES_ZH)
+        for t in companion_turns
+    )
+    consistency_hits = sum(
+        _cue_hit(t, _CONSISTENCY_CUES, _CONSISTENCY_CUES_ZH) for t in companion_turns
+    )
 
     session_bond = _compose_session_bond(
         n_turns=n_turns,

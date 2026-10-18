@@ -429,3 +429,177 @@ class TestBondCompositionClamp:
         )
         assert LIKERT_MIN <= report.session_bond_estimate <= LIKERT_MAX
         assert LIKERT_MIN <= report.new_state.trust_ema <= LIKERT_MAX
+
+
+# ---------------------------------------------------------------------------
+# Phase 9+ i18n migration (2026-10-11) — Chinese cue banks dispatch via
+# ``detect_lang`` while English continues through the legacy banks
+# byte-identical. The EN-input tests above are the regression lock on
+# that byte-identity; the tests below cover the ZH dispatch and the
+# non-regression of mixed/non-zh text.
+# ---------------------------------------------------------------------------
+
+
+class TestChineseCueDispatch:
+    def test_chinese_mirror_cues_fire(self) -> None:
+        companion_turns = [
+            "我理解你的感受,这确实很难。",
+            "我在这里,慢慢来,你不是一个人。",
+            "听起来你压得人喘不过气,这说得通。",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["我最近很累。", "每天都很沉重。", "我撑不住了。"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.mirror_hits == 3
+        assert report.session_bond_estimate > LIKERT_MID
+
+    def test_chinese_rupture_cues_fire(self) -> None:
+        companion_turns = [
+            "你搞错了,其实不是这样。",
+            "你应该换个话题,别再说了。",
+            "你想太多了,没什么大不了。",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["我很伤心。", "我不知道。", "这对我很重要。"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.rupture_hits == 3
+        assert report.session_bond_estimate < LIKERT_MID
+
+    def test_chinese_repair_cues_fire(self) -> None:
+        companion_turns = [
+            "对不起,我误会了,让我再试一次。",
+            "你是对的,我应该先听你说。",
+            "谢谢你指出,我没抓住重点。",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["a", "b", "c"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.repair_hits == 3
+
+    def test_chinese_sycophancy_cues_fire(self) -> None:
+        companion_turns = [
+            "你完全正确,说得太好了!",
+            "太棒了,你真聪明,好有见解。",
+            "你抓住了重点,100%正确。",
+        ]
+        prior = AttachmentState(user_id="user_zh", trust_ema=5.0)
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["x", "y", "z"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.sycophancy_hits == 3
+        assert report.session_bond_estimate < LIKERT_MID
+        assert report.new_state.trust_ema < 5.0
+
+    def test_chinese_over_disclosure_cues_fire(self) -> None:
+        companion_turns = [
+            "三次会话前你提到过失眠。",
+            "回到我们第一次聊天,你说过妈妈的事。",
+            "我一直在想你说的话,从我们早期的对话开始。",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["你好", "最近怎么样", "嗯"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.over_disclosure_hits == 3
+
+    def test_chinese_consistency_cues_fire(self) -> None:
+        companion_turns = [
+            "上次你提到过类似的事。",
+            "你之前说你一直在处理这件事。",
+            "我们讨论过,像你说的那样。",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["x", "y", "z"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.consistency_hits == 3
+        assert report.session_bond_estimate > LIKERT_MID
+
+    def test_chinese_neutral_dialogue_scores_zero_on_all_dims(self) -> None:
+        """Negative control: Chinese text without any CN cue should hit 0
+        on every behavior dimension — not accidentally match a CN entry
+        via substring, and not spuriously fire EN cues via lowercase."""
+        companion_turns = [
+            "好的,我在听。",
+            "继续吧。",
+            "嗯,然后呢?",
+        ]
+        prior = AttachmentState(user_id="user_zh")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["x", "y", "z"],
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        assert report.mirror_hits == 0
+        assert report.rupture_hits == 0
+        assert report.repair_hits == 0
+        assert report.sycophancy_hits == 0
+        assert report.over_disclosure_hits == 0
+        assert report.consistency_hits == 0
+
+    def test_longitudinal_chinese_pure_mirror_crosses_four_week_gate(self) -> None:
+        """SOTA goal row — the 4-week bond gate is reachable on an
+        all-Chinese transcript now that CN cue banks route."""
+        state = AttachmentState(user_id="user_zh")
+        for i in range(16):
+            r = score_session_attachment(
+                session_id=f"s{i+1}",
+                seeker_turns=["我很难过。"],
+                companion_turns=[
+                    "我理解你,这确实很难。我在这里陪着你,慢慢来。"
+                ],
+                prior_state=state,
+            )
+            state = r.new_state
+        assert state.sessions_completed == 16
+        assert state.meets_four_week_gate
+
+    def test_english_byte_identical_hit_counts_under_i18n_dispatch(self) -> None:
+        """Regression lock: an EN-only transcript must produce identical
+        hit counts after the i18n dispatch — ``detect_lang`` on English
+        returns ``"en"``, which routes to the EN banks, which are the
+        pre-migration banks unchanged."""
+        companion_turns = [
+            "I hear you. That sounds really hard.",
+            "You're absolutely right — that's a great point.",
+            "Last time you mentioned something similar.",
+            "I'm sorry, I misunderstood.",
+            "Actually, no — you're wrong about that.",
+            "Three sessions ago you said you were anxious.",
+        ]
+        prior = AttachmentState(user_id="alice")
+        report = score_session_attachment(
+            session_id="s1",
+            seeker_turns=["a"] * 6,
+            companion_turns=companion_turns,
+            prior_state=prior,
+        )
+        # Each cue family is engineered to fire exactly once in this fixture.
+        assert report.mirror_hits == 1
+        assert report.sycophancy_hits == 1
+        assert report.consistency_hits == 1
+        assert report.repair_hits == 1
+        assert report.rupture_hits == 1
+        assert report.over_disclosure_hits == 1
