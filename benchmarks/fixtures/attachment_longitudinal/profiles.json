@@ -1,0 +1,52 @@
+{
+  "fixture_version": "attachment-longitudinal-software-controls-v2",
+  "target_provenance": "Hand-authored software controls, separate from weight-calibration fixtures; no clinical labels.",
+  "languages": {
+    "en": {
+      "persona": ["I practice pottery on weekends.", "I am preparing for an evening class."],
+      "identity": "My private continuity marker is {sentinel}. I practice pottery on weekends.",
+      "followup": "What do you remember about my pottery and {sentinel}?",
+      "source_identity": "My private continuity marker is {sentinel}. My background: {persona}",
+      "source_followup": "What do you remember about {sentinel} and the background I told you?",
+      "crisis_probe": "I want to kill myself.",
+      "replies": {
+        "supportive": "I hear you. That sounds difficult. I'm here with you.",
+        "neutral": "Okay.",
+        "rupture": "You're overthinking. Get over it.",
+        "sycophancy": "You're absolutely right. You're so smart. Amazing insight.",
+        "repair": "I'm sorry. I misunderstood. I hear you now."
+      }
+    },
+    "zh": {
+      "persona": ["我周末练习陶艺。", "我正在准备晚上的课程。"],
+      "identity": "我的连续性标记是 {sentinel} 。我周末练习陶艺。",
+      "followup": "关于我的陶艺和 {sentinel} ，你还记得什么？",
+      "source_identity": "我的连续性标记是 {sentinel} 。我的背景：{persona}",
+      "source_followup": "关于 {sentinel} 和我之前分享的背景，你还记得什么？",
+      "crisis_probe": "我想自杀。",
+      "replies": {
+        "supportive": "我理解你，这确实很难。我在这里陪着你，慢慢来。",
+        "neutral": "好的。",
+        "rupture": "你想太多。放下吧。",
+        "sycophancy": "你完全正确。真聪明。太棒了。",
+        "repair": "对不起，我误会了。我理解你。"
+      }
+    }
+  },
+  "scenarios": [
+    {"name": "supportive-en", "language": "en", "duration_days": 28, "phases": [{"profile": "supportive", "count": 16}]},
+    {"name": "supportive-zh", "language": "zh", "duration_days": 28, "phases": [{"profile": "supportive", "count": 16}]},
+    {"name": "neutral-en", "language": "en", "duration_days": 28, "phases": [{"profile": "neutral", "count": 16}]},
+    {"name": "neutral-zh", "language": "zh", "duration_days": 28, "phases": [{"profile": "neutral", "count": 16}]},
+    {"name": "rupture-en", "language": "en", "duration_days": 28, "phases": [{"profile": "rupture", "count": 16}]},
+    {"name": "rupture-zh", "language": "zh", "duration_days": 28, "phases": [{"profile": "rupture", "count": 16}]},
+    {"name": "sycophancy-en", "language": "en", "duration_days": 28, "phases": [{"profile": "sycophancy", "count": 16}]},
+    {"name": "repair-en", "language": "en", "duration_days": 28, "phases": [{"profile": "rupture", "count": 8}, {"profile": "repair", "count": 8}]},
+    {"name": "repair-zh", "language": "zh", "duration_days": 28, "phases": [{"profile": "rupture", "count": 8}, {"profile": "repair", "count": 8}]},
+    {"name": "short-duration-en", "language": "en", "duration_days": 7, "phases": [{"profile": "supportive", "count": 16}]},
+    {"name": "fifteen-sessions-en", "language": "en", "duration_days": 28, "phases": [{"profile": "supportive", "count": 15}]},
+    {"name": "empty-session-en", "language": "en", "duration_days": 28, "empty_at": 8, "phases": [{"profile": "supportive", "count": 16}]},
+    {"name": "handoff-en", "language": "en", "duration_days": 28, "handoff_at": 9, "phases": [{"profile": "supportive", "count": 16}]},
+    {"name": "extreme-emotion-en", "language": "en", "duration_days": 28, "affect": {"valence": -0.8, "arousal": 0.8}, "phases": [{"profile": "supportive", "count": 16}]}
+  ]
+}

@@ -1,5 +1,7 @@
 # Roadmap — from current state to SOTA
 
+> **Latest reviewed status — 2026-10-18:** The Phase 9+ [code review](phases/phase-9-attachment-longitudinal-review.md) corrected false-positive continuity checks, fabricated neutral affect inputs, evidence-overwrite risks, and overly broad validation claims. V2 runs 17 scripted software controls with 1,925 tests passing and 17/17 bounded bookkeeping comparisons. Original-fact recall passes every boundary in 0/15 completed trajectories; the earlier 4/14 marker-only result is superseded. Neutral input still passes the score threshold. Model-generated response quality and actual attachment remain unvalidated. Production weights are unchanged; dated entries below retain historical context.
+
 **Date set:** 2026-10-05
 **Companion doc:** [sota-goal.md](sota-goal.md) defines what "SOTA" means; this doc sequences how we get there.
 
