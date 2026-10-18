@@ -1,0 +1,292 @@
+{
+  "benchmark": "phase9_attachment_weight_calibration",
+  "generated_utc": "2026-10-12T03:01:35.648671+00:00",
+  "grid_size": "coarse",
+  "grid_cardinality": 5120,
+  "corpus_size": 20,
+  "corpus_profile_tags": [
+    "pure_mirror_light",
+    "pure_mirror_saturated",
+    "pure_consistency_saturated",
+    "mirror_plus_consistency_saturated",
+    "pure_rupture_light",
+    "pure_rupture_saturated",
+    "pure_sycophancy_saturated",
+    "pure_over_disclosure_saturated",
+    "rupture_then_repair_symmetric",
+    "rupture_unrepaired",
+    "mirror_offset_by_sycophancy",
+    "mirror_and_rupture_mix",
+    "pure_neutral",
+    "single_mirror_turn",
+    "all_sycophancy_in_short_session",
+    "mirror_consistency_repair_combined",
+    "rupture_sycophancy_combo",
+    "over_disclosure_single_turn",
+    "consistency_without_mirror",
+    "repair_without_rupture"
+  ],
+  "current_weights": {
+    "W_MIRROR": 1.5,
+    "W_REPAIR": 1.0,
+    "W_CONSISTENCY": 0.5,
+    "W_RUPTURE": -1.0,
+    "W_SYCOPHANCY": -1.0,
+    "W_OVER_DISCLOSURE": -0.8
+  },
+  "current_mae": 0.4866666666666668,
+  "best_weights": {
+    "W_MIRROR": 1.5,
+    "W_REPAIR": 0.5,
+    "W_CONSISTENCY": 0.75,
+    "W_RUPTURE": -2.0,
+    "W_SYCOPHANCY": -1.5,
+    "W_OVER_DISCLOSURE": -1.6
+  },
+  "best_mae": 0.16666666666666666,
+  "mae_improvement": 0.3200000000000002,
+  "per_fixture_current": [
+    {
+      "profile_tag": "pure_mirror_light",
+      "target_bond": 4.75,
+      "predicted_bond_current": 4.5,
+      "abs_divergence_current": 0.25
+    },
+    {
+      "profile_tag": "pure_mirror_saturated",
+      "target_bond": 5.75,
+      "predicted_bond_current": 5.5,
+      "abs_divergence_current": 0.25
+    },
+    {
+      "profile_tag": "pure_consistency_saturated",
+      "target_bond": 4.75,
+      "predicted_bond_current": 4.5,
+      "abs_divergence_current": 0.25
+    },
+    {
+      "profile_tag": "mirror_plus_consistency_saturated",
+      "target_bond": 6.25,
+      "predicted_bond_current": 6.0,
+      "abs_divergence_current": 0.25
+    },
+    {
+      "profile_tag": "pure_rupture_light",
+      "target_bond": 3.5,
+      "predicted_bond_current": 3.6666666666666665,
+      "abs_divergence_current": 0.16666666666666652
+    },
+    {
+      "profile_tag": "pure_rupture_saturated",
+      "target_bond": 2.0,
+      "predicted_bond_current": 3.0,
+      "abs_divergence_current": 1.0
+    },
+    {
+      "profile_tag": "pure_sycophancy_saturated",
+      "target_bond": 2.5,
+      "predicted_bond_current": 3.0,
+      "abs_divergence_current": 0.5
+    },
+    {
+      "profile_tag": "pure_over_disclosure_saturated",
+      "target_bond": 3.0,
+      "predicted_bond_current": 3.366666666666667,
+      "abs_divergence_current": 0.36666666666666714
+    },
+    {
+      "profile_tag": "rupture_then_repair_symmetric",
+      "target_bond": 4.25,
+      "predicted_bond_current": 4.833333333333334,
+      "abs_divergence_current": 0.5833333333333339
+    },
+    {
+      "profile_tag": "rupture_unrepaired",
+      "target_bond": 2.75,
+      "predicted_bond_current": 3.3333333333333335,
+      "abs_divergence_current": 0.5833333333333335
+    },
+    {
+      "profile_tag": "mirror_offset_by_sycophancy",
+      "target_bond": 4.0,
+      "predicted_bond_current": 4.666666666666667,
+      "abs_divergence_current": 0.666666666666667
+    },
+    {
+      "profile_tag": "mirror_and_rupture_mix",
+      "target_bond": 4.0,
+      "predicted_bond_current": 4.666666666666667,
+      "abs_divergence_current": 0.666666666666667
+    },
+    {
+      "profile_tag": "pure_neutral",
+      "target_bond": 4.0,
+      "predicted_bond_current": 4.0,
+      "abs_divergence_current": 0.0
+    },
+    {
+      "profile_tag": "single_mirror_turn",
+      "target_bond": 5.5,
+      "predicted_bond_current": 5.5,
+      "abs_divergence_current": 0.0
+    },
+    {
+      "profile_tag": "all_sycophancy_in_short_session",
+      "target_bond": 2.5,
+      "predicted_bond_current": 3.0,
+      "abs_divergence_current": 0.5
+    },
+    {
+      "profile_tag": "mirror_consistency_repair_combined",
+      "target_bond": 6.0,
+      "predicted_bond_current": 6.333333333333334,
+      "abs_divergence_current": 0.3333333333333339
+    },
+    {
+      "profile_tag": "rupture_sycophancy_combo",
+      "target_bond": 1.75,
+      "predicted_bond_current": 2.666666666666667,
+      "abs_divergence_current": 0.916666666666667
+    },
+    {
+      "profile_tag": "over_disclosure_single_turn",
+      "target_bond": 3.5,
+      "predicted_bond_current": 5.2,
+      "abs_divergence_current": 1.7000000000000002
+    },
+    {
+      "profile_tag": "consistency_without_mirror",
+      "target_bond": 4.75,
+      "predicted_bond_current": 4.5,
+      "abs_divergence_current": 0.25
+    },
+    {
+      "profile_tag": "repair_without_rupture",
+      "target_bond": 4.5,
+      "predicted_bond_current": 5.0,
+      "abs_divergence_current": 0.5
+    }
+  ],
+  "per_fixture_best": [
+    {
+      "profile_tag": "pure_mirror_light",
+      "target_bond": 4.75,
+      "predicted_bond_best": 4.5,
+      "abs_divergence_best": 0.25
+    },
+    {
+      "profile_tag": "pure_mirror_saturated",
+      "target_bond": 5.75,
+      "predicted_bond_best": 5.5,
+      "abs_divergence_best": 0.25
+    },
+    {
+      "profile_tag": "pure_consistency_saturated",
+      "target_bond": 4.75,
+      "predicted_bond_best": 4.75,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "mirror_plus_consistency_saturated",
+      "target_bond": 6.25,
+      "predicted_bond_best": 6.25,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "pure_rupture_light",
+      "target_bond": 3.5,
+      "predicted_bond_best": 3.3333333333333335,
+      "abs_divergence_best": 0.16666666666666652
+    },
+    {
+      "profile_tag": "pure_rupture_saturated",
+      "target_bond": 2.0,
+      "predicted_bond_best": 2.0,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "pure_sycophancy_saturated",
+      "target_bond": 2.5,
+      "predicted_bond_best": 2.5,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "pure_over_disclosure_saturated",
+      "target_bond": 3.0,
+      "predicted_bond_best": 2.65,
+      "abs_divergence_best": 0.3500000000000001
+    },
+    {
+      "profile_tag": "rupture_then_repair_symmetric",
+      "target_bond": 4.25,
+      "predicted_bond_best": 4.166666666666666,
+      "abs_divergence_best": 0.08333333333333393
+    },
+    {
+      "profile_tag": "rupture_unrepaired",
+      "target_bond": 2.75,
+      "predicted_bond_best": 2.666666666666667,
+      "abs_divergence_best": 0.08333333333333304
+    },
+    {
+      "profile_tag": "mirror_offset_by_sycophancy",
+      "target_bond": 4.0,
+      "predicted_bond_best": 4.5,
+      "abs_divergence_best": 0.5
+    },
+    {
+      "profile_tag": "mirror_and_rupture_mix",
+      "target_bond": 4.0,
+      "predicted_bond_best": 4.333333333333333,
+      "abs_divergence_best": 0.33333333333333304
+    },
+    {
+      "profile_tag": "pure_neutral",
+      "target_bond": 4.0,
+      "predicted_bond_best": 4.0,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "single_mirror_turn",
+      "target_bond": 5.5,
+      "predicted_bond_best": 5.5,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "all_sycophancy_in_short_session",
+      "target_bond": 2.5,
+      "predicted_bond_best": 2.5,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "mirror_consistency_repair_combined",
+      "target_bond": 6.0,
+      "predicted_bond_best": 6.083333333333333,
+      "abs_divergence_best": 0.08333333333333304
+    },
+    {
+      "profile_tag": "rupture_sycophancy_combo",
+      "target_bond": 1.75,
+      "predicted_bond_best": 1.666666666666667,
+      "abs_divergence_best": 0.08333333333333304
+    },
+    {
+      "profile_tag": "over_disclosure_single_turn",
+      "target_bond": 3.5,
+      "predicted_bond_best": 4.65,
+      "abs_divergence_best": 1.1500000000000004
+    },
+    {
+      "profile_tag": "consistency_without_mirror",
+      "target_bond": 4.75,
+      "predicted_bond_best": 4.75,
+      "abs_divergence_best": 0.0
+    },
+    {
+      "profile_tag": "repair_without_rupture",
+      "target_bond": 4.5,
+      "predicted_bond_best": 4.5,
+      "abs_divergence_best": 0.0
+    }
+  ]
+}
