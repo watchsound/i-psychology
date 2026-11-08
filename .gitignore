@@ -36,3 +36,25 @@ dist/
 # Public-dataset payloads — not vendored per Phase 4b benchmark pivot §4.
 # Provisioned by scripts in `benchmarks/scripts/provision_*.py`.
 .data/
+
+# Codex-session off-charter sprawl (2026-11-08). These paths carry ML / model-eval
+# research spurs that no committed on-charter test or src module imports. Kept
+# on disk so the work isn't lost; excluded from `git status` so on-charter diffs
+# stay readable. Remove any line to re-surface those files for triage.
+docs/phases/
+docs/experiments/
+
+# Scene-encoder + UMR + natural-scenes benchmark harness research
+tests/test_scene_encoder_*.py
+tests/test_scene_*.py
+tests/test_umr_*.py
+tests/test_natural_scenes*.py
+src/psychology_base/eval/benchmarks/scene_encoder_*.py
+src/psychology_base/eval/benchmarks/scene_*.py
+src/psychology_base/eval/benchmarks/umr_*.py
+src/psychology_base/eval/benchmarks/natural_scenes*.py
+
+# Torch/HF membership-training sprawl (no on-charter importer)
+src/psychology_base/applications/measurement/membership_checkpoint.py
+src/psychology_base/applications/measurement/membership_encoder.py
+src/psychology_base/applications/measurement/membership_head.py
