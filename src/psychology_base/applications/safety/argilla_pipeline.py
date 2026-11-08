@@ -694,13 +694,13 @@ def _build_agent_probe_responder(
     layout = PilotLayout(pilot_root=pilot_root, app=pilot_app)
     manifest = load_manifest(layout, user_id)
 
-    llm_responder = _build_llm_resp(mode)
     aging_policy = build_aging_policy(manifest.policy_id)
     # Phase 9+ i18n: route through factory so configs/llm.yaml
     # i18n.tokenizer flows into recall (same contract as tutor/companion
     # CLIs; see _resume_or_init_system).
     cfg = load_config()
     system = CompanionSystem.from_llm_config(cfg, aging_policy=aging_policy)
+    llm_responder = _build_llm_resp(mode)
 
     if app == "learning_tutor":
         from psychology_base.applications.learning.tutor_cli import (
@@ -749,13 +749,16 @@ def cmd_run_probes(args: argparse.Namespace) -> int:
                 "--pilot-root is required when --probe-source=agent "
                 "(the agent needs the enrolled user's manifest)."
             )
-        responder = _build_agent_probe_responder(
-            args.app,
-            args.mode,
-            Path(args.pilot_root),
-            args.user_id,
-            args.session_id,
-        )
+        try:
+            responder = _build_agent_probe_responder(
+                args.app,
+                args.mode,
+                Path(args.pilot_root),
+                args.user_id,
+                args.session_id,
+            )
+        except ValueError as exc:
+            raise SystemExit(f"Could not initialize agent: {exc}") from exc
     else:
         responder = _build_model_probe_responder(args.app, args.mode)
     rows = run_probe_cohort(

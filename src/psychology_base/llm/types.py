@@ -8,7 +8,7 @@ selection. Simplified for a research library:
 
 - synchronous (no asyncio) — callers are CLI tools and batch benchmark
   runs, not a FastAPI server;
-- no cost tracking (not needed at research stage);
+- execution permission and accounting live at the shared router boundary;
 - no streaming surface (no call site needs it yet);
 - vendor SDKs lazy-imported inside each provider so the project never
   forces an ``openai`` or ``anthropic`` install.
@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+import math
 from typing import Any, Literal, Optional, Protocol, runtime_checkable
 
 
@@ -35,6 +36,21 @@ class TaskTier(str, Enum):
 
 
 Role = Literal["system", "user", "assistant"]
+
+
+def validate_embedding(vector, *, dimension: Optional[int] = None) -> list[float]:
+    """Validate actual or cached vectors before using the pinned embedding path."""
+    if not isinstance(vector, (list, tuple)) or not vector:
+        raise ValueError("Embedding vector must be a nonempty sequence")
+    if dimension is not None and (type(dimension) is not int or dimension <= 0 or len(vector) != dimension):
+        raise ValueError("Embedding dimension does not match the installed model")
+    if any(type(value) not in (int, float) or not math.isfinite(value) for value in vector):
+        raise ValueError("Embedding vector must contain finite numbers")
+    values = [float(value) for value in vector]
+    norm = math.hypot(*values)
+    if not math.isfinite(norm) or norm == 0:
+        raise ValueError("Embedding vector must have a finite positive norm")
+    return values
 
 
 @dataclass(frozen=True)

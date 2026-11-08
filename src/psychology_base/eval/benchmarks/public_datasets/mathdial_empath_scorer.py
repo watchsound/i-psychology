@@ -38,6 +38,7 @@ from psychology_base.eval.benchmarks.public_datasets.mathdial import (
     MathDialConversation,
     MathDialMove,
     MathDialTurn,
+    iter_mathdial_teacher_contexts,
 )
 
 
@@ -105,6 +106,10 @@ class EMPATHMathDialReport:
             return 0.0
         return self.judge_parse_failures / self.sampled_teacher_turns
 
+    def judge_consistency_failures(self) -> int:
+        """Keep contradictory verdicts in the report and reject qualification."""
+        return sum(not v.parse_failed and not v.resolved for v in self.empath_verdicts)
+
     def empath_kappa(self) -> InterAnnotatorAgreement:
         """Cohen's κ between EMPATH and gold, over non-BORDERLINE EMPATH turns.
 
@@ -144,6 +149,8 @@ class EMPATHMathDialReport:
         """
         if self.all_proxy_verdicts:
             return False
+        if self.judge_consistency_failures():
+            return False
         if self.sampled_teacher_turns < min_turns:
             return False
         if self.judge_failure_rate() > max_judge_failure_rate:
@@ -176,16 +183,8 @@ def score_empath_against_mathdial(
     parse_failures = 0
 
     for convo in conversations:
-        # Student utterance paired with each teacher turn — the most-
-        # recent student turn before the teacher turn. Walked inline so a
-        # fresh teacher turn gets the right prior student context.
-        last_student_utterance = ""
-        for turn in convo.turns:
-            if turn.role == "student":
-                last_student_utterance = turn.utterance
-                continue
-            if turn.move is None:
-                continue
+        for context in iter_mathdial_teacher_contexts(convo):
+            turn = context.turn
             sampled += 1
 
             # Lexical taxonomy overlap.
@@ -207,7 +206,7 @@ def score_empath_against_mathdial(
             verdict = judge.judge(
                 turn.utterance,
                 problem_context=convo.problem,
-                student_utterance=last_student_utterance,
+                student_utterance=context.student_utterance,
             )
             verdicts.append(verdict)
             if not verdict.proxy:

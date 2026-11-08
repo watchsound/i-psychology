@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -35,8 +36,10 @@ from psychology_base.companion.pam_export import (
     pam_export,
     pam_import,
     validate_content_addressing,
+    write_pam,
 )
 from psychology_base.companion.system import CompanionSystem
+from psychology_base.companion.turn_provenance import validate_events
 
 
 def export_system_to_path(system: CompanionSystem, out_path: Path) -> int:
@@ -44,11 +47,20 @@ def export_system_to_path(system: CompanionSystem, out_path: Path) -> int:
 
     Returns the fragment count written. Overwrites any existing file.
     """
-    out_path.parent.mkdir(parents=True, exist_ok=True)
     fragments = list(system.companion.store.all())
-    artifact = pam_export(fragments)
-    out_path.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
-    return len(fragments)
+    state = None
+    if system.consolidator is not None:
+        if (system.consolidator._recovery_required and system.consolidator.checkpoint_path is not None
+                and Path(out_path).resolve() == system.consolidator.checkpoint_path.resolve()):
+            system.consolidator._require_restored()
+        try:
+            state = system.consolidator.checkpoint_state()
+            system.consolidator.validate_checkpoint_sources(state, fragments)
+        except (ValueError, RuntimeError):
+            # Derived records cannot prevent the user's original-memory export.
+            logging.getLogger(__name__).warning("Exporting original PAM fragments without stale consolidation metadata")
+            state = None
+    return write_pam(out_path, fragments, consolidation_state=state)
 
 
 def restore_system_from_path(
@@ -71,8 +83,33 @@ def restore_system_from_path(
     fragments = pam_import(data)
     offenders = validate_content_addressing(fragments)
     target = system if system is not None else CompanionSystem()
-    for fragment in fragments:
-        target._ingest_fragment(fragment)
+    validate_events((*target.companion.store.all(), *target.witness.store.all(), *fragments))
+    consolidator = target.consolidator
+    prepared = None
+    if consolidator is not None and "consolidation" in data:
+        if consolidator._pending or len(consolidator.store):
+            raise ValueError("Restore consolidation recovery state into a fresh instance")
+        combined = {fragment.id: fragment for fragment in target.companion.store.all()}
+        for fragment in fragments:
+            if fragment.id in combined and combined[fragment.id] != fragment:
+                raise ValueError("PAM source id conflicts with existing content")
+            combined[fragment.id] = fragment
+        prepared = consolidator.prepare_restore(data["consolidation"], list(combined.values()))
+    if consolidator is not None:
+        consolidator._restoring = True
+    try:
+        for fragment in fragments:
+            target._ingest_fragment(fragment)
+        if prepared is not None:
+            consolidator.restore_prepared(prepared)
+            target.heartbeat.sleep_ticks = max(target.heartbeat.sleep_ticks, prepared["tick_count"])
+        if consolidator is not None:
+            consolidator._recovery_required = False
+    finally:
+        if consolidator is not None:
+            consolidator._restoring = False
+    if consolidator is not None:
+        consolidator._persist()
     return target, offenders
 
 

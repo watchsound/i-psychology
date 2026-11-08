@@ -29,12 +29,18 @@ on one leg of the pipeline is caught by a single assertion failure.
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
+import json
+import pytest
+
 from datetime import datetime, timezone
 
 from psychology_base.applications.emotional import (
     CompanionAgent,
     CompanionSystemPrompt,
 )
+from psychology_base.applications.context import with_runtime_ambiguity_policy
 from psychology_base.companion.extraction import extract_facts
 from psychology_base.companion.system import CompanionSystem
 from psychology_base.eval.adapters import Fragment
@@ -63,6 +69,7 @@ def _router_capturing(capture: list, *, response_text: str) -> LLMRouter:
         },
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
 
     def responder(messages, tier):
@@ -188,10 +195,10 @@ def test_english_end_to_end_byte_identical_control() -> None:
 
     assert len(captured_response) == 1
     composed_sys, _ctx, _utt = captured_response[0]
-    # No directive leaked into the English response path. The locked
-    # system prompt is byte-identical to the pre-i18n composition.
+    # English adds no language directive; both languages receive the
+    # shared runtime ambiguity policy.
     assert "LANGUAGE:" not in composed_sys
-    assert composed_sys == CompanionSystemPrompt.SYSTEM_PROMPT
+    assert composed_sys == with_runtime_ambiguity_policy(CompanionSystemPrompt.SYSTEM_PROMPT, assistant_speaker='companion')
 
     # Extraction leg — same control.
     scripted_add = "ADD | user | emotion | anxious | 0.9\n"
@@ -268,7 +275,7 @@ def test_jieba_knob_live_shortens_cjk_cue() -> None:
     )
 
 
-def test_jieba_knob_english_recall_byte_identical() -> None:
+def test_jieba_knob_english_recall_byte_identical(chinese_cases, monkeypatch) -> None:
     """Threading ``cjk_tokenizer="jieba"`` through a system that only
     ever sees English utterances must leave the recall path
     byte-identical to the default. Jieba routes zh-only; English
@@ -277,8 +284,16 @@ def test_jieba_knob_english_recall_byte_identical() -> None:
     import pytest
 
     pytest.importorskip("jieba")
+    from psychology_base.applications.emotional import companion_agent as agent_module
+    # Hold occurrence metadata fixed across the two tokenizer treatments.
+    # These are real UUIDs; memory, observations and recall remain the real path.
+    groups = [agent_module.new_exchange_id() for _ in chinese_cases["english"]]
 
-    def _run(tokenizer: str) -> tuple[str, ...]:
+    def _run(tokenizer: str):
+        from datetime import timedelta
+        receipts = iter(groups)
+        monkeypatch.setattr(agent_module, "new_exchange_id", lambda: next(receipts))
+
         cs = CompanionSystem(top_k=4, cjk_tokenizer=tokenizer)
         agent = CompanionAgent(
             user_id="u1",
@@ -286,8 +301,99 @@ def test_jieba_knob_english_recall_byte_identical() -> None:
             companion_system=cs,
             llm_responder=lambda sp, cb, uu: "I hear you.",
         )
-        agent.respond("I've been feeling anxious about work.", timestamp=TS)
-        recall = cs.recall("anxious work")
-        return tuple(f.id for f in recall.fragments_used)
+        for index, text in enumerate(chinese_cases["english"]):
+            agent.respond(text, timestamp=TS + timedelta(minutes=index))
+        trace = []
+        for cue in ("sister's dog", "anxious work", "guide-dog program"):
+            recall = cs.recall(cue)
+            state = cs.inspect()
+            assert state.pop("tokenizer_identity")["backend"] == tokenizer
+            trace.append((recall, state))
+        return trace
 
     assert _run("unicode") == _run("jieba")
+
+
+@pytest.mark.parametrize("case_id", ["anxiety", "guide_dog", "mixed_script"])
+@pytest.mark.parametrize("include_source", [True, False], ids=["source_present", "source_absent"])
+@pytest.mark.parametrize("application", ["companion", "tutor"])
+def test_natural_chinese_source_in_application_context(chinese_cases, case_id, include_source, application):
+    from dataclasses import replace
+    from datetime import timedelta
+    from psychology_base.applications.learning.tutor_agent import TutorAgent
+    from psychology_base.applications.measurement.scaffolding_telemetry import ScaffoldingTelemetry
+    from psychology_base.llm.config import I18nConfig, load_config
+
+    pytest.importorskip("jieba")
+    case = next(case for case in chinese_cases["recall"] if case["id"] == case_id)
+    contexts = []
+    actual_recalls = []
+
+    class ObservedSystem(CompanionSystem):
+        """Record real return values; production recall runs without substitution."""
+
+        def recall(self, *args, **kwargs):
+            result = super().recall(*args, **kwargs)
+            actual_recalls.append(result)
+            return result
+
+    def capture_context(system_prompt, context, utterance):
+        contexts.append(context)
+        return "收到。"
+
+    cfg = replace(load_config(), i18n=I18nConfig(tokenizer="jieba"))
+    system = ObservedSystem.from_llm_config(cfg, top_k=6)
+    agent_type = CompanionAgent if application == "companion" else TutorAgent
+    extras = {} if application == "companion" else {"telemetry": ScaffoldingTelemetry(user_id="u1")}
+
+    def make_agent(session_id):
+        return agent_type(user_id="u1", session_id=session_id, companion_system=system,
+                          llm_responder=capture_context, **extras)
+
+    agent = make_agent("s1")
+    if include_source:
+        agent.respond(case["observation"], timestamp=TS)
+        original = next(f for f in system.companion.store.all()
+                        if f.content == case["observation"])
+        assert "user:u1" in original.tags
+        if application == "companion":
+            assert "speaker:user" in original.tags
+        assert original.parent_ids == ()
+    else:
+        # Nonempty, stateful memory with lexical overlap is not source evidence.
+        agent.respond(chinese_cases["edge_pair"][0], timestamp=TS)
+    system.mark_session_boundary()
+    agent = make_agent("s2")
+    agent.respond(case["cue"], timestamp=TS + timedelta(days=7))
+    assert contexts[-1]
+    assert (case["observation"] in contexts[-1]) is include_source
+    assert (case["supporting_span"] in contexts[-1]) is include_source
+    selected = actual_recalls[-1].fragments_used
+    assert 0 < len(selected) <= 6
+    assert (case["observation"] in {fragment.content for fragment in selected}) is include_source
+    assert all(system.companion.store.by_id(fragment.id) == fragment for fragment in selected)
+    if include_source:
+        assert original.id in {fragment.id for fragment in selected}
+        assert system.companion.store.by_id(original.id) == original
+        if application == "companion":
+            assert {'speaker': 'user', 'session': 's1', 'text': original.content} in [
+                {k: v for k, v in row.items() if k != 'source_order'}
+                for row in map(json.loads, contexts[-1].splitlines())]
+
+
+def test_chinese_changed_fact_keeps_distinct_provenance(chinese_cases):
+    from psychology_base.eval.adapters import Observation, content_hash
+
+    pytest.importorskip("jieba")
+    system = CompanionSystem(cjk_tokenizer="jieba")
+    for index, text in enumerate(chinese_cases["changed_facts"]):
+        system.observe(Observation(timestamp=TS, speaker="user", content=text,
+                                   tags=("user:u1", f"session:s{index + 1}")))
+    originals = system.companion.store.all()
+    rec = system.recall("姐姐的导盲犬")
+    assert len({f.id for f in originals}) == 2
+    assert {f.content for f in rec.fragments_used} == set(chinese_cases["changed_facts"])
+    for fragment in originals:
+        assert fragment.id == content_hash(fragment.content, fragment.timestamp, fragment.affect,
+                                           fragment.tags, fragment.parent_ids)
+        assert system.companion.store.by_id(fragment.id) == fragment

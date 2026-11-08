@@ -31,6 +31,7 @@ from psychology_base.eval.benchmarks.attachment_longitudinal import (  # noqa: E
     canonical_json, digest, isolation_checks, load_catalog, run_trajectory,
 )
 from psychology_base.eval.benchmarks.public_datasets.msc import iter_msc_conversations  # noqa: E402
+from psychology_base.companion.reconstruction import context_selection_identity  # noqa: E402
 
 
 DEFAULT_OUT = REPO / "docs/experiments/phase-9-attachment-longitudinal-reviewed"
@@ -61,20 +62,26 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--stop-after", type=positive_int, help="Pause after this many completed sessions.")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--verify-resume", action="store_true", help="Compare fixed-transcript results with fresh-process resume.")
+    parser.add_argument("--fragment-context-selection", default="identity",
+                        type=lambda value: context_selection_identity(value)["name"],
+                        help="Companion fragment selector: identity (default) or scaled_focus.")
     return parser
 
 
-def _verify_resume(manifest: TrajectoryManifest, manifest_path: Path, output: Path, uninterrupted: dict) -> dict:
+def _verify_resume(manifest: TrajectoryManifest, manifest_path: Path, output: Path, uninterrupted: dict,
+                   *, fragment_context_selection: str = "identity") -> dict:
     resume_root = output / "resume-verification"
     checkpoint = resume_root / manifest.trajectory_id / "checkpoint.json"
     boundary = min(8, max(1, uninterrupted["completed_sessions"] - 1))
-    paused = run_trajectory(manifest, checkpoint_path=checkpoint, stop_after=boundary)
+    paused = run_trajectory(manifest, checkpoint_path=checkpoint, stop_after=boundary,
+                            fragment_context_selection=fragment_context_selection)
     if paused.stop_reason != "paused_at_checkpoint":
         return {"passed": False, "reason": "did not reach the requested pause boundary"}
     try:
         child = subprocess.run(
             [sys.executable, str(Path(__file__).resolve()), "--manifest", str(manifest_path.resolve()),
-             "--output-dir", str(resume_root.resolve()), "--resume"],
+             "--output-dir", str(resume_root.resolve()), "--resume",
+             "--fragment-context-selection", fragment_context_selection],
             capture_output=True, text=True, encoding="utf-8", timeout=60,
         )
     except subprocess.TimeoutExpired:
@@ -82,7 +89,7 @@ def _verify_resume(manifest: TrajectoryManifest, manifest_path: Path, output: Pa
     if child.returncode:
         return {"passed": False, "reason": "resume subprocess failed", "stderr": child.stderr[-2000:]}
     resumed = json.loads((checkpoint.parent / "report.json").read_text(encoding="utf-8"))
-    compared_fields = ("attachment_state", "legacy_gate_pass", "duration_qualified_proxy_pass",
+    compared_fields = ("configuration", "attachment_state", "legacy_gate_pass", "duration_qualified_proxy_pass",
                        "completed_sessions", "attempted_sessions", "excluded_sessions", "failed_sessions",
                        "elapsed_simulated_days", "stop_reason", "trajectory_complete", "extreme_emotion_review_flags")
     checks = {key: canonical_json(uninterrupted[key]) == canonical_json(resumed[key]) for key in compared_fields}
@@ -157,12 +164,13 @@ def main(argv: list[str] | None = None) -> int:
             if not args.resume:
                 atomic_write_json(manifest_path, manifest.model_dump(mode="json"))
             result = run_trajectory(manifest, checkpoint_path=checkpoint, resume=args.resume,
-                                    stop_after=args.stop_after)
+                                    stop_after=args.stop_after, fragment_context_selection=args.fragment_context_selection)
             if args.resume:
                 atomic_write_json(manifest_path, manifest.model_dump(mode="json"))
             report = result.report()
             if args.verify_resume:
-                report["checkpoint_verification"] = _verify_resume(manifest, manifest_path, args.output_dir, report)
+                report["checkpoint_verification"] = _verify_resume(manifest, manifest_path, args.output_dir, report,
+                    fragment_context_selection=args.fragment_context_selection)
             atomic_write_json(destination / "report.json", report)
             results.append(result)
             reports.append(report)

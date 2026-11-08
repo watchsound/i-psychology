@@ -118,6 +118,31 @@ class MathDialConversation:
 
 
 @dataclass(frozen=True)
+class MathDialTeacherContext:
+    """A labelled teacher turn and the student context available before it."""
+
+    turn_index: int
+    turn: MathDialTurn
+    student_utterance: str
+
+
+def iter_mathdial_teacher_contexts(
+    conversation: MathDialConversation,
+) -> Iterator[MathDialTeacherContext]:
+    """Share chronological context preparation across MathDial judge callers.
+
+    Opening teacher turns have no preceding student utterance. Never substitute
+    a future student turn or the separately annotated incorrect solution.
+    """
+    student_utterance = ""
+    for index, turn in enumerate(conversation.turns):
+        if turn.role == "student":
+            student_utterance = turn.utterance
+        elif turn.move is not None:
+            yield MathDialTeacherContext(index, turn, student_utterance)
+
+
+@dataclass(frozen=True)
 class MathDialAlignmentReport:
     """Roll-up for the Socratic-compliance gate against MathDial gold.
 

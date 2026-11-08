@@ -14,6 +14,8 @@ Covers:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 import pytest
 
 from psychology_base.eval.adapters import Fragment
@@ -37,6 +39,7 @@ def _router(tmp_path, capture: list) -> LLMRouter:
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
 
     def responder(messages, tier):

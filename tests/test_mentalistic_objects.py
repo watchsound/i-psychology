@@ -92,8 +92,8 @@ def test_reconstruct_matches_direct_instantiation_on_openness_fixture() -> None:
     cs = CompanionSystem(top_k=4, witness_active=False)
     _seed_openness_fragment(cs)
 
-    direct = TraitProfile(system=cs).get(OceanDim.OPENNESS)
-    reconstructed = TraitProfile.reconstruct(cs).get_estimate(
+    direct = TraitProfile(system=cs, now=_ts(1)).get(OceanDim.OPENNESS)
+    reconstructed = TraitProfile.reconstruct(cs, now=_ts(1)).get_estimate(
         OceanDim.OPENNESS
     )
 
@@ -104,7 +104,9 @@ def test_reconstruct_matches_direct_instantiation_on_openness_fixture() -> None:
 def test_get_and_get_estimate_are_the_same_method_result() -> None:
     cs = CompanionSystem(top_k=4, witness_active=False)
     _seed_openness_fragment(cs)
-    profile = TraitProfile(system=cs)
+    # Compare aliases at the same reconstruction time. Independent wall-clock
+    # reads change recency weights and can differ by one floating-point bit.
+    profile = TraitProfile(system=cs, now=_ts(1))
     for dim in OceanDim:
         assert profile.get(dim) == profile.get_estimate(dim)
 

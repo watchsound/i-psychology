@@ -34,6 +34,10 @@ from psychology_base.companion.reconstruction import (
     jaccard_prior,
     reconstruct,
     spread_activation,
+    validate_focus_cue,
+    context_selection_identity,
+    ResearchSelection,
+    validate_research_selection,
 )
 from psychology_base.companion.witness import WitnessState, witness_couple
 from psychology_base.eval.adapters import (
@@ -42,7 +46,9 @@ from psychology_base.eval.adapters import (
     Recall,
     make_fragment,
 )
+from psychology_base.i18n import tokenizer_identity
 from psychology_base.llm.config import LLMConfig
+from psychology_base.llm.execution import ExecutionDeferred
 from psychology_base.llm.router import LLMRouter
 from psychology_base.llm.types import ChatMessage, TaskTier
 
@@ -463,6 +469,7 @@ class CompanionSystem:
         consolidation_router: Optional[LLMRouter] = None,
         consolidation_log_dir: Optional[Path] = None,
         consolidation_instance_id: str = "default",
+        consolidation_checkpoint_path: Optional[Path] = None,
         fact_top_k: Optional[int] = None,
         fact_cosine_floor: Optional[float] = None,
         embedder_ensemble: bool = False,
@@ -493,7 +500,17 @@ class CompanionSystem:
         affect_weight: float = 0.0,
         aging_policy: Optional[AgingPolicy] = None,
         cjk_tokenizer: str = "unicode",
+        fragment_context_selection: str = "identity",
+        research_selection: Optional[ResearchSelection] = None,
     ) -> None:
+        # Resolve before memory exists; explicit jieba must not silently fall back.
+        context_selection_identity(fragment_context_selection)
+        validate_research_selection(research_selection, fragment_context_selection, top_k,
+                                    consolidation_enabled=consolidation_enabled)
+        tokenizer_identity(cjk_tokenizer)
+        self._cjk_tokenizer = cjk_tokenizer
+        self._fragment_context_selection = fragment_context_selection
+        self._research_selection = research_selection
         self.companion = Companion()
         self.witness = Witness()
         # Option 5.C: when consolidation is on, the extracted-fact tier
@@ -520,6 +537,8 @@ class CompanionSystem:
         # sees enough of the fact store to compensate for mxbai cosine
         # ranking burying gold facts under noise.
         self.consolidation_enabled = consolidation_enabled
+        if consolidation_checkpoint_path is not None and not consolidation_enabled:
+            raise ValueError("A consolidation checkpoint requires consolidation_enabled=True")
         if fact_top_k is None:
             fact_top_k = HIERARCHICAL_FACT_TOP_K if consolidation_enabled else DEFAULT_TOP_K
         if fact_cosine_floor is None:
@@ -543,6 +562,8 @@ class CompanionSystem:
                 store=self.fact_store,
                 log_dir=consolidation_log_dir,
                 instance_id=consolidation_instance_id,
+                checkpoint_path=consolidation_checkpoint_path,
+                fragment_source=lambda: self.companion.store.all(),
             )
         self._consolidation_router = consolidation_router
 
@@ -743,20 +764,6 @@ class CompanionSystem:
         # context["affect"]). See companion/affect_resonance.py.
         self.affect_weight = affect_weight
 
-        # Phase 9+ i18n follow-on — CJK tokenizer knob. Default
-        # "unicode" (letter-run `[A-Za-z\u4e00-\u9fff]+`) keeps every
-        # pre-i18n recall path byte-identical. "jieba" routes zh content
-        # through finer-grained word segmentation during R1 edge-seeding
-        # and R2 coalescence so a shorter CJK cue (e.g. "焦虑") can hit
-        # a longer stored clause ("我最近感到很焦虑") via shared tokens.
-        # Threaded via `reconstruct(..., cjk_tokenizer=...)`; non-CJK
-        # content (including English) always keeps the legacy letter-run
-        # tokenizer because `i18n.tokenize(text, "en") == text.split()`
-        # which is NOT byte-identical to `_TOKEN_RE.findall(text.lower())`
-        # on apostrophe-bearing English ("it's" → ["it's"] vs
-        # ["it", "s"]). Keeping the dispatch zh-only sidesteps that.
-        self.cjk_tokenizer = cjk_tokenizer
-
         # Phase 3 E1 — optional aging policy (S1 Decay / S2 Capacity /
         # S3 Metabolism / S4 Tiered). Default None keeps Phase 2 behaviour
         # byte-identical. When set, the FragmentStore's eviction strength
@@ -770,29 +777,27 @@ class CompanionSystem:
             self.witness.store.strength_fn = aging_policy.strength
             self.witness.store.evicted_callback = aging_policy.on_evict
 
+    @property
+    def cjk_tokenizer(self) -> str:
+        """Fixed for this system; fresh ingestion is required for another policy."""
+        return self._cjk_tokenizer
+
+    @property
+    def fragment_context_selection(self) -> str:
+        """Fixed per instance; only the Companion fragment path uses this option."""
+        return self._fragment_context_selection
+
     @classmethod
     def from_llm_config(cls, cfg: LLMConfig, **overrides) -> "CompanionSystem":
-        """Construct a ``CompanionSystem`` with i18n knobs sourced from an
-        ``LLMConfig``.
+        """Forward existing i18n and memory configuration; explicit kwargs win.
 
-        The only knob consulted today is ``cfg.i18n.tokenizer`` → mapped to
-        the ``cjk_tokenizer`` kwarg. Explicit ``cjk_tokenizer`` in
-        ``overrides`` wins over the config, so a caller can force the
-        legacy "unicode" path (e.g. an English-forcing benchmark that
-        happens to load the YAML for provider slots) by passing
-        ``cjk_tokenizer="unicode"`` explicitly.
-
-        Factory is deliberately NOT the default construction path —
-        benchmark instance.py, b4/b5, fantom/big5 scorers construct
-        ``CompanionSystem()`` directly to stay English-forcing by design.
-        Only the Chinese-first application entry points
-        (companion_cli / tutor_cli / pam_cli / argilla_pipeline) route
-        through this factory, so flipping ``i18n.tokenizer: jieba`` in
-        the YAML affects the user-facing surfaces without silently
-        disturbing the benchmark reproducibility guarantees.
+        Application entry points and PAM restore already use this factory.
+        Direct benchmark construction stays independent of provider YAML.
         """
         if "cjk_tokenizer" not in overrides:
             overrides["cjk_tokenizer"] = cfg.i18n.tokenizer
+        if "fragment_context_selection" not in overrides:
+            overrides["fragment_context_selection"] = cfg.memory.context_selection
         return cls(**overrides)
 
     def observe(self, event: Observation) -> None:
@@ -852,31 +857,45 @@ class CompanionSystem:
         return fragment
 
     def _ingest_fragment(self, fragment: Fragment) -> None:
+        from psychology_base.companion.turn_provenance import event_key, validate_events
+
+        if event_key(fragment) is not None:
+            validate_events((*self.companion.store.all(), *self.witness.store.all(), fragment))
+        companion_existing = self.companion.store.by_id(fragment.id)
+        witness_existing = self.witness.store.by_id(fragment.id)
+        if any(existing is not None and existing != fragment
+               for existing in (companion_existing, witness_existing)):
+            raise ValueError(f"Fragment ID conflicts with existing payload: {fragment.id}")
+        if companion_existing is not None and witness_existing is not None:
+            return
         # Phase 3 E1 — register with aging policy BEFORE the store adds
         # it, so if this ingest triggers eviction the new fragment's
         # own strength is already known to the policy (otherwise the
         # policy's `strength` falls through to the 0.0 default and the
         # newly-arrived fragment becomes the eviction target).
-        if self.aging_policy is not None:
+        if self.aging_policy is not None and companion_existing is None:
             self.aging_policy.on_observe(
                 fragment.id, is_covenant=is_covenant(fragment)
             )
-        for other in self.companion.store.all():
-            w = jaccard_prior(fragment, other)
-            if w >= JACCARD_SEED_THRESHOLD:
-                self.edges.set(fragment.id, other.id, w)
-        self.companion.store.add(fragment, edges=self.edges)
-        for other in self.witness.store.all():
-            w = jaccard_prior(fragment, other)
-            if w >= JACCARD_SEED_THRESHOLD:
-                self.witness_edges.set(fragment.id, other.id, w)
-        self.witness.store.add(fragment, edges=self.witness_edges)
+        if companion_existing is None:
+            for other in self.companion.store.all():
+                w = jaccard_prior(fragment, other, cjk_tokenizer=self.cjk_tokenizer)
+                if w >= JACCARD_SEED_THRESHOLD:
+                    self.edges.set(fragment.id, other.id, w)
+            self.companion.store.add(fragment, edges=self.edges)
+        if witness_existing is None:
+            for other in self.witness.store.all():
+                w = jaccard_prior(fragment, other, cjk_tokenizer=self.cjk_tokenizer)
+                if w >= JACCARD_SEED_THRESHOLD:
+                    self.witness_edges.set(fragment.id, other.id, w)
+            self.witness.store.add(fragment, edges=self.witness_edges)
 
         # BM25 index is cue-independent but corpus-dependent; invalidate
         # on any store mutation so the next hybrid recall rebuilds.
-        self._bm25_index = None
+        if companion_existing is None:
+            self._bm25_index = None
 
-        if self.consolidator is not None:
+        if self.consolidator is not None and companion_existing is None:
             self.consolidator.observe(fragment)
 
     def mark_session_boundary(self) -> None:
@@ -896,7 +915,30 @@ class CompanionSystem:
         scope: Optional[tuple[str, str]] = None,
         copresence: Optional[CopresenceScope] = None,
         affect_weight: Optional[float] = None,
+        focus_cue: Optional[str] = None,
+        selection_budget: Optional[ResearchSelection] = None,
+        max_fragments: Optional[int] = None,
     ) -> Recall:
+        # Optional fragment-selection hint; spreading still uses the full cue.
+        # Identity selection and hierarchical retrieval do not use this hint.
+        validate_focus_cue(focus_cue)
+        selection = self._research_selection
+        top_k = self.top_k
+        if selection_budget is not None:
+            # Reuse the existing selection/feasibility owner before primary
+            # reconstruction and reinforcement. No second post-recall trim.
+            if self.consolidation_enabled or selection is not None:
+                raise ExecutionDeferred('Per-request budgets require the fragment path without an instance research selector')
+            if selection_budget.mode=='occurrences' and self.fragment_context_selection not in (None,'identity'):
+                raise ExecutionDeferred('Occurrence delivery requires the identity fragment profile')
+            validate_research_selection(selection_budget, self.fragment_context_selection, self.top_k)
+            if selection_budget.mode not in ('legacy','occurrences'):
+                raise ValueError('Delivery budgets require the existing legacy or occurrence selection')
+            if type(max_fragments) is not int or max_fragments < 0:
+                raise ValueError('A request budget requires a nonnegative fragment limit')
+            selection, top_k = selection_budget, min(top_k, max_fragments)
+        elif max_fragments is not None:
+            raise ValueError('A per-call fragment limit requires a selection budget')
         # M2 step 3 — scope-filtered recall. When ``scope=(subject, entity)``
         # is set, pre-filter the fragment pool to those tagged
         # ``subject:<id>`` AND ``entity:<id>`` (matching M2 observe-time
@@ -969,11 +1011,15 @@ class CompanionSystem:
             state=self.activation,
             tick_count=self.heartbeat.sleep_ticks,
             system_seed=self.seed,
-            top_k=self.top_k,
+            top_k=top_k,
             edges=self.edges,
             cue_affect=cue_affect,
             affect_weight=effective_affect_weight,
             cjk_tokenizer=self.cjk_tokenizer,
+            focus_cue=focus_cue,
+            **({"fragment_context_selection": self.fragment_context_selection}
+               if self.fragment_context_selection != "identity" else {}),
+            **({"research_selection": selection} if selection is not None else {}),
         )
         # Phase 3 E1 — reconsolidate on recall. Every fragment that
         # entered the top-K pool gets its retention curve reset + boosted
@@ -1005,6 +1051,7 @@ class CompanionSystem:
                 pain_gain=self.pain_gain,
                 companion_only_suppress=self.companion_only_suppress,
                 cjk_tokenizer=self.cjk_tokenizer,
+                focus_cue=focus_cue,
             )
         return Recall(
             cue=cue,
@@ -1013,6 +1060,10 @@ class CompanionSystem:
             metadata={
                 "step": 4,
                 "path": "fragment",
+                "fragment_context_selection": rec.context_selection,
+                "fragment_context_selection_applied": True,
+                **({"ordered_selection": rec.selection_trace} if rec.selection_trace is not None else {}),
+                **({"fragment_navigation": rec.navigation} if getattr(rec, "navigation", None) is not None else {}),
                 "wake_ticks": self.heartbeat.wake_ticks,
                 "sleep_ticks": self.heartbeat.sleep_ticks,
                 "recall_count": self.activation.recall_count,
@@ -1463,6 +1514,8 @@ class CompanionSystem:
             metadata={
                 "step": 4,
                 "path": "hierarchical",
+                "fragment_context_selection": context_selection_identity(self.fragment_context_selection),
+                "fragment_context_selection_applied": False,
                 "wake_ticks": self.heartbeat.wake_ticks,
                 "sleep_ticks": self.heartbeat.sleep_ticks,
                 "recall_count": self.activation.recall_count,
@@ -2061,8 +2114,10 @@ class CompanionSystem:
         """Phase 3 compression primitive — fast-forward N sleep ticks.
 
         Each virtual tick runs the full ``tick()`` body (activation +
-        edge decay + optional consolidation). No LLM calls per tick; the
-        cost is O(|edges| + |fragments|) per step. Used by the
+        edge decay + optional consolidation). The default core makes no model
+        calls; enabled consolidation may extract/embed a ready window under
+        its router execution policy. Local decay costs O(|edges| + |fragments|)
+        per step. Used by the
         compression harness to span virtual days / weeks between
         scripted anchor turns at 10×–100× compression ratios.
 
@@ -2078,6 +2133,8 @@ class CompanionSystem:
 
     def inspect(self) -> dict:
         out = {
+            "tokenizer_identity": tokenizer_identity(self.cjk_tokenizer),
+            "fragment_context_selection": context_selection_identity(self.fragment_context_selection),
             "step": 4,
             "fragment_count": len(self.companion.store),
             "witness_fragment_count": len(self.witness.store),

@@ -9,7 +9,8 @@ decisions 2+3+6:
 - Independent capacity: `fact_cap=512` soft bound; no eviction policy in
   step 1 (step-2 gate measures per-session count so we see saturation
   before it bites).
-- Step 1 is in-memory only; SQLite persistence deferred.
+- The store remains in memory; the existing PAM owner can checkpoint its
+  derived records atomically with original fragments and consolidation work.
 - Embeddings populated in step 3; step 1 stores empty `()`.
 
 Step 1 surface:
@@ -22,7 +23,7 @@ Step 1 surface:
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field, replace
+from dataclasses import asdict, dataclass, field, replace
 from enum import Enum
 from typing import Optional
 
@@ -112,6 +113,53 @@ class FactStore:
     _by_id: dict[str, int] = field(default_factory=dict)
     _seq: int = 0
     fact_cap: int = DEFAULT_FACT_CAP
+
+    def staged_copy(self) -> "FactStore":
+        """Stage a consolidation in the existing store type without publication."""
+        return replace(self, _facts=list(self._facts), _by_id=dict(self._by_id))
+
+    def commit_from(self, staged: "FactStore") -> None:
+        """Publish a successfully prepared window; callers serialize writers."""
+        self._facts, self._by_id, self._seq = staged._facts, staged._by_id, staged._seq
+
+    def checkpoint_state(self) -> dict:
+        return dict(facts=[asdict(fact) for fact in self._facts], sequence=self._seq, fact_cap=self.fact_cap)
+
+    @classmethod
+    def from_checkpoint_state(cls, state: dict) -> "FactStore":
+        """Validate derived records before mutating a live store on restore."""
+        if not isinstance(state, dict) or set(state) != {"facts", "sequence", "fact_cap"}:
+            raise ValueError("Invalid fact checkpoint shape")
+        if (type(state["sequence"]) is not int or state["sequence"] < 0
+                or type(state["fact_cap"]) is not int or state["fact_cap"] <= 0
+                or not isinstance(state["facts"], list)):
+            raise ValueError("Invalid fact checkpoint counters")
+        store = cls(fact_cap=state["fact_cap"])
+        expected = set(Fact.__dataclass_fields__)
+        for raw in state["facts"]:
+            if not isinstance(raw, dict) or set(raw) != expected:
+                raise ValueError("Invalid fact checkpoint record")
+            if any(not isinstance(raw[key], str) or not raw[key] for key in ("id", "entity", "relation", "value")):
+                raise ValueError("Invalid fact text/identity")
+            if (type(raw["confidence"]) not in (int, float) or not math.isfinite(raw["confidence"])
+                    or not 0 <= raw["confidence"] <= 1
+                    or any(type(raw[key]) is not int or raw[key] < 0 for key in ("created_tick", "updated_tick"))
+                    or raw["updated_tick"] < raw["created_tick"]):
+                raise ValueError("Invalid fact confidence/ticks")
+            sources, embedding = raw["source_fragment_ids"], raw["embedding"]
+            if (not isinstance(sources, (tuple, list)) or not sources
+                    or any(not isinstance(value, str) or not value for value in sources)
+                    or not isinstance(embedding, (tuple, list))
+                    or any(type(value) not in (int, float) or not math.isfinite(value) for value in embedding)):
+                raise ValueError("Invalid fact sources/embedding")
+            if raw["id"].startswith(FACT_ID_PREFIX) and raw["id"][len(FACT_ID_PREFIX):].isdigit():
+                if int(raw["id"][len(FACT_ID_PREFIX):]) > state["sequence"]:
+                    raise ValueError("Fact checkpoint sequence would reuse an existing id")
+            store.add(Fact(**{**raw, "source_fragment_ids": tuple(sources), "embedding": tuple(embedding)}))
+        if len({len(fact.embedding) for fact in store.all() if fact.embedding}) > 1:
+            raise ValueError("Fact checkpoint mixes incompatible embedding dimensions")
+        store._seq = state["sequence"]
+        return store
 
     def next_id(self) -> str:
         self._seq += 1

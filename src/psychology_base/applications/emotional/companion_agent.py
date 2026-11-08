@@ -19,10 +19,17 @@ is the human-in-the-loop obligation per CLAUDE.md non-negotiables.
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionDeferred
+from psychology_base.applications.llm_responders import conversation_turn
+
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Callable, Optional
 
+from psychology_base.applications.context import (
+    CONTEXT_FORMAT_VERSION, render_context_block, validate_context_format, with_runtime_ambiguity_policy,
+)
+from psychology_base.applications.reporting_order import respond_with_reporting_order, reporting_order_intent
 from psychology_base.applications.emotional.trait_conditioning import (
     TraitConditioningFlag,
     apply_trait_conditioning,
@@ -50,6 +57,7 @@ from psychology_base.applications.safety.minor_exclusion import (
     MinorExclusionGate,
 )
 from psychology_base.companion.system import CompanionSystem
+from psychology_base.companion.turn_provenance import exchange_tag, new_exchange_id
 from psychology_base.eval.adapters import Observation
 from psychology_base.i18n.prompts import response_language_directive
 
@@ -58,38 +66,8 @@ LLMResponder = Callable[[str, str, str], str]
 """Signature: (system_prompt, context_block, user_utterance) -> response_text."""
 
 
-def _render_context_block(fragments) -> str:
-    """Format recalled fragments with explicit USER-SAID / YOU-SAID labels.
-
-    Rule 1b requires the LLM to distinguish the user's prior framings
-    (which it must chain-reference on reinterpretation) from its own
-    prior responses (which must not be mistaken for the user's words).
-    The ``speaker:user`` / ``speaker:companion`` tags are set on observe
-    by :meth:`CompanionAgent.respond`. Pre-tagged legacy fragments
-    (no speaker tag) are labelled ``[FRAGMENT, <session>]:`` so the
-    model still sees them but does not treat them as the user's framing.
-    The session suffix comes from the ``session:<id>`` tag if present.
-    """
-    if not fragments:
-        return ""
-    lines: list[str] = []
-    for f in fragments:
-        speaker_tag: Optional[str] = None
-        session_tag: Optional[str] = None
-        for t in f.tags:
-            if t.startswith("speaker:") and speaker_tag is None:
-                speaker_tag = t.split(":", 1)[1]
-            elif t.startswith("session:") and session_tag is None:
-                session_tag = t.split(":", 1)[1]
-        if speaker_tag == "user":
-            label = "user said"
-        elif speaker_tag == "companion":
-            label = "you said"
-        else:
-            label = "fragment"
-        suffix = f" (session {session_tag})" if session_tag else ""
-        lines.append(f"- {label}{suffix}: {f.content}")
-    return "\n".join(lines)
+def _render_context_block(fragments, *, format_version=CONTEXT_FORMAT_VERSION) -> str:
+    return render_context_block(fragments, assistant_speaker="companion", format_version=format_version)
 
 
 class CompanionSystemPrompt:
@@ -108,14 +86,15 @@ class CompanionSystemPrompt:
         "\n"
         "1. REMEMBER THE ARC.\n"
         "   1a. EMPTY CONTEXT. If no prior user framings appear in "
-        "CONTEXT, this is the user's first mention. Do NOT invent a "
+        "CONTEXT, an earlier framing is not established by the available "
+        "memory. Do NOT invent a "
         "prior framing. Do NOT begin your reply with 'you used to', "
         "'earlier you said', 'the way you described this before', or "
         "any variant. Honor the moment as new; mirror what the user "
         "just said and open space.\n"
         "   1b. REINTERPRETATION — MANDATORY CHAIN-REFERENCE. If the "
         "user's current turn frames an event or feeling differently "
-        "from a prior framing visible in CONTEXT, your response MUST "
+        "from a supported prior user framing visible in CONTEXT, your response MUST "
         "begin with an explicit chain-reference phrase that quotes the "
         "prior framing in a short paraphrase. Use one of:\n"
         "     - 'You used to describe this as X — now it sounds different.'\n"
@@ -171,6 +150,7 @@ class CompanionResponse:
     crisis_incident: Optional[CrisisIncident]
     extreme_emotion_flag: Optional[ExtremeEmotionFlag]
     handoff_triggered: bool
+    exchange_id: Optional[str] = None
 
 
 @dataclass
@@ -194,9 +174,21 @@ class CompanionAgent:
     handoff_script: str = HANDOFF_SCRIPT
     trait_profile: Optional[TraitProfile] = None
     trait_conditioning_flag: Optional[TraitConditioningFlag] = None
+    context_format_version: int = CONTEXT_FORMAT_VERSION
+    local_reporting_order: bool = False
+    max_request_input: Optional[int] = None
+    reporting_assessor: object = None
     _turn_index: int = field(default=0, init=False)
     _chain_reference_log: list[ChainReferenceTurn] = field(default_factory=list, init=False)
 
+    def __post_init__(self):
+        validate_context_format(self.context_format_version)
+        if type(self.local_reporting_order) is not bool:
+            raise ValueError('local_reporting_order must be Boolean')
+        if self.max_request_input is not None and (type(self.max_request_input) is not int or self.max_request_input <= 0):
+            raise ValueError('max_request_input must be a positive integer or None')
+
+    @conversation_turn
     def respond(
         self,
         user_utterance: str,
@@ -260,14 +252,34 @@ class CompanionAgent:
             if self.ai_identity_reminder.should_fire(ts_seconds):
                 reminder_fired = True
 
+        def compose_prompt():
+            conditioned = apply_trait_conditioning(self.system_prompt, self.trait_profile, self.trait_conditioning_flag)
+            return with_runtime_ambiguity_policy(conditioned, assistant_speaker='companion',
+                context_format_version=self.context_format_version) + response_language_directive(user_utterance)
+
+        localized_prompt, recall_options = None, {}
+        ordering = self.local_reporting_order and reporting_order_intent('companion',user_utterance) is not None
+        membership_session=None
+        if ordering and self.reporting_assessor is not None and reporting_order_intent('companion',user_utterance).descriptions:
+            from psychology_base.applications.reporting_order import ReportingMembershipSession
+            membership_session=ReportingMembershipSession('companion',user_utterance,self.reporting_assessor,user_id=self.user_id)
+        if self.max_request_input is not None or ordering:
+            from psychology_base.applications.llm_responders import request_context_selection
+            localized_prompt = compose_prompt()
+            recall_options = dict(selection_budget=request_context_selection(localized_prompt, user_utterance,
+                application='companion', format_version=self.context_format_version, max_input=self.max_request_input,
+                mode='occurrences' if ordering else 'legacy',membership_session=membership_session),
+                max_fragments=6)
+
         # Recall BEFORE observing the current utterance — otherwise the
         # perfect cue-match returns the just-stored utterance as its own
         # "prior" fragment, which the LLM then interprets as evidence of
         # an earlier framing and (incorrectly) applies Rule 1's "you used
         # to describe this as X" reconsolidation cue on turn 0. Observed
         # 2026-10-07 in the §6e-prime shakeout.
-        recall = self.companion_system.recall(user_utterance)
-        context_block = _render_context_block(recall.fragments_used[:6])
+        recall = self.companion_system.recall(user_utterance, **recall_options)
+        context_block = _render_context_block(recall.fragments_used[:6], format_version=self.context_format_version)
+        exchange_id = new_exchange_id()
 
         self.companion_system.observe(
             Observation(
@@ -278,27 +290,27 @@ class CompanionAgent:
                     f"user:{self.user_id}",
                     f"session:{self.session_id}",
                     "speaker:user",
+                    exchange_tag(exchange_id, "user", 0),
                 ),
             )
         )
 
-        conditioned_prompt = apply_trait_conditioning(
-            self.system_prompt,
-            self.trait_profile,
-            self.trait_conditioning_flag,
-        )
         # Per-turn language dispatch applied AFTER trait conditioning so
         # the directive sits at the tail of the composed system prompt.
         # English user utterance → directive is "" → byte-identical to
         # the pre-i18n composition. Non-English → appended directive
         # tells the model to reply in the user's language, load-bearing
         # for the 情感陪伴 Chinese-first target.
-        localized_prompt = conditioned_prompt + response_language_directive(
-            user_utterance
-        )
-        response_text = self.llm_responder(
-            localized_prompt, context_block, user_utterance
-        )
+        if localized_prompt is None:
+            localized_prompt = compose_prompt()
+        try:
+            response_text = respond_with_reporting_order(self.llm_responder, localized_prompt, context_block,
+                user_utterance, application='companion', enabled=self.local_reporting_order,
+                selection_trace=recall.metadata.get('ordered_selection') if recall_options else None,
+                membership_session=membership_session)
+        except ExecutionDeferred:
+            self._turn_index += 1  # No assistant observation or invented reply.
+            raise
 
         self.companion_system.observe(
             Observation(
@@ -309,6 +321,7 @@ class CompanionAgent:
                     f"user:{self.user_id}",
                     f"session:{self.session_id}",
                     "speaker:companion",
+                    exchange_tag(exchange_id, "companion", 1),
                 ),
             )
         )
@@ -322,6 +335,7 @@ class CompanionAgent:
             crisis_incident=crisis_incident,  # may be AMBIGUOUS; not handoff
             extreme_emotion_flag=None,
             handoff_triggered=False,
+            exchange_id=exchange_id,
         )
         self._turn_index += 1
         return resp

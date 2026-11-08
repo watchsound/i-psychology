@@ -12,6 +12,8 @@ construction path, by design (English-forcing determinism).
 
 from __future__ import annotations
 
+import pytest
+
 from psychology_base.companion.system import CompanionSystem
 from psychology_base.llm.config import (
     I18nConfig,
@@ -43,6 +45,7 @@ def _cfg_with_tokenizer(tokenizer: str) -> LLMConfig:
 
 def test_factory_reads_tokenizer_from_llm_config_jieba() -> None:
     """``i18n.tokenizer=jieba`` flows into ``cjk_tokenizer``."""
+    pytest.importorskip("jieba")
     cfg = _cfg_with_tokenizer("jieba")
     system = CompanionSystem.from_llm_config(cfg)
     assert system.cjk_tokenizer == "jieba"
@@ -65,6 +68,47 @@ def test_factory_explicit_override_wins_over_config() -> None:
     cfg = _cfg_with_tokenizer("jieba")
     system = CompanionSystem.from_llm_config(cfg, cjk_tokenizer="unicode")
     assert system.cjk_tokenizer == "unicode"
+
+
+@pytest.mark.parametrize("name", ["mecab", "", None])
+def test_invalid_tokenizer_fails_before_system_state_exists(name):
+    system = CompanionSystem.__new__(CompanionSystem)
+    with pytest.raises(ValueError, match="Unknown tokenizer"):
+        system.__init__(cjk_tokenizer=name)
+    assert not hasattr(system, "companion")
+
+
+def test_tokenizer_setting_is_read_only():
+    system = CompanionSystem()
+    with pytest.raises(AttributeError):
+        system.cjk_tokenizer = "jieba"
+    assert system.cjk_tokenizer == "unicode"
+
+
+def test_explicit_jieba_requires_backend_but_unicode_override_does_not(monkeypatch):
+    import psychology_base.i18n as i18n
+
+    monkeypatch.setattr(i18n, "_load_jieba", lambda: (None, {}, "not installed"))
+    system = CompanionSystem.__new__(CompanionSystem)
+    with pytest.raises(ValueError, match="jieba.*not installed"):
+        system.__init__(cjk_tokenizer="jieba")
+    assert not hasattr(system, "companion")
+    overridden = CompanionSystem.from_llm_config(_cfg_with_tokenizer("jieba"), cjk_tokenizer="unicode")
+    assert overridden.cjk_tokenizer == "unicode"
+
+
+def test_inspect_tokenizer_identity_is_detached_and_does_not_load_jieba(monkeypatch):
+    import psychology_base.i18n as i18n
+
+    def unexpected_load():
+        raise AssertionError("Unicode construction/inspection must not load jieba")
+
+    monkeypatch.setattr(i18n, "_load_jieba", unexpected_load)
+    system = CompanionSystem()
+    identity = system.inspect()["tokenizer_identity"]
+    assert identity["backend"] == "unicode"
+    identity["backend"] = "changed outside system"
+    assert system.inspect()["tokenizer_identity"]["backend"] == "unicode"
 
 
 def test_factory_passes_through_other_kwargs() -> None:

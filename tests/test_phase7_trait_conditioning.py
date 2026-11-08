@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
+from psychology_base.applications.context import with_runtime_ambiguity_policy
 from psychology_base.applications.emotional.companion_agent import (
     CompanionAgent,
     CompanionSystemPrompt,
@@ -244,7 +245,7 @@ def test_agent_uses_base_prompt_when_flag_absent() -> None:
     agent = _agent(system, responder, trait_profile=profile, flag=None)
     agent.respond("hi", timestamp=TS)
     sent_prompt = responder.calls[0][0]
-    assert sent_prompt == CompanionSystemPrompt.SYSTEM_PROMPT
+    assert sent_prompt == with_runtime_ambiguity_policy(CompanionSystemPrompt.SYSTEM_PROMPT, assistant_speaker='companion')
 
 
 def test_agent_uses_base_prompt_when_flag_disabled() -> None:
@@ -259,7 +260,7 @@ def test_agent_uses_base_prompt_when_flag_disabled() -> None:
         flag=TraitConditioningFlag(enabled=False),
     )
     agent.respond("hi", timestamp=TS)
-    assert responder.calls[0][0] == CompanionSystemPrompt.SYSTEM_PROMPT
+    assert responder.calls[0][0] == with_runtime_ambiguity_policy(CompanionSystemPrompt.SYSTEM_PROMPT, assistant_speaker='companion')
 
 
 def test_agent_uses_conditioned_prompt_when_flag_enabled() -> None:
@@ -322,4 +323,4 @@ def test_agent_default_fields_are_none() -> None:
     assert agent.trait_profile is None
     assert agent.trait_conditioning_flag is None
     agent.respond("hi", timestamp=TS)
-    assert responder.calls[0][0] == CompanionSystemPrompt.SYSTEM_PROMPT
+    assert responder.calls[0][0] == with_runtime_ambiguity_policy(CompanionSystemPrompt.SYSTEM_PROMPT, assistant_speaker='companion')

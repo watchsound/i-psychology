@@ -23,11 +23,18 @@ Design note on `tutor_move` classification:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionDeferred
+from psychology_base.applications.llm_responders import conversation_turn
+
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Callable, Optional, Sequence
 
+from psychology_base.applications.context import (
+    CONTEXT_FORMAT_VERSION, render_context_block, validate_context_format, with_runtime_ambiguity_policy,
+)
+from psychology_base.applications.reporting_order import respond_with_reporting_order, reporting_order_intent
 from psychology_base.applications.measurement.scaffolding_telemetry import (
     ScaffoldingTelemetry,
     TutorMove,
@@ -40,12 +47,17 @@ from psychology_base.applications.safety.minor_exclusion import (
     MinorExclusionGate,
 )
 from psychology_base.companion.system import CompanionSystem
+from psychology_base.companion.turn_provenance import exchange_tag, new_exchange_id
 from psychology_base.eval.adapters import Observation
 from psychology_base.i18n.prompts import response_language_directive
 
 
 LLMResponder = Callable[[str, str, str], str]
 """Signature: (system_prompt, context_block, user_utterance) -> response_text."""
+
+
+def _render_context_block(fragments, *, format_version=CONTEXT_FORMAT_VERSION) -> str:
+    return render_context_block(fragments, assistant_speaker="tutor", format_version=format_version)
 
 
 class TutorSystemPrompt:
@@ -72,7 +84,8 @@ class TutorSystemPrompt:
         "4. Confidence check: every 3–4 interactions, ask the student to "
         "self-rate their confidence on the current concept (1–5).\n"
         "5. Reference the student's prior attempts (from the CONTEXT "
-        "block below) to show you remember their trajectory. Mastery is "
+        "block below) only when supported by user evidence; do not invent "
+        "an attempt when it is missing. Mastery is "
         "reconsolidation — honor the arc.\n"
         "\n"
         "If the student explicitly asks you to 'just tell me the answer', "
@@ -93,6 +106,7 @@ class TutorResponse:
     tutor_move: TutorMove
     reminder_fired: bool
     telemetry_turn: TutorTurn
+    exchange_id: Optional[str] = None
 
 
 # MathDial-derived cue vocabulary. The rule order matters: TELLING cues
@@ -376,8 +390,20 @@ class TutorAgent:
     ai_identity_reminder: Optional[AIIdentityReminder] = None
     minor_exclusion_gate: Optional[MinorExclusionGate] = None
     system_prompt: str = TutorSystemPrompt.SYSTEM_PROMPT
+    context_format_version: int = CONTEXT_FORMAT_VERSION
+    local_reporting_order: bool = False
+    max_request_input: Optional[int] = None
+    reporting_assessor: object = None
     _turn_index: int = field(default=0, init=False)
 
+    def __post_init__(self):
+        validate_context_format(self.context_format_version)
+        if type(self.local_reporting_order) is not bool:
+            raise ValueError('local_reporting_order must be Boolean')
+        if self.max_request_input is not None and (type(self.max_request_input) is not int or self.max_request_input <= 0):
+            raise ValueError('max_request_input must be a positive integer or None')
+
+    @conversation_turn
     def respond(
         self,
         user_utterance: str,
@@ -416,20 +442,40 @@ class TutorAgent:
             if self.ai_identity_reminder.should_fire(ts_seconds):
                 reminder_fired = True
 
+        def compose_prompt():
+            return with_runtime_ambiguity_policy(self.system_prompt, assistant_speaker='tutor',
+                context_format_version=self.context_format_version) + response_language_directive(user_utterance)
+
+        localized_system, recall_options = None, {}
+        ordering = self.local_reporting_order and reporting_order_intent('tutor',user_utterance) is not None
+        membership_session=None
+        if ordering and self.reporting_assessor is not None and reporting_order_intent('tutor',user_utterance).descriptions:
+            from psychology_base.applications.reporting_order import ReportingMembershipSession
+            membership_session=ReportingMembershipSession('tutor',user_utterance,self.reporting_assessor,user_id=self.user_id)
+        if self.max_request_input is not None or ordering:
+            from psychology_base.applications.llm_responders import request_context_selection
+            localized_system = compose_prompt()
+            recall_options = dict(selection_budget=request_context_selection(localized_system, user_utterance,
+                application='tutor', format_version=self.context_format_version, max_input=self.max_request_input,
+                mode='occurrences' if ordering else 'legacy',membership_session=membership_session),
+                max_fragments=6)
+
         # Recall BEFORE observing the current utterance — otherwise the
         # just-stored utterance appears in its own context as a "prior
         # attempt", which the LLM then may reference via Rule 5's
         # "reference prior attempts from CONTEXT". Mirror of the fix in
         # CompanionAgent.respond; observed 2026-10-07.
-        recall = self.companion_system.recall(user_utterance)
-        context_block = "\n".join(f"- {f.content}" for f in recall.fragments_used[:6])
+        recall = self.companion_system.recall(user_utterance, **recall_options)
+        context_block = _render_context_block(recall.fragments_used[:6], format_version=self.context_format_version)
+        exchange_id = new_exchange_id()
 
         self.companion_system.observe(
             Observation(
                 timestamp=now,
                 speaker="user",
                 content=user_utterance,
-                tags=(f"user:{self.user_id}", f"session:{self.session_id}"),
+                tags=(f"user:{self.user_id}", f"session:{self.session_id}",
+                      exchange_tag(exchange_id, "user", 0)),
             )
         )
 
@@ -438,12 +484,16 @@ class TutorAgent:
         # version. Non-English utterance → appended directive tells the
         # model to reply in the user's language, which is load-bearing
         # for the 韧性学习陪伴 Chinese-first target.
-        localized_system = self.system_prompt + response_language_directive(
-            user_utterance
-        )
-        response_text = self.llm_responder(
-            localized_system, context_block, user_utterance
-        )
+        if localized_system is None:
+            localized_system = compose_prompt()
+        try:
+            response_text = respond_with_reporting_order(self.llm_responder, localized_system, context_block,
+                user_utterance, application='tutor', enabled=self.local_reporting_order,
+                selection_trace=recall.metadata.get('ordered_selection') if recall_options else None,
+                membership_session=membership_session)
+        except ExecutionDeferred:
+            self._turn_index += 1  # The observed user turn still owns its exchange id.
+            raise
         tutor_move = classify_tutor_move(response_text)
 
         self.companion_system.observe(
@@ -451,7 +501,8 @@ class TutorAgent:
                 timestamp=now,
                 speaker="tutor",
                 content=response_text,
-                tags=(f"user:{self.user_id}", f"session:{self.session_id}", f"move:{tutor_move.value}"),
+                tags=(f"user:{self.user_id}", f"session:{self.session_id}", f"move:{tutor_move.value}",
+                      exchange_tag(exchange_id, "tutor", 1)),
             )
         )
 
@@ -471,6 +522,7 @@ class TutorAgent:
             tutor_move=tutor_move,
             reminder_fired=reminder_fired,
             telemetry_turn=telemetry_turn,
+            exchange_id=exchange_id,
         )
         self._turn_index += 1
         return resp

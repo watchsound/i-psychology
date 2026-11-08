@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from psychology_base.llm.types import ChatMessage, Completion, TaskTier
+from psychology_base.llm.execution import current_operation, remaining_time
 
 
 @dataclass
@@ -16,6 +17,9 @@ class AnthropicProvider:
     advanced_model: str = "claude-opus-4-7"
     api_key: Optional[str] = None
     _client: Any = field(default=None, repr=False)
+    max_retries: Optional[int] = None
+    request_timeout_s: Optional[float] = None
+    follow_redirects: Optional[bool] = None
 
     def model_for(self, tier: TaskTier) -> str:
         return self.simple_model if tier == TaskTier.SIMPLE else self.advanced_model
@@ -31,6 +35,13 @@ class AnthropicProvider:
                 "Install with `pip install anthropic`."
             ) from exc
         kwargs: dict = {}
+        if self.max_retries is not None:
+            kwargs["max_retries"] = self.max_retries
+        if self.request_timeout_s is not None:
+            kwargs["timeout"] = self.request_timeout_s
+        if self.follow_redirects is not None:
+            import httpx
+            kwargs["http_client"] = httpx.Client(follow_redirects=self.follow_redirects)
         if self.api_key:
             kwargs["api_key"] = self.api_key
         self._client = anthropic.Anthropic(**kwargs)
@@ -70,6 +81,8 @@ class AnthropicProvider:
             kwargs["temperature"] = temperature
 
         t0 = time.monotonic()
+        if current_operation.get() is not None and current_operation.get().deadline is not None:
+            kwargs["timeout"] = remaining_time(self.request_timeout_s)
         response = client.messages.create(**kwargs)
         latency_ms = (time.monotonic() - t0) * 1000.0
 

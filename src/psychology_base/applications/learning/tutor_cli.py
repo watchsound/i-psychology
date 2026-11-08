@@ -33,6 +33,7 @@ import time
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from psychology_base.applications.context import CONTEXT_FORMAT_VERSION
 from psychology_base.applications.learning.tutor_agent import (
     LLMResponder,
     TutorAgent,
@@ -179,7 +180,7 @@ def _stub_responder(
     )
 
 
-def _build_llm_responder(mode: str) -> LLMResponder:
+def _build_llm_responder(mode: str, *, session_id: str = "interactive", user_id: str | None = None) -> LLMResponder:
     """Resolve ``--mode`` to a concrete :class:`LLMResponder`.
 
     ``stub`` returns :func:`_stub_responder`. ``local`` / ``cloud`` go
@@ -202,6 +203,7 @@ def _build_llm_responder(mode: str) -> LLMResponder:
     if mode == "local":
         cfg = _dc.replace(
             cfg,
+            execution=_dc.replace(cfg.execution, mode="local"),
             local_ollama=_dc.replace(
                 cfg.local_ollama, enabled=True, force_cloud_chat=False
             ),
@@ -209,12 +211,13 @@ def _build_llm_responder(mode: str) -> LLMResponder:
     elif mode == "cloud":
         cfg = _dc.replace(
             cfg,
+            execution=_dc.replace(cfg.execution, mode="paid"),
             local_ollama=_dc.replace(cfg.local_ollama, force_cloud_chat=True),
         )
     else:
         raise ValueError(f"Unknown --mode {mode!r}; expected stub/local/cloud.")
-    router = LLMRouter(cfg)
-    return make_llm_responder(router, tier=TaskTier.ADVANCED)
+    router = LLMRouter(cfg, session_id=session_id, user_id=user_id)
+    return make_llm_responder(router, tier=TaskTier.SIMPLE if mode == "local" else TaskTier.ADVANCED)
 
 
 def build_tutor_agent(
@@ -224,6 +227,7 @@ def build_tutor_agent(
     llm_responder: LLMResponder,
     session_id: str,
     telemetry: Optional[ScaffoldingTelemetry] = None,
+    context_format_version: int = CONTEXT_FORMAT_VERSION,
 ) -> TutorAgent:
     """Compose the tutor agent for one session.
 
@@ -246,6 +250,7 @@ def build_tutor_agent(
         session_id=session_id,
         companion_system=system,
         llm_responder=llm_responder,
+        context_format_version=context_format_version,
         telemetry=tele,
         ai_identity_reminder=reminder,
         minor_exclusion_gate=gate,
@@ -269,6 +274,7 @@ def _attestation_from_manifest(manifest: UserManifest) -> AgeAttestation:
 
 def _tutor_metadata(resp: TutorResponse) -> Mapping[str, Any]:
     return {
+        "exchange_id": resp.exchange_id,
         "tutor_move": resp.tutor_move.value,
         "turn_index": resp.turn_index,
         "reminder_fired": resp.reminder_fired,
@@ -326,11 +332,15 @@ def cmd_session(args: argparse.Namespace) -> int:
         sys.stderr.write(f"{exc}\n")
         return 2
 
-    system = _resume_or_init_system(layout, args.user, manifest)
+    try:
+        system = _resume_or_init_system(layout, args.user, manifest)
+    except ValueError as exc:
+        sys.stderr.write(f"Could not initialize memory: {exc}\n")
+        return 2
     session_idx = next_session_index(layout, args.user)
     session_id = f"{manifest.user_id}-s{session_idx:04d}"
     try:
-        responder = _build_llm_responder(args.mode)
+        responder = _build_llm_responder(args.mode, session_id="tutor:" + session_id, user_id=manifest.user_id)
     except (RuntimeError, ValueError, OSError) as exc:
         sys.stderr.write(f"Could not build LLM responder: {exc}\n")
         return 3
@@ -473,8 +483,8 @@ def build_parser() -> argparse.ArgumentParser:
     session.add_argument(
         "--mode",
         choices=("stub", "local", "cloud"),
-        default="cloud",
-        help="LLM responder backend (default: cloud; pilot uses advanced tier).",
+        default="local",
+        help="LLM backend (default: local; cloud requires an explicit shared paid allowance).",
     )
     session.set_defaults(func=cmd_session)
 

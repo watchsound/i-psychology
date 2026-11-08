@@ -18,6 +18,8 @@ the EpBench parquet shim.
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 from datetime import datetime
 from pathlib import Path
 
@@ -164,6 +166,7 @@ def test_llm_reader_calls_router_advanced_tier():
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(config, providers={"mock": mock})
     reader = LLMReader(router=router)
@@ -194,6 +197,7 @@ def test_llm_reader_prompt_shape():
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(config, providers={"mock": mock})
     reader = LLMReader(router=router)
@@ -252,6 +256,7 @@ def test_llm_judge_resolves_judge_id_from_router():
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(config, providers={"mock": mock})
     judge = LLMJudge(router=router)
@@ -271,6 +276,7 @@ def test_llm_judge_round_trip():
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(config, providers={"mock": mock})
     judge = LLMJudge(router=router)
@@ -300,6 +306,7 @@ def test_judgment_cache_round_trip(tmp_path):
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(config, providers={"mock": mock})
     judge = LLMJudge(router=router)

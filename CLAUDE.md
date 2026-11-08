@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Greenfield. No source code, build system, tests, or dependency manifests exist yet. The repo holds only the goal statement ([README.md](README.md)) and background research PDFs in [reference-docs/](reference-docs/). Treat any task here as either (a) seeding the initial architecture or (b) extending that research base — not as modifying an established codebase.
+This is an implemented research codebase with source, tests and benchmark tooling. Read [project memory](docs/project-memory.md) before planning or changing evaluation or memory retrieval; it records the current blockers, lessons from failed experiments and next gates. [The roadmap](docs/roadmap.md) retains dated progress and [the goal](docs/sota-goal.md) defines success. Historical status entries describe their date, not the current checkout.
 
 ## Three components
 

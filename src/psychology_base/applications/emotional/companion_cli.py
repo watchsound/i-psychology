@@ -31,6 +31,7 @@ import time
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
+from psychology_base.applications.context import CONTEXT_FORMAT_VERSION
 from psychology_base.applications.emotional.companion_agent import (
     CompanionAgent,
     CompanionResponse,
@@ -247,6 +248,7 @@ def build_companion_agent(
     session_id: str,
     crisis_log_path: Path,
     handoff_sink: Optional[Callable[[CrisisIncident], None]] = None,
+    context_format_version: int = CONTEXT_FORMAT_VERSION,
 ) -> CompanionAgent:
     """Compose the companion agent with the full 《办法》 safety surface.
 
@@ -269,6 +271,7 @@ def build_companion_agent(
         session_id=session_id,
         companion_system=system,
         llm_responder=llm_responder,
+        context_format_version=context_format_version,
         ai_identity_reminder=reminder,
         minor_exclusion_gate=gate,
         crisis_escalation=crisis,
@@ -293,6 +296,7 @@ def _attestation_from_manifest(manifest: UserManifest) -> AgeAttestation:
 
 def _companion_metadata(resp: CompanionResponse) -> Mapping[str, Any]:
     return {
+        "exchange_id": resp.exchange_id,
         "turn_index": resp.turn_index,
         "reminder_fired": resp.reminder_fired,
         "handoff_triggered": resp.handoff_triggered,
@@ -381,11 +385,15 @@ def cmd_session(args: argparse.Namespace) -> int:
         sys.stderr.write(f"{exc}\n")
         return 2
 
-    system = _resume_or_init_system(layout, args.user, manifest)
+    try:
+        system = _resume_or_init_system(layout, args.user, manifest)
+    except ValueError as exc:
+        sys.stderr.write(f"Could not initialize memory: {exc}\n")
+        return 2
     session_idx = next_session_index(layout, args.user)
     session_id = f"{manifest.user_id}-s{session_idx:04d}"
     try:
-        responder = _build_llm_responder(args.mode)
+        responder = _build_llm_responder(args.mode, session_id="companion:" + session_id, user_id=manifest.user_id)
     except (RuntimeError, ValueError, OSError) as exc:
         sys.stderr.write(f"Could not build LLM responder: {exc}\n")
         return 3
@@ -542,7 +550,8 @@ def build_parser() -> argparse.ArgumentParser:
     session.add_argument(
         "--mode",
         choices=("stub", "local", "cloud"),
-        default="cloud",
+        default="local",
+        help="Cloud mode requires an explicit shared paid allowance.",
     )
     session.add_argument(
         "--notify-provider",

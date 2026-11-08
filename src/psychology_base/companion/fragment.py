@@ -1,7 +1,7 @@
 """Fragment store with S1 hard byte cap + S5 covenant pins.
 
 Step 1 was append-only. Step 3 adds:
-    S1 — approximate byte accounting (len(content) per fragment, constant per
+    S1 — approximate byte accounting (UTF-8 content + reserved turn tags, constant per
          edge); when total bytes exceed cap, evict the weakest non-covenant
          fragment. Weakness = sum of incident edge weights (lowest first);
          ties broken by oldest timestamp.
@@ -20,6 +20,7 @@ from typing import Callable, Optional
 
 from psychology_base.companion.edges import EdgeStore
 from psychology_base.eval.adapters import Fragment
+from psychology_base.companion.turn_provenance import NAMESPACE
 
 
 COVENANT_TAG = "covenant"
@@ -31,7 +32,8 @@ def is_covenant(fragment: Fragment) -> bool:
 
 
 def fragment_bytes(fragment: Fragment) -> int:
-    return len(fragment.content.encode("utf-8"))
+    return len(fragment.content.encode("utf-8")) + sum(
+        len(tag.encode("utf-8")) for tag in fragment.tags if tag.startswith(NAMESPACE))
 
 
 @dataclass

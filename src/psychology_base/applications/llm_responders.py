@@ -22,16 +22,20 @@ Two factories:
   surprise that pilot evaluation exists to find. Used for shakeout
   only.
 
-Both are thin — no retry / backoff / token accounting. The project's
-cache + the router's probe handle 90% of operational concerns; add
-features here only when a benchmark surfaces a missing one.
+Both are thin text adapters. Execution permission, reservations, usage and
+retries belong to the router; the serving adapter also exposes its turn scope
+so both agents can start it before recall.
 """
 
 from __future__ import annotations
 
-from typing import Callable, Optional
+from dataclasses import dataclass
+from contextlib import nullcontext
+from functools import wraps
+from typing import TYPE_CHECKING, Callable, Optional
 
-from psychology_base.llm.router import LLMRouter
+if TYPE_CHECKING:
+    from psychology_base.llm.router import LLMRouter
 from psychology_base.llm.types import ChatMessage, TaskTier
 
 
@@ -42,6 +46,100 @@ not import from the agents (would create a cycle)."""
 
 SimulatedUser = Callable[[str], str]
 """Signature: (previous_agent_reply) -> next_user_utterance."""
+
+_CONTEXT_PREFIX = '[CONTEXT]\n'
+_USER_SEPARATOR = '\n\n[USER]\n'
+
+
+@dataclass(frozen=True)
+class RoutedResponder:
+    """The existing three-text adapter with an explicit whole-turn boundary."""
+    router: LLMRouter
+    tier: TaskTier = TaskTier.SIMPLE
+    max_tokens: Optional[int] = 400
+    temperature: Optional[float] = 0.3
+
+    @property
+    def _has_turn_scope(self):
+        return callable(getattr(self.router, "conversation_turn", None))
+
+    def conversation_turn(self):
+        # Historical packet builders also use this text adapter with a
+        # chat-only message capture. Execution scopes belong to the router.
+        return self.router.conversation_turn() if self._has_turn_scope else nullcontext()
+
+    def __call__(self, system_prompt: str, context_block: str, user_utterance: str) -> str:
+        response = (self.router.operation("response_generation", inference_role="response")
+                    if self._has_turn_scope else nullcontext())
+        with self.conversation_turn(), response:
+            completion = self.router.chat(
+                responder_messages(system_prompt, context_block, user_utterance),
+                tier=self.tier, max_tokens=self.max_tokens, temperature=self.temperature)
+            text = getattr(completion, "content", "") or getattr(completion, "text", "")
+            return text.strip()
+
+
+def conversation_turn(method):
+    """Share one scope across recall, response and observation in both agents.
+
+    Custom injected callables retain their contract. Their owners can wrap a
+    whole agent call in router.conversation_turn() when using runtime inference.
+    """
+    @wraps(method)
+    def bounded(self, *args, **kwargs):
+        if isinstance(self.llm_responder, RoutedResponder):
+            with self.llm_responder.conversation_turn():
+                return method(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
+    return bounded
+
+
+def responder_messages(system_prompt: str, context_block: str, user_utterance: str) -> list[ChatMessage]:
+    """The single message-composition owner for delivery and input accounting."""
+    content = (_CONTEXT_PREFIX + context_block + _USER_SEPARATOR + user_utterance
+               if context_block else user_utterance)
+    return [ChatMessage(role='system', content=system_prompt), ChatMessage(role='user', content=content)]
+
+
+def request_context_selection(system_prompt, user_utterance, *, application, format_version,
+                              max_input, max_context_bytes=6000, mode='legacy',membership_session=None):
+    """Reserve actual prompt/query/framing bytes for the existing selector.
+
+    Uses the router's conservative plain-message bound, not a token estimate.
+    Empty-context framing differs; an empty-only fit is valid and selects none.
+    No fragments, instructions or queries are truncated.
+    ``max_input=None`` retains only the context cap for the local reporting path.
+    """
+    from functools import partial
+    from psychology_base.applications.context import context_byte_counter, render_context_block
+    from psychology_base.companion.reconstruction import ResearchSelection
+    from psychology_base.llm.accounting import request_input_bound
+    from psychology_base.llm.execution import ExecutionDeferred
+    if ((max_input is not None and (type(max_input) is not int or max_input <= 0))
+            or type(max_context_bytes) is not int or max_context_bytes < 0):
+        raise ValueError('Request input and context limits require bounded integers')
+    if mode not in ('legacy','occurrences'):
+        raise ValueError('Delivery selection supports legacy or occurrence evidence')
+    empty_bound = request_input_bound(responder_messages(system_prompt, '', user_utterance))
+    if max_input is not None and empty_bound > max_input:
+        raise ExecutionDeferred('Prompt and query exceed the input limit even without memory')
+    framing = len((_CONTEXT_PREFIX + _USER_SEPARATOR).encode('utf-8'))
+    available = (max_context_bytes if max_input is None else
+                 max(0, min(max_context_bytes, max_input - empty_bound - framing)))
+    renderer = partial(render_context_block, assistant_speaker=application, format_version=format_version)
+    counter = partial(context_byte_counter, assistant_speaker=application, format_version=format_version)
+    requirements = None
+    if mode == 'occurrences':
+        from psychology_base.applications.reporting_order import reporting_order_intent, reporting_required_occurrences
+        if reporting_order_intent(application, user_utterance) is not None:
+            requirements = partial(reporting_required_occurrences, application, user_utterance)
+            if membership_session is not None:
+                from psychology_base.applications.reporting_order import ReportingMembershipSession
+                if (not isinstance(membership_session,ReportingMembershipSession)
+                        or membership_session.application!=application or membership_session.query!=user_utterance):
+                    raise ValueError('Selection membership session belongs to another request')
+                requirements=membership_session.required_occurrences
+    return ResearchSelection(mode, renderer, available, counter, required_occurrences=requirements)
 
 
 def make_llm_responder(
@@ -61,7 +159,7 @@ def make_llm_responder(
 
     ``max_tokens`` defaults to 400: companion responses are short by
     design (narrative-therapy move + witnessing), tutor Socratic probes
-    are shorter still. Pass ``None`` to let the provider decide.
+    are shorter still. ``None`` is supported only outside bounded serving.
 
     ``temperature=0.3`` matches the shakeout mode where we want *some*
     behavioral variance so the chain-reference audit sees different
@@ -69,30 +167,7 @@ def make_llm_responder(
     (SOCRATIC_PROBE / VALIDATES_FALSEHOOD / etc.) flip randomly.
     """
 
-    def _responder(
-        system_prompt: str, context_block: str, user_utterance: str
-    ) -> str:
-        if context_block:
-            user_payload = (
-                f"[CONTEXT]\n{context_block}\n\n[USER]\n{user_utterance}"
-            )
-        else:
-            user_payload = user_utterance
-        completion = router.chat(
-            [
-                ChatMessage(role="system", content=system_prompt),
-                ChatMessage(role="user", content=user_payload),
-            ],
-            tier=tier,
-            max_tokens=max_tokens,
-            temperature=temperature,
-        )
-        text = getattr(completion, "content", "") or getattr(
-            completion, "text", ""
-        )
-        return text.strip()
-
-    return _responder
+    return RoutedResponder(router, tier, max_tokens, temperature)
 
 
 def make_llm_simulated_user(

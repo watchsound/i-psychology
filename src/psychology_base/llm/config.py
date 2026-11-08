@@ -37,6 +37,8 @@ from typing import Any, Optional
 
 import yaml
 
+from psychology_base.llm.execution import ConversationLimits, ExecutionPolicy
+
 
 DEFAULT_CONFIG_PATHS: tuple[Path, ...] = (
     Path.cwd() / "configs" / "llm.yaml",
@@ -57,7 +59,7 @@ class ProviderConfig:
     advanced_model: str
     api_key_env: Optional[str] = None
     base_url: Optional[str] = None
-    request_timeout_s: Optional[float] = None  # Ollama only; None → provider default
+    request_timeout_s: Optional[float] = None  # Ollama; serving also imposes execution timeout.
     # Dedicated embedding model (Ollama only). Chat-tuned LLMs like
     # qwen2.5:7b expose /api/embeddings but their vectors are not
     # retrieval-tuned — Phase 1.5 E1 proved them degenerate (cos(cue,
@@ -73,6 +75,11 @@ class ProviderConfig:
     # so providers whose default embedder is already multilingual-strong (e.g.
     # DashScope text-embedding-v3) need no second slot.
     embedding_model_multilingual: Optional[str] = None
+    max_retries: Optional[int] = None  # SDK default in research; paid serving enforces zero.
+
+    def __post_init__(self):
+        if self.max_retries is not None and (type(self.max_retries) is not int or self.max_retries < 0):
+            raise ValueError("max_retries must be a nonnegative integer or null")
 
     def api_key(self) -> Optional[str]:
         """Resolve the API key from env. Returns ``None`` for providers
@@ -133,12 +140,20 @@ class I18nConfig:
 
 
 @dataclass(frozen=True)
+class MemoryConfig:
+    context_selection: str = "identity"
+
+
+@dataclass(frozen=True)
 class LLMConfig:
     active_provider: str
     providers: dict[str, ProviderConfig] = field(default_factory=dict)
     local_ollama: LocalOllamaConfig = field(default_factory=LocalOllamaConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
     i18n: I18nConfig = field(default_factory=I18nConfig)
+    memory: MemoryConfig = field(default_factory=MemoryConfig)
+    execution: ExecutionPolicy = field(default_factory=ExecutionPolicy)
+    conversation: ConversationLimits = field(default_factory=ConversationLimits)
 
     def get_provider(self, name: str) -> ProviderConfig:
         if name not in self.providers:
@@ -161,6 +176,7 @@ def _parse_provider(name: str, raw: dict[str, Any]) -> ProviderConfig:
             request_timeout_s=float(timeout) if timeout is not None else None,
             embedding_model=raw.get("embedding_model"),
             embedding_model_multilingual=raw.get("embedding_model_multilingual"),
+            max_retries=raw.get("max_retries"),
         )
     except KeyError as exc:
         raise ValueError(
@@ -205,6 +221,11 @@ def _parse_config(raw: dict[str, Any]) -> LLMConfig:
         embedder_multilingual=bool(i18n_raw.get("embedder_multilingual", False)),
     )
 
+    memory_raw = raw.get("memory", {})
+    if not isinstance(memory_raw, dict):
+        raise ValueError("LLM config 'memory' must be a mapping")
+    memory = MemoryConfig(context_selection=memory_raw.get("context_selection", "identity"))
+
     active = raw["active_provider"]
     if active not in providers:
         raise ValueError(
@@ -218,6 +239,11 @@ def _parse_config(raw: dict[str, Any]) -> LLMConfig:
         local_ollama=local_ollama,
         cache=cache,
         i18n=i18n,
+        memory=memory,
+        # Loaded and programmatic configurations both default to local.
+        # Frozen evaluations must explicitly select their research profile.
+        execution=ExecutionPolicy.from_mapping(raw.get("execution", {"mode": "local"})),
+        conversation=ConversationLimits.from_mapping(raw.get("conversation", {})),
     )
 
 

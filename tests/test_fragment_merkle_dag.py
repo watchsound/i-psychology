@@ -267,3 +267,23 @@ def test_companion_rerender_updates_bm25_and_witness():
     assert len(sys.witness.store.all()) == 2
     # BM25 index is invalidated.
     assert sys._bm25_index is None
+
+
+def test_chinese_rerender_seeds_both_graphs_without_rewriting_parent(chinese_cases):
+    from datetime import timedelta
+    from psychology_base.companion.reconstruction import jaccard_prior
+    from psychology_base.companion.system import CompanionSystem
+
+    pytest.importorskip("jieba")
+    original_text, child_text = chinese_cases["edge_pair"]
+    system = CompanionSystem(cjk_tokenizer="jieba")
+    system.observe(_make_observation(original_text))
+    parent = system.companion.store.all()[0]
+    child = system.rerender(parent.id, child_text, timestamp=TS + timedelta(days=7))
+    expected = jaccard_prior(parent, child, cjk_tokenizer="jieba")
+    assert expected > 0
+    assert system.edges.get(parent.id, child.id) == pytest.approx(expected)
+    assert system.witness_edges.get(parent.id, child.id) == pytest.approx(expected)
+    assert child.parent_ids == (parent.id,)
+    assert system.companion.store.by_id(parent.id) == parent
+    assert system.witness.store.by_id(child.id) == child

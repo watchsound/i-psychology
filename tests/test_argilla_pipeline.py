@@ -638,6 +638,23 @@ def _enrol_test_user(
     write_manifest(layout, manifest)
 
 
+def test_agent_probe_startup_reports_tokenizer_configuration_failure(tmp_path, monkeypatch, unavailable_jieba):
+    from psychology_base.applications.learning import tutor_cli
+
+    _enrol_test_user(tmp_path, "emotional_companion", "u1")
+
+    def unexpected_responder(mode):
+        raise AssertionError("Configuration failure must precede responder construction")
+
+    monkeypatch.setattr(tutor_cli, "_build_llm_responder", unexpected_responder)
+    output = tmp_path / "responses.jsonl"
+    with pytest.raises(SystemExit, match="Could not initialize agent.*jieba"):
+        main(["run-probes", "--app", "emotional_companion", "--mode", "stub",
+              "--pilot-root", str(tmp_path), "--user-id", "u1", "--session-id", "s1",
+              "--out", str(output)])
+    assert not output.exists()
+
+
 def test_cli_run_probes_agent_source_requires_pilot_root(tmp_path):
     """`--probe-source agent` without `--pilot-root` must error, not fall
     through to a bare-LLM path. This guards the §9.4b κ-gating semantics."""

@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr, field_v
 
 from psychology_base.applications.emotional import attachment_state as attachment
 from psychology_base.applications.emotional.companion_agent import CompanionAgent, LLMResponder, _render_context_block
+from psychology_base.applications.context import CONTEXT_FORMAT_VERSION, CONTEXT_FORMAT_VERSIONS, render_context_block
 from psychology_base.applications.safety.ai_identity_reminder import AIIdentityReminder
 from psychology_base.applications.safety.crisis_escalation import CrisisEscalation
 from psychology_base.applications.safety.extreme_emotion import ExtremeEmotionWatcher, SessionAffect
@@ -29,10 +30,14 @@ from psychology_base.applications.safety.minor_exclusion import (
     AgeAttestation, ApplicationSurface, MinorExclusionGate,
 )
 from psychology_base.companion.pam_export import pam_export, pam_import, validate_content_addressing
+from psychology_base.companion.reconstruction import RECALL_SELECTION_POLICY, context_selection_identity
 from psychology_base.companion.system import CompanionSystem
+from psychology_base.companion.turn_provenance import exchange_tag
 from psychology_base.eval.adapters import make_fragment
+from psychology_base.i18n import tokenizer_identity
 from psychology_base.eval.benchmarks.public_datasets.msc import MSCConversation, MSCSession, MSCTurn
 from psychology_base.eval.benchmarks.public_datasets.msc_bond_longitudinal import run_msc_session
+from psychology_base.eval.benchmarks.evaluation_support import AuditedSystem as _AuditedSystem
 
 
 BASE_TIME = datetime(2026, 10, 18, tzinfo=timezone.utc)
@@ -49,17 +54,22 @@ def digest(value: object) -> str:
     return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
-def scorer_configuration() -> dict:
-    return {
+def scorer_configuration(system: CompanionSystem) -> dict:
+    configuration = {
         "weights": {name: getattr(attachment, name) for name in (
             "_W_MIRROR", "_W_REPAIR", "_W_CONSISTENCY", "_W_RUPTURE",
             "_W_SYCOPHANCY", "_W_OVER_DISCLOSURE",
         )},
         "ema_alpha": attachment._TRUST_EMA_ALPHA,
         "scorer_source_sha256": hashlib.sha256(Path(attachment.__file__).read_bytes()).hexdigest(),
-        "top_k": 6, "byte_cap": BYTE_CAP, "tokenizer": "unicode",
-        "consolidation_enabled": False, "mode": "scripted",
+        "top_k": system.top_k, "byte_cap": system.companion.store.byte_cap, "tokenizer": system.cjk_tokenizer,
+        "consolidation_enabled": system.consolidation_enabled, "mode": "scripted",
+        "fragment_recall_policy": RECALL_SELECTION_POLICY,
+        "tokenizer_identity": tokenizer_identity(system.cjk_tokenizer),
     }
+    if system.fragment_context_selection != "identity":
+        configuration["fragment_context_selection"] = context_selection_identity(system.fragment_context_selection)
+    return configuration
 
 
 class Contract(BaseModel):
@@ -199,6 +209,7 @@ class TrajectoryManifest(Contract):
 
     @property
     def anchor_fragment(self):
+        """Unannotated fixture template; actual occurrence IDs live in receipts."""
         spec = next(s for s in self.sessions if s.session_id == self.continuity_anchor.session_id)
         turn = self.continuity_anchor.user_turn
         return _turn_fragments(self, spec, spec.seeker_turns[turn - 1], spec.companion_turns[turn - 1], turn)[0]
@@ -300,17 +311,9 @@ def build_trajectory(
     )
 
 
-class _AuditedSystem(CompanionSystem):
-    """Observe real recall output without altering selection or its state."""
-
-    def recall(self, *args, **kwargs):
-        recalled = super().recall(*args, **kwargs)
-        self.last_context_fragments = recalled.fragments_used[:6]
-        return recalled
-
-
-def _new_system(manifest: TrajectoryManifest) -> CompanionSystem:
-    return _AuditedSystem(top_k=6, seed=manifest.seed, byte_cap=BYTE_CAP, cjk_tokenizer="unicode")
+def _new_system(manifest: TrajectoryManifest, fragment_context_selection: str = "identity") -> CompanionSystem:
+    return _AuditedSystem(top_k=6, seed=manifest.seed, byte_cap=BYTE_CAP, cjk_tokenizer="unicode",
+                          fragment_context_selection=fragment_context_selection)
 
 
 class _FixtureAgent(CompanionAgent):
@@ -320,9 +323,12 @@ class _FixtureAgent(CompanionAgent):
 
     def respond(self, user_utterance: str, **kwargs):
         stamp = kwargs["timestamp"].timestamp()
-        return super().respond(user_utterance, attestation=AgeAttestation(
+        response = super().respond(user_utterance, attestation=AgeAttestation(
             age_years=self.fixture_age, attested_at=stamp, attestation_source="synthetic_fixture",
         ), **kwargs)
+        if response.exchange_id is not None:
+            self.exchange_receipts.append(response.exchange_id)
+        return response
 
 
 def _score(state: attachment.AttachmentState, spec: TrajectorySession, seekers, companions):
@@ -332,7 +338,7 @@ def _score(state: attachment.AttachmentState, spec: TrajectorySession, seekers, 
 
 
 def _record(spec: TrajectorySession, status: str, seekers=(), companions=(), contexts=(),
-            context_fragments=(), **extra) -> dict:
+            context_fragments=(), exchange_ids=(), **extra) -> dict:
     return {
         "session_id": spec.session_id, "index": spec.index, "block_id": spec.block_id,
         "user_id": spec.user_id, "starts_at": spec.starts_at.isoformat(), "ends_at": spec.ends_at.isoformat(),
@@ -343,7 +349,9 @@ def _record(spec: TrajectorySession, status: str, seekers=(), companions=(), con
         "affect": spec.affect.model_dump() if spec.affect else None,
         "affect_provenance": "explicit_fixture_input" if spec.affect else "not_measured",
         "status": status, "seeker_turns": list(seekers), "companion_turns": list(companions),
-        "contexts": list(contexts), "context_fragments": list(context_fragments), **extra,
+        "contexts": list(contexts), "context_fragments": list(context_fragments),
+        "context_format_version": CONTEXT_FORMAT_VERSION,
+        "exchange_ids": list(exchange_ids), **extra,
     }
 
 
@@ -352,6 +360,7 @@ def _replay(manifest: TrajectoryManifest, ledger: list[dict]) -> attachment.Atta
     if not isinstance(ledger, list) or len(ledger) > len(manifest.sessions):
         raise ValueError("invalid checkpoint ledger")
     state = attachment.AttachmentState(user_id=manifest.user_id)
+    seen_exchanges = set()
     for spec, record in zip(manifest.sessions, ledger):
         if not isinstance(record, dict) or record.get("status") not in ("completed", "empty"):
             raise ValueError("checkpoint contains an unaccepted session")
@@ -364,9 +373,26 @@ def _replay(manifest: TrajectoryManifest, ledger: list[dict]) -> attachment.Atta
         if len(contexts) != len(spec.companion_turns):
             raise ValueError("checkpoint turn count mismatch")
         context_fragments = record.get("context_fragments")
-        _validate_contexts(manifest, spec, ledger[:spec.index - 1], contexts, context_fragments)
+        receipts = record.get("exchange_ids")
+        if (not isinstance(receipts, list) or len(receipts) != len(spec.companion_turns)
+                or any(not isinstance(group, str) for group in receipts)):
+            raise ValueError("checkpoint exchange receipt count or type mismatch")
+        for group in receipts:
+            exchange_tag(group, "user", 0)
+            if group in seen_exchanges:
+                raise ValueError("checkpoint reuses an exchange receipt")
+            seen_exchanges.add(group)
+        context_format = record.get("context_format_version", 1)
+        if type(context_format) is not int or context_format not in CONTEXT_FORMAT_VERSIONS:
+            raise ValueError("invalid checkpoint context format")
+        _validate_contexts(manifest, spec, ledger[:spec.index - 1], contexts, context_fragments, receipts,
+                           format_version=context_format)
         expected = _record(spec, "empty" if empty else "completed",
-                           () if empty else spec.seeker_turns, spec.companion_turns, contexts, context_fragments)
+                           () if empty else spec.seeker_turns, spec.companion_turns, contexts, context_fragments, receipts)
+        if "context_format_version" in record:
+            expected["context_format_version"] = context_format
+        else:
+            expected.pop("context_format_version")
         if not empty:
             scored = _score(state, spec, spec.seeker_turns, spec.companion_turns)
             state = scored.new_state
@@ -378,11 +404,12 @@ def _replay(manifest: TrajectoryManifest, ledger: list[dict]) -> attachment.Atta
     return state
 
 
-def _turn_fragments(manifest, spec, user, reply, turn):
+def _turn_fragments(manifest, spec, user, reply, turn, exchange_id=None):
     stamp = spec.starts_at + timedelta(seconds=30 * turn)
     return [make_fragment(text, stamp, tags=(
         f"user:{manifest.user_id}", f"session:{spec.session_id}", f"speaker:{speaker}",
-    )) for speaker, text in (("user", user), ("companion", reply))]
+    ) + ((exchange_tag(exchange_id, speaker, position),) if exchange_id is not None else ()))
+        for position, (speaker, text) in enumerate((("user", user), ("companion", reply)))]
 
 
 def _expected_fragments(manifest: TrajectoryManifest, ledger: list[dict]) -> list:
@@ -391,11 +418,22 @@ def _expected_fragments(manifest: TrajectoryManifest, ledger: list[dict]) -> lis
         if record["status"] != "completed":
             continue
         for turn, (user, reply) in enumerate(zip(record["seeker_turns"], record["companion_turns"]), 1):
-            fragments.extend(_turn_fragments(manifest, spec, user, reply, turn))
+            fragments.extend(_turn_fragments(manifest, spec, user, reply, turn, record["exchange_ids"][turn - 1]))
     return fragments
 
 
-def _validate_contexts(manifest, spec, prefix, contexts, snapshots):
+def recorded_anchor(manifest: TrajectoryManifest, ledger: list[dict]):
+    """Resolve the fixture anchor to its recorded occurrence, never a new UUID."""
+    spec = next(s for s in manifest.sessions if s.session_id == manifest.continuity_anchor.session_id)
+    record = next((r for r in ledger if r["session_id"] == spec.session_id and r["status"] == "completed"), None)
+    if record is None:
+        return None
+    turn = manifest.continuity_anchor.user_turn
+    return _turn_fragments(manifest, spec, spec.seeker_turns[turn - 1], spec.companion_turns[turn - 1],
+                           turn, record["exchange_ids"][turn - 1])[0]
+
+
+def _validate_contexts(manifest, spec, prefix, contexts, snapshots, receipts, *, format_version=CONTEXT_FORMAT_VERSION):
     if not isinstance(snapshots, list) or len(snapshots) != len(contexts):
         raise ValueError("checkpoint context audit count mismatch")
     allowed = {f.id: f for f in _expected_fragments(manifest, prefix)}
@@ -407,11 +445,11 @@ def _validate_contexts(manifest, spec, prefix, contexts, snapshots):
                 or validate_content_addressing(fragments)
                 or any(f.id not in allowed or f != allowed[f.id] for f in fragments)
                 or pam_export(fragments)["fragments"] != snapshot
-                or _render_context_block(fragments) != context):
+                or render_context_block(fragments, assistant_speaker="companion", format_version=format_version) != context):
             raise ValueError("context audit contains unknown, future, or mislabeled memory")
         if spec.companion_turns:
             for fragment in _turn_fragments(manifest, spec, spec.seeker_turns[turn - 1],
-                                             spec.companion_turns[turn - 1], turn):
+                                             spec.companion_turns[turn - 1], turn, receipts[turn - 1]):
                 allowed[fragment.id] = fragment
 
 
@@ -442,9 +480,9 @@ def save_checkpoint(path: Path, manifest: TrajectoryManifest, state, ledger: lis
     memory_name = f"memory-{memory_hash}.json"
     atomic_write_json(path.with_name(memory_name), artifact)
     payload = {
-        "schema_version": "attachment-checkpoint-v2", "user_id": manifest.user_id,
+        "schema_version": "attachment-checkpoint-v3", "user_id": manifest.user_id,
         "manifest_sha256": manifest.sha256, "source_file_sha256": manifest.source_file_sha256,
-        "configuration": scorer_configuration(), "state": asdict(state), "ledger": ledger,
+        "configuration": scorer_configuration(system), "state": asdict(state), "ledger": ledger,
         "next_index": len(ledger) + 1,
         "simulated_clock": ledger[-1]["ends_at"] if ledger else None,
         "memory_file": memory_name, "memory_sha256": memory_hash,
@@ -452,7 +490,7 @@ def save_checkpoint(path: Path, manifest: TrajectoryManifest, state, ledger: lis
     atomic_write_json(path, {"payload": payload, "sha256": digest(payload)})
 
 
-def load_checkpoint(path: Path, manifest: TrajectoryManifest):
+def load_checkpoint(path: Path, manifest: TrajectoryManifest, *, fragment_context_selection: str = "identity"):
     """Validate before ingesting; restore content, not a complete runtime."""
     envelope = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(envelope, dict) or set(envelope) != {"payload", "sha256"}:
@@ -464,10 +502,11 @@ def load_checkpoint(path: Path, manifest: TrajectoryManifest):
                      "state", "ledger", "next_index", "simulated_clock", "memory_file", "memory_sha256"}
     if not isinstance(payload, dict) or set(payload) != expected_keys:
         raise ValueError("invalid checkpoint fields")
-    if (payload["schema_version"] != "attachment-checkpoint-v2" or payload["user_id"] != manifest.user_id
+    system = _new_system(manifest, fragment_context_selection)
+    if (payload["schema_version"] != "attachment-checkpoint-v3" or payload["user_id"] != manifest.user_id
             or payload["manifest_sha256"] != manifest.sha256
             or payload["source_file_sha256"] != manifest.source_file_sha256
-            or payload["configuration"] != scorer_configuration()):
+            or payload["configuration"] != scorer_configuration(system)):
         raise ValueError("checkpoint identity, manifest, or configuration mismatch")
     state = _replay(manifest, payload["ledger"])
     state_data = payload["state"]
@@ -497,7 +536,6 @@ def load_checkpoint(path: Path, manifest: TrajectoryManifest):
     restored = pam_import(artifact)
     if validate_content_addressing(restored):
         raise ValueError("checkpoint contains corrupt memory content addresses")
-    system = _new_system(manifest)
     for fragment in restored:
         system._ingest_fragment(fragment)
     return state, ledger, system
@@ -508,7 +546,8 @@ def memory_round_trip_checks(system: CompanionSystem, cue: str, user_id: str) ->
     artifact = pam_export(original)
     imported = pam_import(artifact)
     restored = CompanionSystem(top_k=system.top_k, seed=system.seed,
-                               byte_cap=system.companion.store.byte_cap, cjk_tokenizer=system.cjk_tokenizer)
+                               byte_cap=system.companion.store.byte_cap, cjk_tokenizer=system.cjk_tokenizer,
+                               fragment_context_selection=system.fragment_context_selection)
     for fragment in imported:
         restored._ingest_fragment(fragment)
     ids = {f.id for f in imported}
@@ -549,18 +588,18 @@ class TrajectoryResult:
             if previous.block_id == spec.block_id:
                 continue
             record = next((r for r in self.ledger if r["session_id"] == spec.session_id), None)
-            anchor = self.manifest.anchor_fragment
-            observed = bool(record and record["status"] == "completed" and any(
+            anchor = recorded_anchor(self.manifest, completed)
+            observed = bool(anchor and record and record["status"] == "completed" and any(
                 snapshot == pam_export((anchor,))["fragments"][0]
                 for fragments in record["context_fragments"] for snapshot in fragments
             ))
             transitions.append({"session_id": spec.session_id, "attempted": record is not None,
                                 "original_user_fact_in_context": observed,
-                                "anchor_fragment_id": anchor.id})
+                                "anchor_fragment_id": anchor.id if anchor else None})
         return {
-            "schema_version": "attachment-trajectory-report-v2",
+            "schema_version": "attachment-trajectory-report-v3",
             "trajectory_id": self.manifest.trajectory_id, "user_id": self.manifest.user_id,
-            "manifest_sha256": self.manifest.sha256, "configuration": scorer_configuration(),
+            "manifest_sha256": self.manifest.sha256, "configuration": scorer_configuration(self.system),
             "evidence_class": "scripted_software_control" if self.response_source == "fixed_script" else "unverified_injected_callable",
             "response_source": self.response_source,
             "response_uses_recalled_context": False if self.response_source == "fixed_script" else None,
@@ -602,6 +641,7 @@ def run_trajectory(
     resume: bool = False, stop_after: int | None = None,
     responder_factory: Callable[[TrajectorySession], LLMResponder] | None = None,
     checkpoint_every: int = 8,
+    fragment_context_selection: str = "identity",
 ) -> TrajectoryResult:
     """Replay one identity's scripts; external callables have unverified provenance."""
     if stop_after is not None and (type(stop_after) is not int or stop_after < 1):
@@ -613,11 +653,12 @@ def run_trajectory(
     if resume:
         if checkpoint_path is None:
             raise ValueError("resume needs a checkpoint path")
-        state, ledger, system = load_checkpoint(checkpoint_path, manifest)
+        state, ledger, system = load_checkpoint(checkpoint_path, manifest,
+                                                fragment_context_selection=fragment_context_selection)
     else:
         if checkpoint_path is not None and checkpoint_path.exists():
             raise ValueError("checkpoint already exists; use resume or a new output directory")
-        state, ledger, system = attachment.AttachmentState(user_id=manifest.user_id), [], _new_system(manifest)
+        state, ledger, system = attachment.AttachmentState(user_id=manifest.user_id), [], _new_system(manifest, fragment_context_selection)
     if stop_after is not None and stop_after < state.sessions_completed:
         raise ValueError("stop_after precedes the restored checkpoint")
     incidents: list[dict] = []
@@ -660,6 +701,7 @@ def run_trajectory(
             extreme_emotion_watcher=watcher,
         )
         agent.fixture_age = manifest.age_years
+        agent.exchange_receipts = []
         seeker_replies = iter(spec.seeker_turns[1:])
         prior_state = result.state
         prior_review_count = len(reviews)
@@ -673,7 +715,8 @@ def run_trajectory(
             seekers = [t.utterance for t in transcript.turns if t.speaker == "seeker"]
             companions = [t.utterance for t in transcript.turns if t.speaker == "companion"]
             if transcript.handoff_triggered:
-                result.ledger.append(_record(spec, "handoff", seekers, companions, contexts, context_fragments))
+                result.ledger.append(_record(spec, "handoff", seekers, companions, contexts, context_fragments,
+                                             agent.exchange_receipts))
                 result.stop_reason = "handoff"
                 break
             if (len(companions) != len(spec.companion_turns) or len(seekers) != len(spec.seeker_turns)
@@ -688,6 +731,7 @@ def run_trajectory(
             result.state = scored.new_state
             result.ledger.append(_record(
                 spec, "completed", seekers, companions, contexts, context_fragments,
+                agent.exchange_receipts,
                 scoring={k: v for k, v in asdict(scored).items() if k != "new_state"},
                 attachment_state=asdict(result.state),
             ))

@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from psychology_base.llm.types import ChatMessage, Completion, TaskTier
+from psychology_base.llm.execution import remaining_time
 
 
 DASHSCOPE_URL = (
@@ -68,6 +69,19 @@ class AlibabaTongyiProvider:
     rerank_model: str = "gte-rerank-v2"
     rerank_url: str = DASHSCOPE_RERANK_URL
     _opened: bool = field(default=False, repr=False)
+    bounded_transport: bool = False
+
+    def _open(self, request):
+        timeout = remaining_time(self.request_timeout_s)
+        if not self.bounded_transport:
+            return urllib.request.urlopen(request, timeout=timeout)
+        from urllib.parse import urlsplit
+        from psychology_base.llm.providers.ollama import _RejectRedirects
+        url = urlsplit(request.full_url)
+        if url.scheme != "https" or url.username or url.password or url.fragment:
+            raise ValueError("Paid runtime requires an HTTPS provider endpoint")
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _RejectRedirects())
+        return opener.open(request, timeout=timeout)
 
     def model_for(self, tier: TaskTier) -> str:
         return self.simple_model if tier == TaskTier.SIMPLE else self.advanced_model
@@ -120,7 +134,7 @@ class AlibabaTongyiProvider:
 
         t0 = time.monotonic()
         try:
-            with urllib.request.urlopen(req, timeout=self.request_timeout_s) as resp:
+            with self._open(req) as resp:
                 raw = resp.read().decode("utf-8")
         except urllib.error.HTTPError as exc:
             body = ""
@@ -199,7 +213,7 @@ class AlibabaTongyiProvider:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(req, timeout=self.request_timeout_s) as resp:
+            with self._open(req) as resp:
                 raw = resp.read().decode("utf-8")
         except urllib.error.HTTPError as exc:
             body = ""
@@ -266,7 +280,7 @@ class AlibabaTongyiProvider:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(req, timeout=self.request_timeout_s) as resp:
+            with self._open(req) as resp:
                 raw = resp.read().decode("utf-8")
         except urllib.error.HTTPError as exc:
             body = ""

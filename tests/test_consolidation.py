@@ -11,6 +11,8 @@ Per docs/phases/phase-1.5-build-plan.md §5:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 import json
 from datetime import datetime, timezone
 
@@ -45,6 +47,7 @@ def _router(tmp_path, response_text: str) -> tuple[LLMRouter, MockProvider]:
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     mock = MockProvider(name="mock", responder=lambda msgs, tier: response_text)
     router = LLMRouter(

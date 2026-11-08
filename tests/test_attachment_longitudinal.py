@@ -64,11 +64,19 @@ def test_repair_improves_over_matched_unrepaired_trajectory():
     assert repaired.state.cumulative_rupture_turns == unrepaired.state.cumulative_rupture_turns / 2
 
 
-def test_repeat_runs_reproduce_the_complete_report():
+def test_repeat_runs_reproduce_scores_with_distinct_audited_occurrences():
     manifest = harness.build_trajectory("supportive-en")
-    a = harness.run_trajectory(manifest).report()
-    b = harness.run_trajectory(manifest).report()
-    assert harness.canonical_json(a) == harness.canonical_json(b)
+    a = harness.run_trajectory(manifest)
+    b = harness.run_trajectory(manifest)
+    assert a.state == b.state
+    assert harness._replay(manifest, a.ledger) == a.state
+    assert harness._replay(manifest, b.ledger) == b.state
+    for result in (a, b):
+        assert harness.pam_export(harness._expected_fragments(manifest, result.ledger)) == harness.pam_export(
+            result.system.companion.store.all())
+    assert {g for r in a.ledger for g in r["exchange_ids"]}.isdisjoint(
+        g for r in b.ledger for g in r["exchange_ids"])
+    assert [r["scoring"] for r in a.ledger] == [r["scoring"] for r in b.ledger]
 
 
 @pytest.mark.parametrize("mutate,match", [

@@ -6,6 +6,8 @@ No vendor SDKs required. OllamaProvider.probe is monkeypatched via
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 import io
 import json
 from pathlib import Path
@@ -222,6 +224,7 @@ def _config_with_mock(tmp_path, *, ollama_enabled: bool) -> LLMConfig:
             ),
         },
         local_ollama=LocalOllamaConfig(enabled=ollama_enabled, probe_timeout_s=0.1),
+        execution=ExecutionPolicy(mode="research"),
     )
 
 
@@ -545,6 +548,7 @@ def test_router_builds_tongyi_from_config(tmp_path, monkeypatch):
             ),
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     router = LLMRouter(cfg, cache=None)
     provider = router.providers["tongyi"]

@@ -23,6 +23,7 @@ import json
 import os
 import threading
 import uuid
+from collections import OrderedDict
 from dataclasses import asdict
 from pathlib import Path
 from typing import Optional
@@ -42,6 +43,8 @@ def chat_cache_key(
     messages: list[ChatMessage],
     temperature: Optional[float],
     max_tokens: Optional[int],
+    response_schema: Optional[dict] = None,
+    think: Optional[bool] = None,
 ) -> str:
     payload = {
         "purpose": "chat",
@@ -52,6 +55,13 @@ def chat_cache_key(
         "max_tokens": max_tokens,
         "messages": [{"role": m.role, "content": m.content} for m in messages],
     }
+    if response_schema is not None:
+        json.dumps(response_schema, allow_nan=False)
+        payload['response_schema'] = response_schema
+    if think is not None:
+        if type(think) is not bool:
+            raise ValueError('Thinking cache identity requires a boolean or None')
+        payload['think'] = think
     return hashlib.sha256(_canonical_json(payload).encode("utf-8")).hexdigest()
 
 
@@ -60,6 +70,7 @@ def embedding_cache_key(
     provider: str,
     model_id: str,
     text: str,
+    identity: Optional[dict] = None,
 ) -> str:
     payload = {
         "purpose": "embed",
@@ -67,6 +78,12 @@ def embedding_cache_key(
         "model_id": model_id,
         "text": text,
     }
+    if identity is not None:
+        if not isinstance(identity, dict) or not identity:
+            raise ValueError("Embedding cache identity must be a nonempty dictionary")
+        # Validate the opt-in namespace without changing historical keys.
+        json.dumps(identity, allow_nan=False)
+        payload["embedding_identity"] = identity
     return hashlib.sha256(_canonical_json(payload).encode("utf-8")).hexdigest()
 
 
@@ -78,13 +95,95 @@ class LLMCache:
     on cold load are preferable to crashing the research run.
     """
 
-    def __init__(self, cache_dir: Optional[Path] = None) -> None:
+    def __init__(self, cache_dir: Optional[Path] = None, *, derived_max_entries=0, derived_max_bytes=0) -> None:
+        if (any(type(n) is not int or n < 0 for n in (derived_max_entries, derived_max_bytes))
+                or (derived_max_entries == 0) != (derived_max_bytes == 0)):
+            raise ValueError('Derived reuse requires explicit nonnegative entry and byte limits')
         if cache_dir is None:
             cache_dir = Path.home() / ".cache" / "psychology_base" / "llm"
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.hits = 0
         self.misses = 0
+        # Opt-in, process-lived derived completions. No second disk store or
+        # authoritative memory: owners must validate on publication and reuse.
+        self._derived_limits = (derived_max_entries, derived_max_bytes)
+        self._derived = OrderedDict()
+        self._derived_lock = threading.Lock()
+        self._derived_bytes = 0
+        self._derived_counts = dict(hits=0, misses=0, evictions=0, rejected=0)
+
+    @property
+    def derived_limits(self):
+        return self._derived_limits
+
+    def __deepcopy__(self, memo):
+        """Preserve existing cache/system copying with an independent lock."""
+        from copy import deepcopy
+        result = object.__new__(type(self))
+        memo[id(self)] = result
+        with self._derived_lock:
+            state = dict(self.__dict__)
+            state.pop('_derived_lock')
+            state['_derived'] = self._derived.copy()
+            state['_derived_counts'] = dict(self._derived_counts)
+        result.__dict__.update(deepcopy(state, memo))
+        result._derived_lock = threading.Lock()
+        return result
+
+    def get_derived(self, key):
+        """Return a detached completion; the semantic owner revalidates it."""
+        with self._derived_lock:
+            row = self._derived.get(key)
+            if row is None:
+                self._derived_counts['misses'] += 1
+                return None
+            self._derived.move_to_end(key)
+            self._derived_counts['hits'] += 1
+            value = json.loads(row[0])
+        value['tier'] = TaskTier(value['tier'])
+        return Completion(**value)
+
+    def put_derived(self, key, completion):
+        if (type(key) is not str or len(key) != 64 or any(c not in '0123456789abcdef' for c in key)
+                or type(completion) is not Completion):
+            raise ValueError('Derived reuse requires a hashed key and a completion')
+        value = asdict(completion)
+        value['tier'] = completion.tier.value
+        encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False)
+        size = len(key.encode('utf-8')) + len(encoded.encode('utf-8'))
+        entries, capacity = self.derived_limits
+        with self._derived_lock:
+            if entries == 0 or size > capacity:
+                self._derived_counts['rejected'] += 1
+                return False
+            self._discard_derived(key)
+            while len(self._derived) >= entries or self._derived_bytes + size > capacity:
+                _, (_, removed) = self._derived.popitem(last=False)
+                self._derived_bytes -= removed
+                self._derived_counts['evictions'] += 1
+            self._derived[key] = (encoded, size)
+            self._derived_bytes += size
+        return True
+
+    def _discard_derived(self, key):
+        row = self._derived.pop(key, None)
+        if row is not None:
+            self._derived_bytes -= row[1]
+
+    def discard_derived(self, key):
+        with self._derived_lock:
+            self._discard_derived(key)
+
+    def clear_derived(self):
+        with self._derived_lock:
+            self._derived.clear()
+            self._derived_bytes = 0
+
+    def derived_snapshot(self):
+        with self._derived_lock:
+            return dict(self._derived_counts, entries=len(self._derived), bytes=self._derived_bytes,
+                        max_entries=self.derived_limits[0], max_bytes=self.derived_limits[1])
 
     # ---------- chat ----------
 

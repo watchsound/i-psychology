@@ -199,3 +199,33 @@ def test_restore_into_existing_system_extends_it(tmp_path: Path) -> None:
     assert restored is existing
     post_count = len(list(restored.companion.store.all()))
     assert post_count == pre_count + 5
+
+
+@pytest.mark.parametrize("target_tokenizer", ["unicode", "jieba"])
+def test_chinese_pam_rebuilds_configured_priors_and_preserves_chain(tmp_path, chinese_cases, target_tokenizer):
+    from psychology_base.companion.reconstruction import jaccard_prior
+
+    pytest.importorskip("jieba")
+    source = CompanionSystem(cjk_tokenizer="unicode")
+    source.observe(_obs(chinese_cases["edge_pair"][0]))
+    parent = source.companion.store.all()[0]
+    child = source.rerender(parent.id, chinese_cases["edge_pair"][1], timestamp=TS + timedelta(days=7))
+    path = tmp_path / "chinese-pam.json"
+    export_system_to_path(source, path)
+    target = CompanionSystem(cjk_tokenizer=target_tokenizer)
+    restored, offenders = restore_system_from_path(path, system=target)
+    assert restored is target and offenders == []
+    assert restored.companion.store.all() == source.companion.store.all()
+    assert restored.companion.store.by_id(child.id).parent_ids == (parent.id,)
+    expected = jaccard_prior(parent, child, cjk_tokenizer=target_tokenizer)
+    assert expected == pytest.approx(0.36 if target_tokenizer == "jieba" else 0.0)
+    assert restored.edges.get(parent.id, child.id) == pytest.approx(expected)
+    assert restored.witness_edges.get(parent.id, child.id) == pytest.approx(expected)
+    assert restored.activation.recall_count == 0
+
+
+def test_pam_cli_reports_unavailable_configured_tokenizer(tmp_path, capsys, unavailable_jieba):
+    path = tmp_path / "content.json"
+    export_system_to_path(_populate_system(), path)
+    assert _run_cli(["restore", str(path)]) == 2
+    assert "jieba" in capsys.readouterr().err

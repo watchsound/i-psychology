@@ -33,6 +33,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, TextIO
+from psychology_base.llm.execution import ExecutionDeferred
 
 
 SLASH_QUIT = "/quit"
@@ -153,9 +154,8 @@ def run_session(
          and the agent turn, print the agent response.
     3. On exit, log ``session_end`` and call ``on_end`` (if provided).
 
-    All agent exceptions propagate — the pilot *wants* a crash log over
-    a silently-swallowed error. Only slash-command parse errors are
-    reported inline.
+    Expected execution refusals log a deferred turn without an assistant reply.
+    Other agent exceptions propagate; session-end export still runs.
     """
     stdin = input_stream if input_stream is not None else sys.stdin
     stdout = output_stream if output_stream is not None else sys.stdout
@@ -174,6 +174,7 @@ def run_session(
         stdout.flush()
 
     turn_count = 0
+    user_turn_count = 0
     try:
         while True:
             stdout.write(prompt)
@@ -234,19 +235,28 @@ def run_session(
                 continue
 
             # Normal agent turn.
+            turn_index = user_turn_count
+            user_turn_count += 1
             log_writer.write(
                 {
                     "event": "user_turn",
-                    "turn_index": turn_count,
+                    "turn_index": turn_index,
                     "text": line,
                     "ts": _utc_now_iso(),
                 }
             )
-            response_text, metadata = agent_fn(line)
+            try:
+                response_text, metadata = agent_fn(line)
+            except ExecutionDeferred:
+                log_writer.write({"event": "turn_deferred", "turn_index": turn_index, "ts": _utc_now_iso()})
+                stdout.write("(Reply deferred: the configured model or allowance is unavailable. "
+                             "Your input remains in this session.)\n")
+                stdout.flush()
+                continue
             log_writer.write(
                 {
                     "event": "agent_turn",
-                    "turn_index": turn_count,
+                    "turn_index": turn_index,
                     "text": response_text,
                     "metadata": dict(metadata),
                     "ts": _utc_now_iso(),

@@ -13,6 +13,8 @@ Covers:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 from dataclasses import replace
 from datetime import datetime, timezone
 
@@ -37,6 +39,7 @@ def _router(tmp_path, response_text: str) -> LLMRouter:
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     mock = MockProvider(name="mock", responder=lambda msgs, tier: response_text)
     return LLMRouter(

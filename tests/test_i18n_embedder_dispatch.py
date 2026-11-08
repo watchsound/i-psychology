@@ -21,6 +21,8 @@ The core invariants are:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 from pathlib import Path
 
 import pytest
@@ -56,6 +58,7 @@ def _build_config(
         },
         local_ollama=LocalOllamaConfig(enabled=False),
         i18n=I18nConfig(embedder_multilingual=embedder_multilingual),
+        execution=ExecutionPolicy(mode="research"),
     )
 
 

@@ -142,3 +142,32 @@ i18n:
   # knob — read at every ``LLMRouter.embed`` call. Default false
   # preserves the pre-i18n byte-identical English pipeline.
   embedder_multilingual: false
+
+# Applies to the Companion fragment path; Witness keeps identity selection.
+memory:
+  context_selection: identity  # Opt in explicitly with scaled_focus.
+
+# Serving permission is independent of the research quality/force flags above.
+# No paid allowance is granted here. Frozen study profiles retain their own
+# explicit execution contracts and historical evaluation ledgers.
+execution:
+  mode: local
+  # Paid mode may explicitly set user_period_limits with daily_max_calls,
+  # daily_max_usd, monthly_max_calls and monthly_max_usd. All four are required;
+  # no user-period or monetary allowance is granted by this configuration.
+  # Periods are UTC calendar day/month, shared across sessions for the same
+  # budget_id and enrolled user. Existing budget contracts cannot be changed.
+
+# Whole application turn, shared by recall, response and observation. These are
+# conservative input-plus-output token bounds, independent of paid permission.
+# Research outside a serving turn retains its frozen evaluation contract.
+conversation:
+  response:
+    max_calls: 1
+    max_tokens: 16384
+  auxiliary:
+    max_calls: 0
+    max_tokens: 0
+  non_generation:
+    max_calls: 8
+    max_tokens: 65536

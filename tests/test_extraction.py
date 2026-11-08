@@ -13,6 +13,8 @@ cover the deterministic parse-contract that step-6 depends on.
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 from datetime import datetime, timezone
 
 from psychology_base.companion.extraction import (
@@ -137,6 +139,7 @@ def _router_with_scripted_response(tmp_path, response_text: str) -> tuple[LLMRou
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     mock = MockProvider(name="mock", responder=lambda msgs, tier: response_text)
     router = LLMRouter(
@@ -214,6 +217,7 @@ def test_extract_facts_prior_filter_prefers_entity_matches(tmp_path):
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     mock = MockProvider(name="mock", responder=responder)
     router = LLMRouter(

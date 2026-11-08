@@ -8,6 +8,8 @@ shakeout and the §6e-prime LLM-driven shakeout benchmark.
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 from pathlib import Path
 
 from psychology_base.applications.llm_responders import (
@@ -31,6 +33,7 @@ def _router(tmp_path: Path, responder):
             )
         },
         local_ollama=LocalOllamaConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
     mock = MockProvider(name="mock", responder=responder)
     router = LLMRouter(

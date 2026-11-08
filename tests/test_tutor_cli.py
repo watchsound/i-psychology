@@ -173,6 +173,19 @@ def _enrolled_layout(tmp_path: Path, user: str = "u01") -> PilotLayout:
     return PilotLayout(pilot_root=tmp_path, app=PilotApp.LEARNING_TUTOR)
 
 
+def test_session_reports_tokenizer_configuration_failure(tmp_path, monkeypatch, unavailable_jieba):
+    layout = _enrolled_layout(tmp_path)
+
+    def unexpected_responder(mode):
+        raise AssertionError("Configuration failure must precede responder construction")
+
+    monkeypatch.setattr(tutor_cli, "_build_llm_responder", unexpected_responder)
+    rc, _, err = _run_cli(["--pilot-root", str(tmp_path), "session", "--user", "u01", "--mode", "stub"])
+    assert rc == 2 and "Could not initialize memory" in err and "jieba" in err
+    assert not pam_latest_path(layout, "u01").exists()
+    assert not session_log_path(layout, "u01", 1).exists()
+
+
 def test_session_runs_a_turn_with_stub_mode(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

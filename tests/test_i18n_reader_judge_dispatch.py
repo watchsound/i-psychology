@@ -24,6 +24,8 @@ remain valid for English runs. The invariants locked here:
 
 from __future__ import annotations
 
+from psychology_base.llm.execution import ExecutionPolicy
+
 import pytest
 
 from psychology_base.eval.adapters import Fragment
@@ -160,6 +162,7 @@ def _router_for_reader(tmp_path, capture: list) -> LLMRouter:
         },
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
 
     def responder(messages, tier):
@@ -267,6 +270,7 @@ def _router_for_judge(capture: list) -> LLMRouter:
         providers={},
         local_ollama=LocalOllamaConfig(enabled=False),
         cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="research"),
     )
 
     def responder(messages, tier):

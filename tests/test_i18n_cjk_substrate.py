@@ -249,3 +249,40 @@ def test_witness_couple_zh_pain_degenerate_without_jieba_dispatch() -> None:
     # because '焦虑' as a cue does not share any token with the stored
     # mono-clause blobs. This is the Phase 9+ documented honest limit.
     assert rec.fragments_used == ()
+
+
+@pytest.mark.parametrize("tokenizer", ["unicode", "jieba"])
+@pytest.mark.parametrize("tags", [(), ("user:u1", "session:s1", "speaker:user")], ids=["tag_free", "application_tags"])
+def test_initial_edges_use_configured_tokens(chinese_cases, tokenizer, tags):
+    from psychology_base.companion.reconstruction import jaccard_prior
+    from psychology_base.companion.system import CompanionSystem
+    from psychology_base.eval.adapters import Observation
+
+    if tokenizer == "jieba":
+        pytest.importorskip("jieba")
+    system = CompanionSystem(cjk_tokenizer=tokenizer)
+    for text in chinese_cases["edge_pair"]:
+        system.observe(Observation(timestamp=TS, speaker="user", content=text, tags=tags))
+    a, b = system.companion.store.all()
+    expected = jaccard_prior(a, b, cjk_tokenizer=tokenizer)
+    if not tags:
+        assert expected == pytest.approx(0.36 if tokenizer == "jieba" else 0.0)
+    assert system.activation.recall_count == 0
+    assert system.edges.get(a.id, b.id) == pytest.approx(expected)
+    assert system.witness_edges.get(a.id, b.id) == pytest.approx(expected)
+    assert system.edges is not system.witness_edges
+
+
+def test_configured_system_witness_uses_same_token_policy(chinese_cases):
+    from psychology_base.companion.system import CompanionSystem
+    from psychology_base.eval.adapters import Observation
+
+    pytest.importorskip("jieba")
+    system = CompanionSystem(cjk_tokenizer="jieba")
+    for text in chinese_cases["edge_pair"]:
+        system.observe(Observation(timestamp=TS, speaker="user", content=text))
+    rec = system.recall("焦虑")
+    assert rec.fragments_used
+    assert system.witness_state.pain_log
+    assert system.witness_state.activation.recall_count == 1
+    assert 0.0 <= system.witness_state.pain_log[-1].pain < 1.0

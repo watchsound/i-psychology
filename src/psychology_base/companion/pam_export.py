@@ -11,10 +11,10 @@ yields a fragment set byte-identical to the input under
 Bereavement export obligation becomes a graph walk over the fragment
 list, with ids provably reproducible from content.
 
-Scope. v1 serializes the Fragment layer only. EdgeStore / FactStore /
-witness state are substrate-derivable from fragments and are deferred
-to a later module (they are not part of the PAM contract — PAM is
-content, not retrieval index). Hash algorithm is BLAKE2b-128 as a
+Scope. The portable v1 contract serializes original fragments. An optional
+consolidation extension atomically checkpoints derived facts and pending-work
+registration with those originals; ordinary importers may ignore it. Edge and
+Witness state are still reconstructed. Hash algorithm is BLAKE2b-128 as a
 hashlib-built-in stand-in for BLAKE3; the field ``hash_algo`` in the
 export preserves the swap point if PAM-arXiv-spec byte-identity is
 ever needed.
@@ -24,8 +24,13 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Iterable
+from pathlib import Path
+import json
+import os
+import tempfile
 
 from psychology_base.eval.adapters import Fragment, content_hash
+from psychology_base.companion.turn_provenance import validate_events
 
 
 PAM_FORMAT = "pam-v1"
@@ -81,6 +86,33 @@ def pam_export(fragments: Iterable[Fragment]) -> dict:
     }
 
 
+def write_pam(path: Path, fragments: Iterable[Fragment], *, consolidation_state=None) -> int:
+    """Atomically publish original fragments and optional derived recovery state.
+
+    A single replacement commits both; a successful marker cannot precede its
+    corresponding fragments/facts. The default PAM-v1 payload is unchanged.
+    """
+    artifact = pam_export(fragments)
+    if consolidation_state is not None:
+        artifact["consolidation"] = consolidation_state
+    payload = json.dumps(artifact, ensure_ascii=False, allow_nan=False)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=path.name + ".", suffix=".tmp", delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    return len(artifact["fragments"])
+
+
 def pam_import(data: dict) -> list[Fragment]:
     """Rehydrate the fragment list from a PAM artifact.
 
@@ -109,7 +141,9 @@ def pam_import(data: dict) -> list[Fragment]:
         raise ValueError(
             f"unsupported hash algorithm: {algo!r} (expected {PAM_HASH_ALGO!r})"
         )
-    return [_fragment_from_dict(d) for d in data.get("fragments", [])]
+    fragments = [_fragment_from_dict(d) for d in data.get("fragments", [])]
+    validate_events(fragments)
+    return fragments
 
 
 def validate_content_addressing(fragments: Iterable[Fragment]) -> list[str]:

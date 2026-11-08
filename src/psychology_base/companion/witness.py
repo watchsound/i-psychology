@@ -82,6 +82,7 @@ def witness_second_perspective(
     top_k: int,
     witness_edges: Optional[EdgeStore] = None,
     cjk_tokenizer: str = "unicode",
+    focus_cue: Optional[str] = None,
 ) -> Reconstruction:
     """Build the Witness's reconstruction. Separate activation residual, separate
     edge store, context flipped, system_seed offset so hash salts don't collide
@@ -105,6 +106,7 @@ def witness_second_perspective(
         edges=witness_edges,
         hebbian_delta=0.0,
         cjk_tokenizer=cjk_tokenizer,
+        focus_cue=focus_cue,
     )
 
 
@@ -156,6 +158,7 @@ def witness_couple(
     pain_gain: float = 0.6,
     companion_only_suppress: float = 0.4,
     cjk_tokenizer: str = "unicode",
+    focus_cue: Optional[str] = None,
 ) -> float:
     """One full Witness pass: second-perspective reconstruction, pain computation,
     pain feedback into Companion activation, W3 log entry. Returns the pain value.
@@ -173,6 +176,7 @@ def witness_couple(
         top_k=top_k,
         witness_edges=witness_edges,
         cjk_tokenizer=cjk_tokenizer,
+        focus_cue=focus_cue,
     )
     pain = _token_divergence(
         companion_reconstruction, witness_rec, cjk_tokenizer
