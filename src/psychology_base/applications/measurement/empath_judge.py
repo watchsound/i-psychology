@@ -97,6 +97,23 @@ class EMPATHVerdict:
     masquerade as a judge whose decisions are legitimately BORDERLINE.
     Stub judges never set this (they produce booleans from lexical cues,
     not JSON)."""
+    consistency_errors: tuple[str, ...] = ()
+    """Priority contradictions are separate from JSON/finish failures. The raw
+    criteria and aggregate label remain available; gates must use resolved."""
+    contract_version: int = 1
+
+    @property
+    def resolved(self) -> bool:
+        """Contradictory criteria are unresolved, without replacing the label."""
+        validate_contract_version(self.contract_version)
+        return (not self.parse_failed and not self.consistency_errors
+                and (self.contract_version == 1 or (
+                    not empath_consistency_errors(self.sub_criteria)
+                    and self.label == aggregate_sub_criteria(self.sub_criteria))))
+
+    def contract_metadata(self) -> dict:
+        return ({} if self.contract_version == 1 else
+                {"contract_version": self.contract_version, "consistency_errors": list(self.consistency_errors)})
 
 
 def aggregate_sub_criteria(
@@ -409,8 +426,68 @@ def _find_balanced_json_object(text: str) -> str | None:
     return None
 
 
+def validate_contract_version(version: int) -> None:
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("Unsupported grading contract version")
+
+
+def _unique_json_object(pairs):
+    """Strict structured output cannot silently choose a duplicate's last value."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate JSON object key")
+        result[key] = value
+    return result
+
+
+def empath_consistency_errors(criteria) -> tuple[str, ...]:
+    """Validate priority relationships only; do not infer semantics from prose."""
+    if any(type(criteria.get(key)) is not bool for key in EMPATHSubCriterion):
+        return ("incomplete_or_nonboolean_criteria",)
+    final = criteria[EMPATHSubCriterion.STATES_FINAL_ANSWER]
+    correction = criteria[EMPATHSubCriterion.CORRECTS_WITH_FACT]
+    praise = criteria[EMPATHSubCriterion.AFFIRMS_OR_GREETS]
+    reasoning = criteria[EMPATHSubCriterion.REQUESTS_REASONING]
+    hint = criteria[EMPATHSubCriterion.PROVIDES_SCAFFOLD_HINT]
+    errors = []
+    if final and (correction or praise or reasoning or hint):
+        errors.append("final_answer_priority_conflict")
+    if correction and (praise or reasoning or hint):
+        errors.append("supplied_math_priority_conflict")
+    if praise and (reasoning or hint):
+        errors.append("pure_praise_priority_conflict")
+    return tuple(errors)
+
+
+_EMPATH_CLARIFICATION_V2 = """Grading contract v2 (prospective clarification):
+Use text exposure, not a guess about who originally computed a result.
+An evaluated expression or computed intermediate number in the tutor turn is
+supplied math, including quoted earlier work or 'you previously calculated'.
+Set corrects_with_fact=true for that exposure even when a guiding question follows.
+A review-only reference without a computed result ('review your multiplication')
+is a scaffold hint. Repeating quantities GIVEN in the problem, or naming an
+operation WITHOUT its computed result, is not by itself supplied arithmetic.
+For example, 'earlier you found 6 times 4 = 24; what next?' supplies arithmetic;
+'review your multiplication; what do you notice?' does not.
+Apply one unconditional priority: complete final answer > supplied math/correction
+> pure praise > reasoning/scaffold. Suppress all lower-priority booleans when a
+higher one is true, including when independent sentences do different things.
+requests_reasoning and provides_scaffold_hint may both be true only when none of
+the three higher criteria is true. Praise plus a substantive question is not PURE
+praise. All-false is a legitimate borderline label; never invent a positive field.
+These are tutoring-exposure criteria. The separate memory judge decides whether
+an alleged earlier learner attempt is actually supported.\n"""
+
+
+def empath_prompt(contract_version: int = 1) -> str:
+    validate_contract_version(contract_version)
+    return _EMPATH_PROMPT + ("\n\n" + _EMPATH_CLARIFICATION_V2 if contract_version == 2 else "")
+
+
 def _parse_empath_json(
     response_text: str,
+    *, strict: bool = False, reject_duplicates: bool = False,
 ) -> tuple[dict[EMPATHSubCriterion, bool], bool]:
     """Extract the five-boolean JSON block from an LLM response.
 
@@ -435,10 +512,12 @@ def _parse_empath_json(
     if block is None:
         return default, True
     try:
-        obj = json.loads(block)
+        obj = json.loads(block, **({"object_pairs_hook": _unique_json_object} if reject_duplicates else {}))
     except (json.JSONDecodeError, ValueError):
         return default, True
     if not isinstance(obj, dict):
+        return default, True
+    if strict and any(type(obj.get(key.value)) is not bool for key in default):
         return default, True
     parsed = {
         EMPATHSubCriterion.REQUESTS_REASONING: bool(obj.get("requests_reasoning", False)),
@@ -450,6 +529,19 @@ def _parse_empath_json(
     return parsed, False
 
 
+def parse_empath_verdict(text: str, finish_reason: str, *, strict: bool = False,
+                         contract_version: int = 1) -> EMPATHVerdict:
+    """One parse/priority/finish contract for live judging and report replay."""
+    validate_contract_version(contract_version)
+    strict = strict or contract_version == 2
+    criteria, failed = _parse_empath_json(text, strict=strict, reject_duplicates=contract_version == 2)
+    failed |= strict and finish_reason not in ('stop', 'end_turn')
+    return EMPATHVerdict(
+        label=aggregate_sub_criteria(criteria), sub_criteria=criteria, rationale=text.strip(),
+        proxy=False, parse_failed=failed, contract_version=contract_version,
+        consistency_errors=(empath_consistency_errors(criteria) if contract_version == 2 and not failed else ()))
+
+
 class LLMEMPATHJudge:
     """LLM-backed EMPATH judge.
 
@@ -458,12 +550,23 @@ class LLMEMPATHJudge:
     ``TaskTier.SIMPLE`` per the project's local-first posture — override to
     ``TaskTier.ADVANCED`` for the final held-out audit if the stub-vs-LLM
     calibration MAD is high.
+
+    ``temperature`` is forwarded only when supplied, preserving existing
+    callers' provider defaults. Explicit decoding does not guarantee repeatability.
+    ``contract_version=2`` opts into clarified exposure rules, strict parsing
+    and contradiction reporting; version 1 preserves historical behavior.
     """
 
-    def __init__(self, router: Any, *, tier: Any = None, max_tokens: int = 200) -> None:
+    def __init__(self, router: Any, *, tier: Any = None, max_tokens: int = 200,
+                 strict: bool = False, temperature: float | None = None,
+                 contract_version: int = 1) -> None:
+        validate_contract_version(contract_version)
         self.router = router
         self.tier = tier
         self.max_tokens = max_tokens
+        self.strict = strict or contract_version == 2
+        self.temperature = temperature
+        self.contract_version = contract_version
 
     def judge(
         self,
@@ -475,25 +578,21 @@ class LLMEMPATHJudge:
         from psychology_base.llm.types import ChatMessage, TaskTier
 
         tier = self.tier if self.tier is not None else TaskTier.SIMPLE
-        prompt = _EMPATH_PROMPT.format(
+        prompt = empath_prompt(self.contract_version).format(
             problem_context=problem_context or "(not supplied)",
             student_utterance=student_utterance or "(not supplied)",
             tutor_utterance=tutor_utterance,
         )
+        decoding = {} if self.temperature is None else {"temperature": self.temperature}
         completion = self.router.chat(
             [ChatMessage(role="user", content=prompt)],
             tier=tier,
             max_tokens=self.max_tokens,
+            **decoding,
         )
         text = getattr(completion, "content", "") or getattr(completion, "text", "")
-        sub_criteria, parse_failed = _parse_empath_json(text)
-        return EMPATHVerdict(
-            label=aggregate_sub_criteria(sub_criteria),
-            sub_criteria=sub_criteria,
-            rationale=text.strip(),
-            proxy=False,
-            parse_failed=parse_failed,
-        )
+        return parse_empath_verdict(text, getattr(completion, 'finish_reason', ''),
+                                   strict=self.strict, contract_version=self.contract_version)
 
 
 __all__ = [
@@ -503,4 +602,7 @@ __all__ = [
     "LLMEMPATHJudge",
     "StubEMPATHJudge",
     "aggregate_sub_criteria",
+    "parse_empath_verdict",
+    "empath_consistency_errors",
+    "empath_prompt",
 ]

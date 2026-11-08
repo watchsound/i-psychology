@@ -7,6 +7,9 @@ separately in ``test_mathdial_empath_scorer.py``.
 
 from __future__ import annotations
 
+import json
+import pytest
+
 from psychology_base.applications.measurement.empath_judge import (
     EMPATHSubCriterion,
     EMPATHVerdict,
@@ -285,3 +288,40 @@ def test_llm_judge_clean_json_sets_parse_failed_false() -> None:
     judge = LLMEMPATHJudge(router)
     verdict = judge.judge("some utterance")
     assert verdict.parse_failed is False
+
+
+@pytest.mark.parametrize('temperature', [None, 0, 0.25])
+def test_judge_forwards_explicit_decoding_without_changing_legacy_default(temperature):
+    from types import SimpleNamespace
+    class ControlRouter:
+        def chat(self, messages, **kwargs):
+            self.kwargs=kwargs
+            return SimpleNamespace(content=json.dumps({key.value:False for key in EMPATHSubCriterion}),
+                                   finish_reason='stop')
+    router=ControlRouter()
+    verdict=LLMEMPATHJudge(router,strict=True,temperature=temperature).judge('parser control')
+    assert not verdict.parse_failed
+    assert ('temperature' in router.kwargs) is (temperature is not None)
+    if temperature is not None: assert router.kwargs['temperature']==temperature
+
+
+@pytest.mark.parametrize('corruption', ['missing', 'string', 'integer', 'null'])
+def test_strict_empath_parser_rejects_incomplete_or_coerced_fields(corruption):
+    values={key.value:False for key in EMPATHSubCriterion}
+    field='states_final_answer'
+    if corruption=='missing': values.pop(field)
+    else: values[field]={'string':'false','integer':0,'null':None}[corruption]
+    assert _parse_empath_json(json.dumps(values),strict=True)[1]
+    # Preserve the legacy coercion contract for existing consumers.
+    assert not _parse_empath_json(json.dumps(values))[1]
+
+
+@pytest.mark.parametrize('finish', ['stop', 'length', ''])
+def test_strict_empath_judge_requires_finished_complete_completion(finish):
+    from types import SimpleNamespace
+    class ControlRouter:
+        def chat(self,*args,**kwargs):
+            return SimpleNamespace(content=json.dumps({key.value:False for key in EMPATHSubCriterion}),
+                                   finish_reason=finish)
+    verdict=LLMEMPATHJudge(ControlRouter(),strict=True).judge('declared parser control')
+    assert verdict.parse_failed is (finish!='stop')
