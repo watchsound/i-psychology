@@ -1,0 +1,149 @@
+{
+  "schema": "memory-navigation-local-diagnostic-v1",
+  "scope": "exposed-development-and-authored-controls-only",
+  "base_protocol_sha256": "812a05eebc9d328a19d7582804f750f17069ff466badac5f7a1c74ef6a98280d",
+  "base_catalog_sha256": "7606b55bb7af5f51728b52c9707ffbc4fef5942db9b72cdb6ba55b6da518efea",
+  "case_ids": [
+    "msc_149",
+    "msc_7",
+    "film-767-companion",
+    "film-1038-companion",
+    "msc_9",
+    "msc_132",
+    "math-404",
+    "math-17",
+    "film-821-tutor",
+    "film-1116-tutor",
+    "math-332",
+    "math-2149"
+  ],
+  "authored_controls": [
+    {
+      "id": "authored-en-exams",
+      "app": "companion",
+      "language": "en",
+      "source_text": "Exams leave me anxious.",
+      "query": "Assessments trigger panic.",
+      "distractors": [
+        "Assessments trigger classroom seating questions.",
+        "Tomorrow the weather should be sunny.",
+        "The library closes at six.",
+        "I prefer chamomile tea.",
+        "The bicycle needs a new tire.",
+        "Her exam results were excellent and she felt calm.",
+        "The bus route has changed.",
+        "I bought fresh tomatoes."
+      ]
+    },
+    {
+      "id": "authored-en-supervisor",
+      "app": "tutor",
+      "language": "en",
+      "source_text": "My supervisor dismissed the proposal.",
+      "query": "Boss rejected suggestion.",
+      "distractors": [
+        "Boss rejected replacing the printer cartridge.",
+        "Tomorrow the weather should be sunny.",
+        "The library closes at six.",
+        "I prefer chamomile tea.",
+        "The bicycle needs a new tire.",
+        "A colleague supported the proposal.",
+        "The bus route has changed.",
+        "I bought fresh tomatoes."
+      ]
+    },
+    {
+      "id": "authored-zh-exams",
+      "app": "companion",
+      "language": "zh",
+      "source_text": "??????????",
+      "query": "????????",
+      "distractors": [
+        "????????????",
+        "??????????",
+        "??????????",
+        "????????",
+        "???????????",
+        "??????????????",
+        "?????????",
+        "?????????"
+      ]
+    },
+    {
+      "id": "authored-zh-supervisor",
+      "app": "tutor",
+      "language": "zh",
+      "source_text": "????????",
+      "query": "???????",
+      "distractors": [
+        "????????????",
+        "??????????",
+        "??????????",
+        "????????",
+        "???????????",
+        "????????",
+        "?????????",
+        "?????????"
+      ]
+    }
+  ],
+  "cosine_floors": [
+    0.4,
+    0.6,
+    0.8
+  ],
+  "model_identity": {
+    "model": "mxbai-embed-large:latest",
+    "digest": "468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8",
+    "dimension": 1024,
+    "context_length": 512,
+    "input_policy": "ollama-embed-raw-no-truncate-v1"
+  },
+  "query_prefix": "Represent this sentence for searching relevant passages: ",
+  "query_prefix_source": "https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1",
+  "endpoint": "http://127.0.0.1:11434",
+  "max_local_embedding_requests": 256,
+  "metadata_timeout_s": 5,
+  "request_timeout_s": 30,
+  "hosted_provider_requests": 0,
+  "judge_requests": 0,
+  "generated_application_replies": 0,
+  "byte_cap": 4096,
+  "tokenizer": "jieba",
+  "seed": 0,
+  "top_k": 6,
+  "states": [
+    "cold",
+    "followup"
+  ],
+  "query_forms": [
+    0
+  ],
+  "minimum_observed_gain": 0.05,
+  "absent_hint_rate_max": 0,
+  "heldout_scoring_authorized": false,
+  "limitations": [
+    "Existing public-source development targets are already exposed and often identify a single turn.",
+    "Four authored zero-overlap controls are software diagnostics, not population accuracy labels.",
+    "A two-recall trajectory does not establish month-scale behavior.",
+    "This diagnostic never qualifies runtime adoption or index acceleration.",
+    "Authored discrimination controls use nine memories, no initial graph edges and a separately declared 16384-byte cap; they are not application-scale benchmarks.",
+    "Retrieving related public absent-context is not classified as fabrication; unrelated authored controls separately test hint abstention."
+  ],
+  "authored_control_design": {
+    "byte_cap": 16384,
+    "initial_graph": "no_initial_edges",
+    "target_position": "after_eight_distractors",
+    "meaning": "Software controls isolate cold cue discrimination; public cases retain their original 4096-byte cap and graph.",
+    "unrelated_absent_indices": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7
+    ]
+  },
+  "absent_hint_gate_scope": "authored-unrelated-memory-controls-only",
+  "existing_public_absent_hints": "descriptive: source can contain related context without the required answer"
+}

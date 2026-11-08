@@ -1,0 +1,58 @@
+{
+  "schema": "memory-navigation-controls-v2",
+  "date": "2026-10-24",
+  "scope": "Authored software controls, not population accuracy or clinical annotations. Replaces corrupted v1 controls without editing them.",
+  "design": "Two topics, two source languages and two query languages, each with eight competing memories. The target must outrank the lexical trap and all competitors. Absence uses the six unrelated distractors only.",
+  "unrelated_absent_indices": [1, 2, 3, 4, 6, 7],
+  "minimum_unrelated_margin": 0.05,
+  "controls": [
+    {
+      "id": "authored-v2-en-exams", "app": "companion", "language": "en",
+      "source_language": "en", "query_language": "en",
+      "source_text": "Exams leave me anxious", "query": "Assessments trigger panic",
+      "distractors": ["Assessments trigger classroom seating questions", "Tomorrow the weather should be sunny", "The library closes at six", "I prefer chamomile tea", "The bicycle needs a new tire", "Her exam results were excellent and she felt calm", "The bus route has changed", "I bought fresh tomatoes"]
+    },
+    {
+      "id": "authored-v2-en-supervisor", "app": "tutor", "language": "en",
+      "source_language": "en", "query_language": "en",
+      "source_text": "My supervisor dismissed the research proposal", "query": "Boss rejected study suggestion",
+      "distractors": ["Boss rejected replacing the printer cartridge", "Tomorrow the weather should be sunny", "The library closes at six", "I prefer chamomile tea", "The bicycle needs a new tire", "A colleague supported the research proposal", "The bus route has changed", "I bought fresh tomatoes"]
+    },
+    {
+      "id": "authored-v2-zh-exams", "app": "companion", "language": "zh",
+      "source_language": "zh", "query_language": "zh",
+      "source_text": "考试使我焦虑", "query": "测验引发恐慌",
+      "distractors": ["测验引发座位安排讨论", "明天天气晴朗", "图书馆六点关门", "我喜欢菊花茶", "自行车需要换轮胎", "她考试成绩优秀而且很镇定", "公交线路已经调整", "我买了新鲜番茄"]
+    },
+    {
+      "id": "authored-v2-zh-supervisor", "app": "tutor", "language": "zh",
+      "source_language": "zh", "query_language": "zh",
+      "source_text": "主管否决科研提案", "query": "老板驳回研究建议",
+      "distractors": ["老板驳回更换打印机墨盒", "明天天气晴朗", "图书馆六点关门", "我喜欢菊花茶", "自行车需要换轮胎", "同事支持科研提案", "公交线路已经调整", "我买了新鲜番茄"]
+    },
+    {
+      "id": "authored-v2-zh-to-en-exams", "app": "companion", "language": "en",
+      "source_language": "zh", "query_language": "en",
+      "source_text": "考试使我焦虑", "query": "Assessments trigger panic",
+      "distractors": ["测验引发座位安排讨论", "明天天气晴朗", "图书馆六点关门", "我喜欢菊花茶", "自行车需要换轮胎", "她考试成绩优秀而且很镇定", "公交线路已经调整", "我买了新鲜番茄"]
+    },
+    {
+      "id": "authored-v2-zh-to-en-supervisor", "app": "tutor", "language": "en",
+      "source_language": "zh", "query_language": "en",
+      "source_text": "主管否决科研提案", "query": "Boss rejected study suggestion",
+      "distractors": ["老板驳回更换打印机墨盒", "明天天气晴朗", "图书馆六点关门", "我喜欢菊花茶", "自行车需要换轮胎", "同事支持科研提案", "公交线路已经调整", "我买了新鲜番茄"]
+    },
+    {
+      "id": "authored-v2-en-to-zh-exams", "app": "companion", "language": "zh",
+      "source_language": "en", "query_language": "zh",
+      "source_text": "Exams leave me anxious", "query": "测验引发恐慌",
+      "distractors": ["Assessments trigger classroom seating questions", "Tomorrow the weather should be sunny", "The library closes at six", "I prefer chamomile tea", "The bicycle needs a new tire", "Her exam results were excellent and she felt calm", "The bus route has changed", "I bought fresh tomatoes"]
+    },
+    {
+      "id": "authored-v2-en-to-zh-supervisor", "app": "tutor", "language": "zh",
+      "source_language": "en", "query_language": "zh",
+      "source_text": "My supervisor dismissed the research proposal", "query": "老板驳回研究建议",
+      "distractors": ["Boss rejected replacing the printer cartridge", "Tomorrow the weather should be sunny", "The library closes at six", "I prefer chamomile tea", "The bicycle needs a new tire", "A colleague supported the research proposal", "The bus route has changed", "I bought fresh tomatoes"]
+    }
+  ]
+}

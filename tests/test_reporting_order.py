@@ -244,7 +244,10 @@ def test_ascii_case_matching_preserves_unicode_quotation_contents_and_partial_sc
 
 
 def test_saved_historical_queries_retain_existing_response_path():
-    inputs = json.loads(Path('.data/application_context/episode-context-v2/inputs.json').read_text(encoding='utf-8'))
+    saved = Path('.data/application_context/episode-context-v2/inputs.json')
+    if not saved.exists():
+        pytest.skip('.data/ corpus is gitignored; regenerate locally to exercise this guard')
+    inputs = json.loads(saved.read_text(encoding='utf-8'))
     assert len(inputs) == 32
     for item in inputs:
         assert resolve_reporting_order(item['app'], item['query'], '') is None
