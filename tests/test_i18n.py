@@ -208,18 +208,192 @@ def test_jieba_fallback_when_missing(monkeypatch, caplog) -> None:
     must not need to defensively check availability."""
     import psychology_base.i18n as i18n_mod
 
-    # Reset the one-shot import state and force the module to look
-    # missing. monkeypatch restores on test teardown.
-    monkeypatch.setattr(i18n_mod, "_jieba_import_attempted", True)
-    monkeypatch.setattr(i18n_mod, "_jieba_module", None)
+    # Fault injection only: positive segmentation tests use the real backend.
+    monkeypatch.setattr(i18n_mod, "_load_jieba", lambda: (None, {}, "not installed"))
     monkeypatch.setattr(i18n_mod, "_jieba_warned_missing", False)
 
     text = "我最近感到很焦虑,工作压力很大。"
     with caplog.at_level("WARNING", logger="psychology_base.i18n"):
         tokens = tokenize(text, "zh", tokenizer="jieba")
+        assert tokenize(text, "zh", tokenizer="jieba") == tokens
     # Fallback output matches the unicode path.
     assert tokens == tokenize(text, "zh", tokenizer="unicode")
     # Warning fired exactly once; the module-level flag is now set so
     # subsequent calls stay silent.
     warnings = [r for r in caplog.records if "jieba" in r.message]
     assert len(warnings) == 1
+
+
+def test_real_jieba_identity_and_single_backend():
+    from hashlib import sha256
+    from importlib.metadata import version
+    from pathlib import Path
+    import psychology_base.i18n as i18n
+    from psychology_base.companion.system import CompanionSystem
+
+    jieba = pytest.importorskip("jieba")
+    first = CompanionSystem(cjk_tokenizer="jieba")
+    backend, _, error = i18n._load_jieba()
+    assert error is None and backend is not jieba.dt
+    identity = first.inspect()["tokenizer_identity"]
+    assert identity["module_version"] == identity["distribution_version"] == version("jieba")
+    assert identity["HMM"] is True and identity["cut_all"] is False
+    root = Path(identity["origin"]).parent
+    for relative, digest in identity["resources_sha256"].items():
+        assert sha256((root / relative).read_bytes()).hexdigest() == digest
+    assert sha256((root / "dict.txt").read_bytes()).hexdigest() == identity["dictionary_sha256"]
+    assert identity["dictionary_sha256"] in backend.cache_file
+    second = CompanionSystem(cjk_tokenizer="jieba")
+    assert second.inspect()["tokenizer_identity"] == identity
+    assert i18n._load_jieba()[0] is backend
+    identity["resources_sha256"].clear()
+    assert first.inspect()["tokenizer_identity"]["resources_sha256"]
+
+
+def test_backend_resolution_failure_is_cached(monkeypatch, caplog):
+    import psychology_base.i18n as i18n
+
+    attempts = []
+
+    def unavailable(name):
+        attempts.append(name)
+        raise ImportError("dependency unavailable in fault injection")
+
+    monkeypatch.setattr(i18n, "_jieba_result", None)
+    monkeypatch.setattr(i18n, "_jieba_warned_missing", False)
+    monkeypatch.setattr(i18n, "import_module", unavailable)
+    for _ in range(2):
+        with pytest.raises(ValueError, match="dependency unavailable"):
+            i18n.tokenizer_identity("jieba")
+    with caplog.at_level("WARNING", logger="psychology_base.i18n"):
+        for _ in range(2):
+            assert tokenize("中文分词", "zh", tokenizer="jieba") == ["中文分词"]
+    assert attempts == ["jieba"]
+    assert len([record for record in caplog.records if "falling back" in record.message]) == 1
+
+
+def test_fallback_warning_is_once_when_logging_reenters_tokenization(monkeypatch, caplog):
+    import logging
+    import psychology_base.i18n as i18n
+
+    monkeypatch.setattr(i18n, "_load_jieba", lambda: (None, {}, "not installed"))
+    monkeypatch.setattr(i18n, "_jieba_warned_missing", False)
+    text = "中文分词"
+
+    class ReentrantHandler(logging.Handler):
+        entered = False
+
+        def emit(self, record):
+            if not self.entered:
+                self.entered = True
+                assert tokenize(text, "zh", tokenizer="jieba") == [text]
+
+    handler = ReentrantHandler()
+    i18n.logger.addHandler(handler)
+    try:
+        with caplog.at_level("WARNING", logger="psychology_base.i18n"):
+            assert tokenize(text, "zh", tokenizer="jieba") == [text]
+    finally:
+        i18n.logger.removeHandler(handler)
+    assert len([record for record in caplog.records if "falling back" in record.message]) == 1
+
+
+def test_backend_rejects_missing_api(monkeypatch):
+    import psychology_base.i18n as i18n
+
+    module = pytest.importorskip("jieba")
+    monkeypatch.setattr(i18n, "_jieba_result", None)
+    monkeypatch.delattr(module, "Tokenizer")
+    with pytest.raises(ValueError, match="Tokenizer"):
+        i18n.tokenizer_identity("jieba")
+
+
+def test_backend_resource_failure_rejects_construction_and_preserves_fallback(monkeypatch):
+    from pathlib import Path
+    import psychology_base.i18n as i18n
+    from psychology_base.companion.system import CompanionSystem
+
+    pytest.importorskip("jieba")
+    read_bytes = Path.read_bytes
+
+    def unreadable_resource(path):
+        if path.name == "prob_emit.py":
+            raise PermissionError("HMM resource unreadable in fault injection")
+        return read_bytes(path)
+
+    monkeypatch.setattr(i18n, "_jieba_result", None)
+    monkeypatch.setattr(i18n, "_jieba_warned_missing", False)
+    monkeypatch.setattr(Path, "read_bytes", unreadable_resource)
+    system = CompanionSystem.__new__(CompanionSystem)
+    with pytest.raises(ValueError, match="HMM resource unreadable"):
+        system.__init__(cjk_tokenizer="jieba")
+    assert not hasattr(system, "companion")
+    assert CompanionSystem().cjk_tokenizer == "unicode"
+    assert tokenize("中文分词", "zh", tokenizer="jieba") == ["中文分词"]
+
+
+def test_empty_backend_smoke_test_rejects_construction(monkeypatch):
+    import psychology_base.i18n as i18n
+    from psychology_base.companion.system import CompanionSystem
+
+    module = pytest.importorskip("jieba")
+    monkeypatch.setattr(i18n, "_jieba_result", None)
+    # Fault injection only: a broken dependency must not qualify as segmentation.
+    monkeypatch.setattr(module.Tokenizer, "cut", lambda *args, **kwargs: iter(()))
+    system = CompanionSystem.__new__(CompanionSystem)
+    with pytest.raises(ValueError, match="smoke test produced no letter tokens"):
+        system.__init__(cjk_tokenizer="jieba")
+    assert not hasattr(system, "companion")
+
+
+def test_concurrent_first_resolution_shares_one_real_backend(monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    import psychology_base.i18n as i18n
+
+    pytest.importorskip("jieba")
+    monkeypatch.setattr(i18n, "_jieba_result", None)
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        resolved = list(pool.map(lambda _: i18n._load_jieba(), range(4)))
+    assert all(error is None for _, _, error in resolved)
+    assert len({id(backend) for backend, _, _ in resolved}) == 1
+
+
+def test_unicode_does_not_import_jieba_in_fresh_process():
+    import subprocess
+    import sys
+
+    subprocess.run([sys.executable, "-c", """
+import sys
+from psychology_base.companion.system import CompanionSystem
+from psychology_base.i18n import tokenize
+assert 'jieba' not in sys.modules
+assert CompanionSystem().inspect()['tokenizer_identity']['backend'] == 'unicode'
+assert tokenize("it's unchanged", 'en', tokenizer='jieba') == ["it's", 'unchanged']
+assert 'jieba' not in sys.modules
+"""], check=True, capture_output=True, text=True)
+
+
+def test_private_dictionary_ignores_positive_global_word_addition():
+    import subprocess
+    import sys
+
+    pytest.importorskip("jieba")
+    subprocess.run([sys.executable, "-c", """
+import jieba
+from psychology_base.i18n import tokenize
+phrase = '心理陪伴测试专用词'
+before = tokenize(phrase, 'zh', tokenizer='jieba')
+assert before != [phrase]
+jieba.add_word(phrase, freq=1000000000)
+assert list(jieba.cut(phrase, cut_all=False, HMM=True)) == [phrase]
+assert tokenize(phrase, 'zh', tokenizer='jieba') == before
+"""], check=True, capture_output=True, text=True, encoding="utf-8")
+
+
+@pytest.mark.parametrize("tokenizer", ["unicode", "jieba"])
+def test_memory_english_adapter_preserves_apostrophe_hyphen_contract(tokenizer):
+    from psychology_base.companion.reconstruction import tokens
+
+    assert tokens("It's state-of-the-art, with DOGS!", tokenizer) == [
+        "it", "s", "state", "of", "the", "art", "with", "dogs",
+    ]
