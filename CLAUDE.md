@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is an implemented research codebase with source, tests and benchmark tooling. Read [project memory](docs/project-memory.md) before planning or changing evaluation or memory retrieval; it records the current blockers, lessons from failed experiments and next gates. [The roadmap](docs/roadmap.md) retains dated progress and [the goal](docs/sota-goal.md) defines success. Historical status entries describe their date, not the current checkout.
+This is an implemented research codebase with source, tests and benchmark tooling. [The roadmap](docs/roadmap.md) sequences the 4 phases toward SOTA and [the goal](docs/sota-goal.md) defines success. Historical status entries describe their date, not the current checkout.
 
 ## Three components
 
