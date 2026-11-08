@@ -58,3 +58,117 @@ src/psychology_base/eval/benchmarks/natural_scenes*.py
 src/psychology_base/applications/measurement/membership_checkpoint.py
 src/psychology_base/applications/measurement/membership_encoder.py
 src/psychology_base/applications/measurement/membership_head.py
+
+# Codex-session sprawl second sweep (2026-11-08). Audited untracked tests,
+# bench fixtures/scripts, src stragglers, and research docs with no committed
+# importer / reader / subprocess entry. Patterns are chosen so no
+# committed sibling file is ignored — bucket prefixes checked against
+# `git ls-files tests` before adding.
+
+# Root collect-ignore for scene_encoder tests (now gitignored above)
+/conftest.py
+
+# Project-memory journal: 9656-line Codex scene-encoder + membership research
+# log; not authoritative for on-charter tracks despite CLAUDE.md pointer
+# (see Discovered Issues on the commit that introduced this line).
+docs/project-memory.md
+docs/research/
+
+# Bench fixture sprawl — v1/v2 variants with no committed reader
+benchmarks/fixtures/application_context/codex-scene-teacher-*
+benchmarks/fixtures/application_context/context-allocation-*
+benchmarks/fixtures/application_context/episode-context-*
+benchmarks/fixtures/application_context/evidence-utility-proposal-*
+benchmarks/fixtures/application_context/membership-adjudication-*
+benchmarks/fixtures/application_context/membership-encoder-contrasts-*
+benchmarks/fixtures/application_context/membership-evidence-boundaries-*
+benchmarks/fixtures/application_context/membership-reflection-controls-*
+benchmarks/fixtures/application_context/membership-training-authored-*
+benchmarks/fixtures/application_context/nonliteral-recovery-controls-*
+benchmarks/fixtures/application_context/nonliteral-source-review-*
+benchmarks/fixtures/application_context/reporting-closure-controls-*
+benchmarks/fixtures/application_context/runtime-ambiguity-*
+benchmarks/fixtures/application_context/runtime-grounding-regressions-*
+benchmarks/fixtures/application_context/source-order-binding-controls-*
+benchmarks/fixtures/application_context/source-reading-subsets-*
+benchmarks/fixtures/application_context/source-support-controls-*
+benchmarks/fixtures/application_context/speaker-ownership-cases-*
+benchmarks/fixtures/application_context/speaker-ownership-review-*
+benchmarks/fixtures/attachment_longitudinal/speaker-format-v1/memory-*.json
+benchmarks/fixtures/scaled_context/fresh-*.json
+
+# Bench script sprawl — Phase 9 ad-hoc diagnostics never driven from a test
+benchmarks/scripts/phase9_chinese_retrieval_run.py
+benchmarks/scripts/phase9_recall_diagnosis.py
+benchmarks/scripts/phase9_speaker_evidence_run.py
+
+# Src straggler — no committed importer
+src/psychology_base/eval/benchmarks/native_membership_sources.py
+
+# LLM-provider eval sprawl (deepseek/gemini/qwen3.5/ollama research harnesses)
+tests/test_deepseek_*.py
+tests/test_gemini_*.py
+tests/test_qwen35_*.py
+tests/test_ollama_metadata_*.py
+
+# Membership-ML training-sprawl tests (siblings of ignored encoder/head src)
+tests/test_audited_membership_*.py
+tests/test_membership_encoder*.py
+tests/test_membership_head*.py
+tests/test_membership_training_*.py
+tests/test_membership_focus_*.py
+tests/test_membership_local_*.py
+tests/test_membership_predicate*.py
+
+# Episode-context, fresh-context, source-order, source-reading, source-relations,
+# speaker-evidence/ownership, reporting-{closure,invariance,membership_}, scaled-
+# context, script-dispatch research harnesses
+tests/test_episode_context_*.py
+tests/test_fresh_context_*.py
+tests/test_source_order_binding*.py
+tests/test_source_order_cache_context*.py
+tests/test_source_order_local_profile*.py
+tests/test_source_reading*.py
+tests/test_source_relations*.py
+tests/test_speaker_evidence_*.py
+tests/test_speaker_ownership*.py
+tests/test_reporting_closure*.py
+tests/test_reporting_invariance*.py
+tests/test_reporting_membership_*.py
+tests/test_scaled_context*.py
+tests/test_script_dispatch*.py
+
+# One-off research tests with no committed sibling or importer
+tests/test_annotated_dataset_reuse.py
+tests/test_chinese_zero_seed_recall.py
+tests/test_cue_context_study.py
+tests/test_evidence_utility.py
+tests/test_evidence_utility_integration.py
+tests/test_focused_context.py
+tests/test_independent_membership_continuation.py
+tests/test_interpretation_policy_v3.py
+tests/test_interpretation_policy_v4.py
+tests/test_local_sentinel_resumption.py
+tests/test_membership_checkpoint_finalization.py
+tests/test_membership_contract_boundaries.py
+tests/test_membership_evidence_boundary_adjudication.py
+tests/test_membership_ordinal_data.py
+tests/test_membership_resume.py
+tests/test_membership_teacher_capability.py
+tests/test_memory_navigation.py
+tests/test_metadata_publication.py
+tests/test_native_english_review.py
+tests/test_native_membership_preparation.py
+tests/test_native_membership_sources.py
+tests/test_native_qualification_coverage_comparison.py
+tests/test_native_qualification_coverage_sources.py
+tests/test_native_qualification_extension.py
+tests/test_native_semantics_packet.py
+tests/test_natural_interpretation_validation.py
+tests/test_original_32_ledger.py
+tests/test_pointwise_membership.py
+tests/test_pointwise_membership_audit.py
+tests/test_runtime_ambiguity.py
+tests/test_source_blocks.py
+tests/test_source_support.py
+tests/test_turn_association_study.py
