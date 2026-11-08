@@ -1,0 +1,67 @@
+{
+  "schema": "runtime-report-residuals-v1",
+  "qualification_eligible": false,
+  "origin": "References to exact observed v2 development failures; existing authored reference labels retained without adjudication or new model results.",
+  "inputs": {
+    "analysis": {
+      "path": "docs/experiments/phase-9-application-context/runtime-report-diagnostic-hosted-analysis-v1.json",
+      "sha256": "d5c6db9717a158ee37c3e37113fc600c9277d62cd6640488637a425d471c7945"
+    },
+    "report": {
+      "path": ".data/application_context/runtime-report-diagnostic-v1/hosted-run/report.json",
+      "sha256": "838680fd2b51fcf48bdf986deef6097aadd0dd01284710b21a5ca82fe90becdf"
+    },
+    "controls": {
+      "path": ".data/application_context/runtime-report-diagnostic-v1/controls-v1.json",
+      "sha256": "50571529376154cdff18c95e97e67ec5829e61df5a99fc80830e15a1835cb18c"
+    }
+  },
+  "residuals": [
+    {
+      "control": "en-unqualified-affirmation",
+      "dispatch": 835,
+      "expected_decision": "inconclusive",
+      "observed_decision": "reject",
+      "expected_criteria": null
+    },
+    {
+      "control": "zh-unqualified-affirmation",
+      "dispatch": 851,
+      "expected_decision": "inconclusive",
+      "observed_decision": "reject",
+      "expected_criteria": null
+    },
+    {
+      "control": "zh-flattened-nested-report",
+      "dispatch": 858,
+      "expected_decision": "reject",
+      "observed_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      }
+    }
+  ],
+  "positive_contrasts": {
+    "en_unqualified_affirmation": [
+      "en-scoped-other-role",
+      "en-direct-own-affirmation",
+      "en-independent-direct-support"
+    ],
+    "zh_unqualified_affirmation": [
+      "zh-scoped-other-role",
+      "zh-direct-own-affirmation",
+      "zh-independent-direct-support"
+    ],
+    "zh_flattened_nested_report": [
+      "zh-scoped-nested-report",
+      "zh-independent-direct-support"
+    ]
+  },
+  "development_cases": 20,
+  "proposed_schedule": "All 20 existing development controls under prompt v3; repeat only the 3 residuals under unchanged v2 as contemporaneous sentinels. Earlier full v2 results remain a historical baseline, not a fully paired current run.",
+  "provider_calls_made": 0
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "runtime-assessment-reliability-v1",
+  "qualification_eligible": false,
+  "selected_case_ids": [
+    "en-direct-own-affirmation",
+    "rtq-036c4b9aab201fa9",
+    "en-flattened-nested-report",
+    "en-scoped-nested-report",
+    "zh-scoped-nested-report",
+    "en-companion-competing-affirmation",
+    "zh-tutor-competing-affirmation",
+    "en-tutor-explicit-retraction",
+    "zh-companion-explicit-retraction",
+    "en-companion-independent-own-support",
+    "zh-tutor-independent-own-support",
+    "zh-travel-speaker-transfer",
+    "en-unsupported-tail",
+    "en-unhelpful-safe-refusal",
+    "zh-companion-unsupported-never",
+    "en-companion-quoted-affirmation"
+  ],
+  "inputs": {
+    "0": {
+      "path": "benchmarks/fixtures/application_context/runtime-semantic-resolution-v1.json",
+      "sha256": "e3686987602f313657482627094f8d61d5318f12dd819dff16824f467c839d46"
+    },
+    "1": {
+      "path": "docs/experiments/phase-9-application-context/runtime-evidence-assessment-diagnostic-analysis-v1.json",
+      "sha256": "2c0d869277225d8e343ef85b3e9679baaf807272e8a41cf56f671f8baea4bde0"
+    },
+    "2": {
+      "path": "docs/experiments/phase-9-application-context/runtime-evidence-assessment-diagnostic-findings-v1.json",
+      "sha256": "0481a89c863a2f7378a332524ca77dc5bc8072c657426b2ccd81ad9b7512fdd3"
+    },
+    "3": {
+      "path": ".data/application_context/runtime-evidence-assessment-diagnostic-v1/hosted-run/report.json",
+      "sha256": "326b99b870ba1a17fa186f7f00368b9cab58688cdf4b5f077da91465b7cc093d"
+    }
+  },
+  "selection": "Sixteen exposed contrasts cover utility, report-source loss, scoped absence, ambiguity, explicit retraction, independent direct support, transfer, unsupported tails, needless refusal, never-from-missing-history and quoted pronouns; both languages and applications. No new labels or authored responses replace the original controls."
+}

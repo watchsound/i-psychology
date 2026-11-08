@@ -1,0 +1,22 @@
+{
+  "case": {
+    "id": "denial-zh-act", "family": "act-denial", "application": "companion",
+    "language": "zh", "origin": "authored", "split": "regression", "focus_id": 2,
+    "description_ids": ["denial", "completion"],
+    "descriptions": ["陈述自己没有取消订阅", "陈述自己已经取消订阅"],
+    "records": [{"id": 2, "speaker": "user", "text": "我没有取消订阅。",
+      "source_order": {"group": "dddddddddddddddddddddddddddddddd", "position": 0}}]
+  },
+  "reference": {
+    "id": "denial-zh-act", "contract_version": 4, "reviewed": true,
+    "reviewer": "Implementing agent pre-inference authored review; not independent gold",
+    "judgments": [
+      {"slot": 0, "record": 2, "label": "match", "reason": "direct_act",
+       "rationale": "The description requests a denial. The focus directly denies the speaker's cancellation; negation does not make this requested denial a nonmatch.",
+       "evidence": [{"start": 0, "end": 8, "quote": "我没有取消订阅。"}], "context_evidence": []},
+      {"slot": 1, "record": 2, "label": "nonmatch", "reason": "different_act",
+       "rationale": "Denying cancellation is not asserting that cancellation was completed. No unresolved participant or referent is involved.",
+       "evidence": [{"start": 0, "end": 8, "quote": "我没有取消订阅。"}], "context_evidence": []}
+    ]
+  }
+}

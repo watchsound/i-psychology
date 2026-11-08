@@ -1,0 +1,15 @@
+{
+  "kind": "authored software regression contracts, excluded from public-data quality metrics",
+  "cases": [
+    {"id":"switch-en","facts":["My bicycle is cobalt blue.","My train leaves from platform seven.","The garden gate needs oil.","The garden wall needs paint.","The garden path needs gravel.","The garden shed needs a lock.","The garden beds need compost.","The garden trees need water.","The garden fence needs repair."],"warm":"garden","cue":"Which platform does my train leave from?","required":[1]},
+    {"id":"switch-zh","facts":["我的自行车是蓝色的。","我的火车从七号站台出发。","花园大门需要上油。","花园墙壁需要刷漆。","花园小路需要碎石。","花园棚屋需要门锁。","花园花坛需要堆肥。","花园树木需要浇水。","花园围栏需要维修。"],"warm":"花园","cue":"我的火车从哪个站台出发？","required":[1]},
+    {"id":"implicit-en","facts":["My bicycle is cobalt blue.","The classroom wall color is green.","The classroom door color is white.","The classroom floor color is gray.","The classroom desk color is yellow.","The classroom chair color is black.","The classroom shelf color is red.","The classroom curtain color is pink."],"warm":"bicycle","cue":"What color?","required":[0]},
+    {"id":"implicit-zh","facts":["我的自行车是蓝色的。","教室墙壁的颜色是绿色。","教室门板的颜色是白色。","教室地板的颜色是灰色。","教室桌子的颜色是黄色。","教室椅子的颜色是黑色。","教室书架的颜色是红色。","教室窗帘的颜色是粉色。"],"warm":"自行车","cue":"什么颜色？","required":[0]},
+    {"id":"no-overlap-en","facts":["My bicycle is cobalt blue.","Astronomy observations resume tomorrow."],"warm":"bicycle","cue":"Why?","required":[0]},
+    {"id":"no-overlap-zh","facts":["我的自行车是蓝色的。","明天恢复天文观测。"],"warm":"自行车","cue":"然后呢？","required":[0]},
+    {"id":"repeat-en","facts":["My train leaves from platform seven.","The garden needs water."],"warm":"train platform","cue":"train platform","required":[0]},
+    {"id":"repeat-zh","facts":["我的火车从七号站台出发。","花园需要浇水。"],"warm":"火车从哪个站台出发？","cue":"火车从哪个站台出发？","required":[0]},
+    {"id":"missing-en","facts":["My bicycle is cobalt blue.","The garden needs water."],"warm":"bicycle","cue":"Where is my passport?","required":[],"forbidden_text":"passport"},
+    {"id":"missing-zh","facts":["我的自行车是蓝色的。","花园需要浇水。"],"warm":"自行车","cue":"我的护照放在哪里？","required":[],"forbidden_text":"护照"}
+  ]
+}

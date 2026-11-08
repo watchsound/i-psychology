@@ -1,0 +1,48 @@
+{
+  "schema": "focused-context-regression-v1",
+  "status": "frozen-before-source-scoring",
+  "arms": [
+    "ordinary_v4",
+    "metadata_only",
+    "focus_shared",
+    "focus_companion"
+  ],
+  "fixed": {
+    "top_k": 6,
+    "tokenizer": "jieba",
+    "byte_cap": null,
+    "seed": 0,
+    "witness_active": true,
+    "states": [
+      "cold",
+      "followup",
+      "switch"
+    ],
+    "paired_absent": true,
+    "support": "half-maximum-normalized-active-question-seed",
+    "normalize_selection_mass": true,
+    "known_cases": 24,
+    "observed_train_cases": 30,
+    "fresh_cases_scored": 0,
+    "focus": "last-provided-cue-turn",
+    "primary": "focus_companion",
+    "witness_primary_policy": "production-identity",
+    "ablation": "focus_shared"
+  },
+  "gates": {
+    "no_lost_answer_hits": true,
+    "metadata_selection_parity": true,
+    "pooled_and_domain_mrr_nonloss": true,
+    "absent_rate_nonincrease": true,
+    "software_controls": true,
+    "witness_baseline_view": true
+  },
+  "inputs": {
+    "benchmarks/fixtures/cue_context/protocol.json": "730b7a62a45ce671047b00a53fab9b9ccef184394ad512c127a32a977c83a845",
+    "docs/phases/phase-9-focused-context-plan.md": "2ffbe2f18870036e6c9c766d272eb39dd066ed1f67bac929280b1d422560bd98",
+    "tests/test_focused_context.py": "fe83963c99ce99632601292addabd95cd801aed825d800e2e6fd33cfceffbcdc",
+    "docs/experiments/phase-9-script-dispatch/corrected-observed.json": "8fcc8b64b279b4d75fce676ada4d4aa8889edc88fcf2facdc0c22b9753ffe0e2"
+  },
+  "stop_rule": "Reject the fixed primary on any observed guard failure; shared policy is ablation only.",
+  "next_stage": "Fresh catalog and resource protocol must be frozen separately after an observed-case pass."
+}

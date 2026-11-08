@@ -1,0 +1,60 @@
+{
+  "status": "Authored pre-inference regression controls; implementer review, not independent gold.",
+  "description_ids": ["mira_nurse", "jo_nurse"],
+  "descriptions": {
+    "en": ["an assertion that Mira works as a nurse", "an assertion that Jo works as a nurse"],
+    "zh": ["陈述米拉的职业是护士", "陈述小乔的职业是护士"]
+  },
+  "variants": [
+    {
+      "id": "unique-other", "family": "referent",
+      "prior": {
+        "en": ["The woman in this question is Jo.", "What does Jo do for a living?"],
+        "zh": ["这个问题里的女性是小乔。", "小乔从事什么工作？"]
+      },
+      "focus": {"en": "She works as a nurse.", "zh": "她的职业是护士。"},
+      "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"], ["nonmatch", "match"]],
+      "rationales": [
+        "Identifying the woman as Jo asserts neither person's occupation.",
+        "Asking Jo's occupation is not asserting an occupation for either person.",
+        "The supplied prior explicitly identifies Jo and asks about Jo. The reply asserts Jo is a nurse and excludes Mira as the referent in this window."
+      ],
+      "focus_reasons": ["different_participant", "direct_act"], "focus_support": [0, 1]
+    },
+    {
+      "id": "direct-name", "family": "referent",
+      "prior": {
+        "en": ["Mira and Jo are both women.", "What does either of them do for a living?"],
+        "zh": ["米拉和小乔都是女性。", "她们中的某一位从事什么工作？"]
+      },
+      "focus": {"en": "Jo works as a nurse.", "zh": "小乔的职业是护士。"},
+      "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"], ["nonmatch", "match"]],
+      "rationales": [
+        "Mentioning both women asserts neither occupation.",
+        "A question about either person's job is not its answer.",
+        "The focus names Jo directly. Earlier ambiguity does not make this explicit Jo assertion uncertain or an assertion about Mira."
+      ],
+      "focus_reasons": ["different_participant", "direct_act"], "focus_support": []
+    },
+    {
+      "id": "missing-antecedent", "family": "referent",
+      "prior": {"en": [], "zh": []},
+      "focus": {"en": "She works as a nurse.", "zh": "她的职业是护士。"},
+      "labels": [["uncertain", "uncertain"]],
+      "rationales": [
+        "No antecedent is supplied. The description names cannot establish the pronoun's referent. Neither person's membership is established or ruled out; missing grounding is not a vacuous match or an exclusion."
+      ],
+      "focus_reasons": ["missing_reference", "missing_reference"], "focus_support": []
+    },
+    {
+      "id": "incompatible-act", "family": "reference-act-boundary",
+      "prior": {"en": [], "zh": []},
+      "focus": {"en": "Did she bring an umbrella?", "zh": "她带伞了吗？"},
+      "labels": [["nonmatch", "nonmatch"]],
+      "rationales": [
+        "The focus asks about bringing an umbrella. It asserts no occupation under any resolution of the missing pronoun; the incompatible act rules out both descriptions without resolving the person."
+      ],
+      "focus_reasons": ["different_act", "different_act"], "focus_support": []
+    }
+  ]
+}

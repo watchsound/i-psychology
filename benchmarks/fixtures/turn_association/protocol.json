@@ -1,0 +1,97 @@
+{
+  "schema": "turn-association-v1",
+  "status": "frozen-before-development-scoring",
+  "upstream": "https://github.com/thu-coai/KdConv",
+  "revision": "653db76432de09a004ba708a68f8bbd5500e6bec",
+  "license": "Apache-2.0",
+  "sources": {
+    "film/train-development": {
+      "path": "film/train.json",
+      "bytes": 7892763,
+      "sha256": "b48a491c30ace856914c6863679ba5c8ea95d7e3a1734f45177f69afbcd88e74",
+      "blob_sha1": "98674bde290888e9bb9246054fe1bf4596f660b0",
+      "split": "development",
+      "limit": 15
+    },
+    "film/train-evaluation": {
+      "path": "film/train.json",
+      "bytes": 7892763,
+      "sha256": "b48a491c30ace856914c6863679ba5c8ea95d7e3a1734f45177f69afbcd88e74",
+      "blob_sha1": "98674bde290888e9bb9246054fe1bf4596f660b0",
+      "split": "evaluation",
+      "limit": 30
+    },
+    "music/train-development": {
+      "path": "music/train.json",
+      "bytes": 4952078,
+      "sha256": "d5835bb6a61da0067ab2d0dc3ba90059f07cfa781a70206a8266ecafd22641ad",
+      "blob_sha1": "6e341552529eb3003746c484ea1f30ca9d4070b3",
+      "split": "development",
+      "limit": 15
+    },
+    "music/train-evaluation": {
+      "path": "music/train.json",
+      "bytes": 4952078,
+      "sha256": "d5835bb6a61da0067ab2d0dc3ba90059f07cfa781a70206a8266ecafd22641ad",
+      "blob_sha1": "6e341552529eb3003746c484ea1f30ca9d4070b3",
+      "split": "evaluation",
+      "limit": 30
+    }
+  },
+  "fixed": {
+    "top_k": 6,
+    "tokenizer": "jieba",
+    "byte_cap": null,
+    "seed": 0,
+    "witness_active": true,
+    "states": [
+      "cold",
+      "followup",
+      "switch"
+    ],
+    "paired_absent": true,
+    "association_floor": 1.0,
+    "development_per_domain": 15,
+    "evaluation_per_domain": 30,
+    "stress_sizes": [
+      24,
+      128,
+      512
+    ],
+    "stress_repeats": 5,
+    "stress_warmup": 1,
+    "background_pool_dialogues": 32
+  },
+  "gates": {
+    "cold_recall_gain": 0.05,
+    "max_p95_latency_ratio": 2.0,
+    "max_peak_python_memory_ratio": 2.0
+  },
+  "selection": {
+    "target_window_turns": 8,
+    "distractor_windows": 2,
+    "distractor_window_turns": 8,
+    "partition": "sha256-stable-key(source-file-sha256, original-dialogue-index) parity; even development",
+    "backgrounds": "first 32 dialogues per partition by stable-key(background, index); excluded from targets",
+    "labels": "unchanged upstream structured-relation and exact-span mechanical eligibility",
+    "roles": "source actor unknown, exact original indices retained, adjacency is co-occurrence only"
+  },
+  "stress_source": {
+    "repository": "https://github.com/thu-coai/KdConv",
+    "path": "film/dev.json",
+    "blob_sha1": "86ddffa7da07c0e9dcd256a25747e44c0d46580a",
+    "sha256": "2f156d8d34bdd3eac31c196772156d36e017f8cb2255a2c312bd98e367ed363e",
+    "bytes": 1363416,
+    "license": "Apache-2.0"
+  },
+  "prior_inputs": {
+    "benchmarks/fixtures/recall_carryover/protocol.json": "119fb82f90900c095f03dbbf4a2a957e4e91a649d4448acf5c697c3bd479ed44",
+    "benchmarks/fixtures/recall_carryover/catalog.json": "d6b64df77ecbe7d89f67d57c9d2ac05373da0438f49d690a58e7a142c5860bc7",
+    "benchmarks/fixtures/recall_carryover/controls.json": "e39c3e6f6178324efb20095d466f0c7f3c52fb1b41a8b21a82d4d7a8b5dab6b8",
+    "benchmarks/fixtures/chinese_retrieval/protocol.json": "aa6371ddc30559ae9a2f19fb9caa57a0bfd5bf84afb247c55adb77761efe2e1b",
+    "benchmarks/fixtures/chinese_retrieval/catalog.json": "d5a9fced3af3d6a2933e16aa84c31aca94b98391936a6fb0cf316b507ccf6a25"
+  },
+  "controls_sha256": "e39c3e6f6178324efb20095d466f0c7f3c52fb1b41a8b21a82d4d7a8b5dab6b8",
+  "held_out": "Evaluation is forbidden unless the frozen development candidate passes every quality/regression/resource guard.",
+  "catalog_sha256": "1c220bdbaf2d6c129ff5b4835b0fdb32767534aad47ed631943e75fddff53956"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "chinese-retrieval-study-v1",
+  "status": "locked-before-candidate-results",
+  "catalog_sha256": "d5a9fced3af3d6a2933e16aa84c31aca94b98391936a6fb0cf316b507ccf6a25",
+  "source": {
+    "repository": "https://github.com/thu-coai/KdConv",
+    "path": "data/film/dev.json",
+    "blob_sha1": "86ddffa7da07c0e9dcd256a25747e44c0d46580a",
+    "sha256": "2f156d8d34bdd3eac31c196772156d36e017f8cb2255a2c312bd98e367ed363e",
+    "bytes": 1363416,
+    "license": "Apache-2.0"
+  },
+  "selection": {
+    "policy": "explicit-relation-natural-question-v1",
+    "split": "sha256(dialogue-index) modulo 3: zero development, otherwise evaluation",
+    "max_cases_per_dialogue": 1,
+    "development_limit": 12,
+    "evaluation_limit": 24,
+    "history_size": 24,
+    "query_context_previous_turns": 2,
+    "paired_absent_evidence": true,
+    "qrels": "Upstream structured relation plus literal answer span; strict supporting-evidence precision, not general topical relevance."
+  },
+  "candidates": ["unicode", "precise", "search", "bigram", "bounded", "width_ids"],
+  "fixed": {
+    "top_k": 6,
+    "seed": 0,
+    "byte_cap": null,
+    "witness_active": true,
+    "feature_cap_per_channel": 64,
+    "candidate_scope": "Companion cue/document seeding only; canonical graph priors, coalescence and Witness remain precise jieba except the canonical unicode baseline.",
+    "states": ["cold", "warm"],
+    "warm_history": "Recall the first two eligible observed utterances, without consulting qrels."
+  },
+  "selection_gate": {
+    "development": "Choose highest cold positive recall@6 satisfying all guards against precise; ties use MRR then declared candidate order. No fitting on evaluation.",
+    "minimum_recall_gain": 0.05,
+    "minimum_mrr_gain": 0.0,
+    "minimum_support_precision_gain": 0.0,
+    "maximum_absent_nonempty_rate_gain": 0.0,
+    "maximum_p95_latency_ratio": 2.0,
+    "maximum_peak_python_memory_ratio": 2.0,
+    "warm_recall_must_not_decrease": true,
+    "ownership_leaks_allowed": 0,
+    "budget_violations_allowed": 0,
+    "production_adoption": "Ineligible from this single-domain, relation-filtered pilot alone; a passing candidate advances to independent multi-domain judgments and graph-policy evaluation. No automatic default change."
+  },
+  "limitations": [
+    "Both study splits originate in upstream film/dev; they are dialogue-disjoint local splits, not the official KdConv test set.",
+    "Relations and literal answer spans define mechanical evidence labels; no independent human relevance judgments are claimed.",
+    "Dialogue entities may overlap across splits and are reported.",
+    "Replay sessions and timestamps are artificial; no long-horizon retention or human attachment claim.",
+    "No model-generated answers, semantic embeddings or attachment-weight tuning."
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "application-grading-contract-v2",
+  "grading_contract_version": 2,
+  "memory_contract_prompt_sha256": "8da10cf6414bf538a0f21835f70e61ac8adac418061690fd7a11f737ca93c8b1",
+  "tutor_contract_prompt_sha256": "cf52ac110c6e6fc717134f82b99109f4348f13ed16a1be9cb1b319321cab304c"
+}

@@ -1,0 +1,121 @@
+{
+  "schema": "authored-paired-context-sources-v1",
+  "date": "2026-10-30",
+  "author": "Implementing Codex agent; controlled authored development examples, not natural dialogue or independent gold",
+  "purpose": "Hold focus and targets constant while changing reference evidence; no labels are stored in this source fixture.",
+  "translation_policy": "English authored originals and Chinese authored adaptations share a family/partition. Each exact language input requires its own review.",
+  "families": [
+    {
+      "id": "tutor-proof-completion",
+      "application": "tutor",
+      "split": "train",
+      "phenomena": ["completion", "anaphora", "reference-sufficiency", "question-assertion"],
+      "languages": {
+        "en": {
+          "descriptions": ["my report that I finished my geometry proof", "my report that I finished my literature summary"],
+          "contexts": {
+            "unique-a": "About your geometry proof: have you finished that task?",
+            "unique-b": "About your literature summary: have you finished that task?",
+            "ambiguous": "You have a geometry proof and a literature summary. You mentioned finishing one task, but have not said which one.",
+            "missing": "How are things going?"
+          },
+          "foci": {"act": "I've finished it.", "question-control": "Have I finished it?"}
+        },
+        "zh": {
+          "descriptions": ["我的陈述，我已经完成我自己的几何证明", "我的陈述，我已经完成我自己的文学摘要"],
+          "contexts": {
+            "unique-a": "说到你的几何证明，你做完了吗？",
+            "unique-b": "说到你的文学摘要，你做完了吗？",
+            "ambiguous": "你有一份几何证明和一份文学摘要。你说做完了其中一项，但还没说是哪一项。",
+            "missing": "最近怎么样？"
+          },
+          "foci": {"act": "我做完了。", "question-control": "我做完了吗？"}
+        }
+      }
+    },
+    {
+      "id": "tutor-submission-denial",
+      "application": "tutor",
+      "split": "tuning",
+      "phenomena": ["negation", "submission", "omitted-object", "reference-sufficiency", "question-assertion"],
+      "languages": {
+        "en": {
+          "descriptions": ["my report that I have not submitted my chemistry lab report", "my report that I have not submitted my history essay"],
+          "contexts": {
+            "unique-a": "We are discussing your chemistry lab report. Have you handed it in?",
+            "unique-b": "We are discussing your history essay. Have you handed it in?",
+            "ambiguous": "You mentioned a chemistry lab report and a history essay. One is still waiting to be handed in, but you have not identified which one.",
+            "missing": "What would you like to say?"
+          },
+          "foci": {"act": "I haven't handed it in.", "question-control": "Have I handed it in?"}
+        },
+        "zh": {
+          "descriptions": ["我的陈述，我还没有提交我自己的化学实验报告", "我的陈述，我还没有提交我自己的历史作文"],
+          "contexts": {
+            "unique-a": "我们说的是你的化学实验报告。你交了吗？",
+            "unique-b": "我们说的是你的历史作文。你交了吗？",
+            "ambiguous": "你提到了化学实验报告和历史作文。其中一份还没交，但你还没说明是哪一份。",
+            "missing": "你想说些什么？"
+          },
+          "foci": {"act": "我还没交。", "question-control": "我交了吗？"}
+        }
+      }
+    },
+    {
+      "id": "companion-sharing-permission",
+      "application": "companion",
+      "split": "train",
+      "phenomena": ["permission", "ownership", "anaphora", "reference-sufficiency", "question-assertion"],
+      "languages": {
+        "en": {
+          "descriptions": ["my explicit permission for you to share my journal", "my explicit permission for you to share my sketchbook"],
+          "contexts": {
+            "unique-a": "You wanted to decide whether I may share your journal. Do I have your permission?",
+            "unique-b": "You wanted to decide whether I may share your sketchbook. Do I have your permission?",
+            "ambiguous": "You have a journal and a sketchbook. You are considering allowing me to share one of them, but have not specified which one.",
+            "missing": "I'm listening."
+          },
+          "foci": {"act": "You may share it.", "question-control": "Did I allow you to share it?"}
+        },
+        "zh": {
+          "descriptions": ["我的发言，明确允许你分享我自己的日记", "我的发言，明确允许你分享我自己的素描本"],
+          "contexts": {
+            "unique-a": "你在考虑是否允许我分享你的日记。你允许吗？",
+            "unique-b": "你在考虑是否允许我分享你的素描本。你允许吗？",
+            "ambiguous": "你有一本日记和一本素描本。你在考虑允许我分享其中一本，但还没说明是哪一本。",
+            "missing": "我在听。"
+          },
+          "foci": {"act": "你可以把它分享出去。", "question-control": "我允许过你分享它吗？"}
+        }
+      }
+    },
+    {
+      "id": "companion-visit-denial",
+      "application": "companion",
+      "split": "tuning",
+      "phenomena": ["negation", "visit", "deixis", "reference-sufficiency", "question-assertion"],
+      "languages": {
+        "en": {
+          "descriptions": ["my explicit denial that I visited the community garden", "my explicit denial that I visited the art museum"],
+          "contexts": {
+            "unique-a": "We are discussing your possible visit to the community garden. Did you visit that place?",
+            "unique-b": "We are discussing your possible visit to the art museum. Did you visit that place?",
+            "ambiguous": "The place you mentioned could be the community garden or the art museum. You have not identified which place you mean.",
+            "missing": "Take your time."
+          },
+          "foci": {"act": "I did not visit that place.", "question-control": "Did I visit that place?"}
+        },
+        "zh": {
+          "descriptions": ["我的发言，明确否认我去过社区花园", "我的发言，明确否认我去过艺术博物馆"],
+          "contexts": {
+            "unique-a": "我们说的是你可能去社区花园的那次行程。你去过那个地方吗？",
+            "unique-b": "我们说的是你可能去艺术博物馆的那次行程。你去过那个地方吗？",
+            "ambiguous": "你提到的地方可能是社区花园，也可能是艺术博物馆。你还没说清楚指的是哪一个地方。",
+            "missing": "慢慢说。"
+          },
+          "foci": {"act": "我没去过那个地方。", "question-control": "我去过那个地方吗？"}
+        }
+      }
+    }
+  ]
+}

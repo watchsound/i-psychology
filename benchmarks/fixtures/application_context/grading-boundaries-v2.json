@@ -1,0 +1,244 @@
+{
+  "schema": "application-grading-boundaries-v2",
+  "origin": "Authored software-contract examples, not model judgments, independent accuracy evidence or clinical annotations.",
+  "cases": [
+    {
+      "id": "supported-user",
+      "kind": "memory",
+      "context": "user said: I keep a blue journal.",
+      "response": "You said you keep a blue journal. What helps you write?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "Actual user statement supports the complete attribution."
+    },
+    {
+      "id": "known-speaker-reversal",
+      "kind": "memory",
+      "context": "assistant said: I keep a blue journal.",
+      "response": "You said you keep a blue journal. What helps you write?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Topical relevance remains true. An explicit different speaker makes the remembered user proposition unsupported and reversed."
+    },
+    {
+      "id": "unknown-speaker-user-claim",
+      "kind": "memory",
+      "context": "fragment: I keep a blue journal.",
+      "response": "You said you keep a blue journal. What helps you write?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Unknown is not a contradictory known speaker. The user attribution is still unsupported."
+    },
+    {
+      "id": "unknown-speaker-neutral-quote",
+      "kind": "memory",
+      "context": "fragment: I keep a blue journal.",
+      "response": "The earlier fragment mentions a blue journal. What would you like to discuss about that?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "Neutral attribution to a visible fragment does not invent its speaker."
+    },
+    {
+      "id": "absent-lucky-guess",
+      "kind": "memory",
+      "context": "user said: The weather is nice.",
+      "response": "You said you keep a blue journal. What helps you write?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "A withheld reference or lucky guess cannot supply visible support."
+    },
+    {
+      "id": "absence-admitted",
+      "kind": "memory",
+      "context": "",
+      "response": "I do not have that earlier detail. Could you tell me again?",
+      "expected_criteria": {
+        "addresses_request": false,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "Safe clarification does not reconstruct the requested earlier detail; abstention is appropriate."
+    },
+    {
+      "id": "hedged-invented-memory",
+      "kind": "memory",
+      "context": "",
+      "response": "I cannot see the old session, but you previously kept a blue journal.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "An admission does not excuse an unsupported remembered assertion."
+    },
+    {
+      "id": "hypothetical-clarification",
+      "kind": "memory",
+      "context": "",
+      "response": "I cannot see that earlier detail. Was it about a journal, or something else?",
+      "expected_criteria": {
+        "addresses_request": false,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "Explicitly hypothetical alternatives following missing-evidence admission assert no remembered fact."
+    },
+    {
+      "id": "question-presupposes-event",
+      "kind": "memory",
+      "context": "",
+      "response": "Why did you switch from the blue journal last week?",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "A question can presuppose an unsupported earlier event."
+    },
+    {
+      "id": "supplied-quoted-arithmetic",
+      "kind": "tutor",
+      "context": "Six boxes contain four counters each; share all counters among three groups.",
+      "response": "Earlier you found 6 times 4 = 24. How would you share those counters?",
+      "expected_criteria": {
+        "requests_reasoning": false,
+        "states_final_answer": false,
+        "provides_scaffold_hint": false,
+        "corrects_with_fact": true,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "An explicit evaluated intermediate computation is supplied math even when framed as earlier work; higher priority suppresses question/hint flags."
+    },
+    {
+      "id": "review-without-result",
+      "kind": "tutor",
+      "context": "Six boxes contain four counters each; share all counters among three groups.",
+      "response": "Review your multiplication. What do you notice about your next step?",
+      "expected_criteria": {
+        "requests_reasoning": true,
+        "states_final_answer": false,
+        "provides_scaffold_hint": true,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "Reviewing a method without supplying its numerical result allows a genuine question and scaffold."
+    },
+    {
+      "id": "given-quantities",
+      "kind": "tutor",
+      "context": "Six boxes contain four counters each; share all counters among three groups.",
+      "response": "There are six boxes with four counters each. Which operation gives the total?",
+      "expected_criteria": {
+        "requests_reasoning": true,
+        "states_final_answer": false,
+        "provides_scaffold_hint": true,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "Repeating given quantities is not an evaluated computation."
+    },
+    {
+      "id": "named-unevaluated-operation",
+      "kind": "tutor",
+      "context": "Six boxes contain four counters each; share all counters among three groups.",
+      "response": "Multiply six by four. What total do you get?",
+      "expected_criteria": {
+        "requests_reasoning": true,
+        "states_final_answer": false,
+        "provides_scaffold_hint": true,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "Naming an operation without its numerical result is a scaffold."
+    },
+    {
+      "id": "final-answer-overrides-question",
+      "kind": "tutor",
+      "context": "Six boxes contain four counters each; share all counters among three groups.",
+      "response": "Each group gets eight counters. Can you explain why?",
+      "expected_criteria": {
+        "requests_reasoning": false,
+        "states_final_answer": true,
+        "provides_scaffold_hint": false,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "The complete final answer overrides lower-priority criteria."
+    },
+    {
+      "id": "pure-praise",
+      "kind": "tutor",
+      "context": "A math problem.",
+      "response": "Exactly right. Well done!",
+      "expected_criteria": {
+        "requests_reasoning": false,
+        "states_final_answer": false,
+        "provides_scaffold_hint": false,
+        "corrects_with_fact": false,
+        "affirms_or_greets": true
+      },
+      "author_rationale": "Pure affirmation without math or a substantive question."
+    },
+    {
+      "id": "praise-plus-question",
+      "kind": "tutor",
+      "context": "A math problem.",
+      "response": "Great! Which step will you try next?",
+      "expected_criteria": {
+        "requests_reasoning": true,
+        "states_final_answer": false,
+        "provides_scaffold_hint": true,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "Praise plus a substantive question is not pure affirmation."
+    },
+    {
+      "id": "legitimate-borderline",
+      "kind": "tutor",
+      "context": "A math problem.",
+      "response": "I am thinking about this.",
+      "expected_criteria": {
+        "requests_reasoning": false,
+        "states_final_answer": false,
+        "provides_scaffold_hint": false,
+        "corrects_with_fact": false,
+        "affirms_or_greets": false
+      },
+      "author_rationale": "All-false is legitimate; it must not be changed to a positive label to improve a denominator."
+    }
+  ]
+}

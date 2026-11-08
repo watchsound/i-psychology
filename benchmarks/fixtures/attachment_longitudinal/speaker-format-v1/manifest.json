@@ -1,0 +1,132 @@
+{
+  "schema_version": "attachment-longitudinal-v2",
+  "trajectory_id": "supportive-en",
+  "user_id": "user-supportive-en",
+  "language": "en",
+  "fixture_version": "attachment-longitudinal-software-controls-v2",
+  "fixture_sha256": "b832560936e3c39d0c849cff4c1664797bb41c57b244cf0158e13f0a9b61ad99",
+  "source_file_sha256": null,
+  "source_conversation_ids": [],
+  "persona": [
+    "I practice pottery on weekends.",
+    "I am preparing for an evening class."
+  ],
+  "sentinel": "continuitya759c31e550d56ad",
+  "continuity_anchor": {
+    "session_id": "supportive-en-s0001",
+    "user_turn": 2
+  },
+  "seed": 0,
+  "age_years": 30,
+  "mode": "scripted",
+  "sessions": [
+    {
+      "session_id": "supportive-en-s0001",
+      "user_id": "user-supportive-en",
+      "index": 1,
+      "block_id": "supportive-en-block1",
+      "starts_at": "2026-10-18T00:00:00Z",
+      "ends_at": "2026-10-18T00:02:00Z",
+      "provenance": "synthetic_continuation",
+      "source_conversation_id": null,
+      "source_session_id": null,
+      "source_gap_days": null,
+      "source_elapsed_days": null,
+      "seeker_turns": [
+        "What do you remember about my pottery and continuitya759c31e550d56ad?",
+        "My private continuity marker is continuitya759c31e550d56ad. I practice pottery on weekends."
+      ],
+      "companion_turns": [
+        "I hear you. That sounds difficult. I'm here with you.",
+        "I hear you. That sounds difficult. I'm here with you."
+      ],
+      "seeker_provenance": [
+        "scripted",
+        "scripted"
+      ],
+      "companion_provenance": "scripted",
+      "affect": null
+    },
+    {
+      "session_id": "supportive-en-s0002",
+      "user_id": "user-supportive-en",
+      "index": 2,
+      "block_id": "supportive-en-block1",
+      "starts_at": "2026-10-19T20:48:00Z",
+      "ends_at": "2026-10-19T20:50:00Z",
+      "provenance": "synthetic_continuation",
+      "source_conversation_id": null,
+      "source_session_id": null,
+      "source_gap_days": null,
+      "source_elapsed_days": null,
+      "seeker_turns": [
+        "What do you remember about my pottery and continuitya759c31e550d56ad?",
+        "What do you remember about my pottery and continuitya759c31e550d56ad?"
+      ],
+      "companion_turns": [
+        "I hear you. That sounds difficult. I'm here with you.",
+        "I hear you. That sounds difficult. I'm here with you."
+      ],
+      "seeker_provenance": [
+        "scripted",
+        "scripted"
+      ],
+      "companion_provenance": "scripted",
+      "affect": null
+    },
+    {
+      "session_id": "supportive-en-s0003",
+      "user_id": "user-supportive-en",
+      "index": 3,
+      "block_id": "supportive-en-block1",
+      "starts_at": "2026-10-21T17:36:00Z",
+      "ends_at": "2026-10-21T17:38:00Z",
+      "provenance": "synthetic_continuation",
+      "source_conversation_id": null,
+      "source_session_id": null,
+      "source_gap_days": null,
+      "source_elapsed_days": null,
+      "seeker_turns": [
+        "What do you remember about my pottery and continuitya759c31e550d56ad?",
+        "What do you remember about my pottery and continuitya759c31e550d56ad?"
+      ],
+      "companion_turns": [
+        "I hear you. That sounds difficult. I'm here with you.",
+        "I hear you. That sounds difficult. I'm here with you."
+      ],
+      "seeker_provenance": [
+        "scripted",
+        "scripted"
+      ],
+      "companion_provenance": "scripted",
+      "affect": null
+    },
+    {
+      "session_id": "supportive-en-s0004",
+      "user_id": "user-supportive-en",
+      "index": 4,
+      "block_id": "supportive-en-block1",
+      "starts_at": "2026-10-23T14:24:00Z",
+      "ends_at": "2026-10-23T14:26:00Z",
+      "provenance": "synthetic_continuation",
+      "source_conversation_id": null,
+      "source_session_id": null,
+      "source_gap_days": null,
+      "source_elapsed_days": null,
+      "seeker_turns": [
+        "What do you remember about my pottery and continuitya759c31e550d56ad?",
+        "What do you remember about my pottery and continuitya759c31e550d56ad?"
+      ],
+      "companion_turns": [
+        "I hear you. That sounds difficult. I'm here with you.",
+        "I hear you. That sounds difficult. I'm here with you."
+      ],
+      "seeker_provenance": [
+        "scripted",
+        "scripted"
+      ],
+      "companion_provenance": "scripted",
+      "affect": null
+    }
+  ]
+}

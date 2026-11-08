@@ -1,0 +1,69 @@
+{
+  "schema": "application-context-v1",
+  "status": "frozen-before-application-scoring",
+  "arms": [
+    "identity",
+    "scaled_focus"
+  ],
+  "byte_cap": 4096,
+  "samples": 3,
+  "seed": 0,
+  "top_k": 6,
+  "tokenizer": "jieba",
+  "aging": "S1",
+  "consolidation": false,
+  "witness": "independent-identity",
+  "catalog_sha256": "7606b55bb7af5f51728b52c9707ffbc4fef5942db9b72cdb6ba55b6da518efea",
+  "annotations": {
+    "path": ".data/application_context/annotations.json",
+    "sha256": "51afe94b93c07ae1e8df3bf04976fad645610e1cf21d39b7f8802207bff4a2e6"
+  },
+  "source_pins": {
+    ".data/kdconv/data/film/train.json": "b48a491c30ace856914c6863679ba5c8ea95d7e3a1734f45177f69afbcd88e74",
+    ".data/kdconv/data/music/train.json": "d5835bb6a61da0067ab2d0dc3ba90059f07cfa781a70206a8266ecafd22641ad",
+    ".data/msc/train.jsonl": "e656892eb3ae3e893d915f2e689cf89da0396e7b39f927330d4d0b9bd5834f23",
+    ".data/mathdial/train.jsonl": "4a58b049109477fa0ec37611ff5b2363d8f39016c5687d9cfd369414a9c609bc"
+  },
+  "scoring_prompt_sha256": "856d3eb0d258eb0fff8f2288b54ab7a74a8629052ad5b3d5fcf11dfcf0077b76",
+  "exclusion_audit_sha256": "251efef35c399be897aafc6e81c7fe3da52527b18b726209d9ad1335c58cbb76",
+  "generator": {
+    "provider": "tongyi",
+    "model": "qwen-max",
+    "input_rate": "1.6",
+    "output_rate": "6.4",
+    "max_input": 12000,
+    "price_source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+    "price_kind": "conservative international USD upper rate; actual endpoint is China",
+    "revision_kind": "mutable provider alias, no immutable revision returned"
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "gpt-4o-mini-2024-07-18",
+    "input_rate": "0.15",
+    "output_rate": "0.60",
+    "max_input": 12000,
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-4o-mini",
+    "revision_kind": "dated snapshot"
+  },
+  "prices_checked_on": "2026-10-19",
+  "budget": {
+    "max_calls": 4200,
+    "max_usd": "50"
+  },
+  "gates": {
+    "minimum_gain": 0.1,
+    "bootstrap_draws": 10000,
+    "confidence": 0.95,
+    "abstention": 0.95,
+    "tutor_usefulness": 0.95,
+    "max_recall_ratio": 2,
+    "max_allocation_ratio": 2,
+    "max_application_latency_ratio": 1.25,
+    "max_estimated_generation_cost_ratio": 1.25,
+    "critical_errors": 0,
+    "billing_reconciliation_required_for_default": true
+  },
+  "adaptation_scope": "Partial Chinese adaptation explicitly retains English surrounding turns; not a fully translated transcript.",
+  "pre_model_source_review_revision": 3,
+  "calibration_review_revision": 4
+}

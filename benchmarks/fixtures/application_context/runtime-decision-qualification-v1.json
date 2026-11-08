@@ -1,0 +1,95 @@
+{
+  "schema": "runtime-decision-qualification-exposure-v1",
+  "qualification_version": 2,
+  "reference_semantics": "The prior independently blinded LLM reference judgments are reused unchanged. The prospective schema removes the model verdict but preserves the intended criteria and normalized decision meanings. No new independent reference adjudication is claimed.",
+  "inputs": {
+    "controls": {
+      "path": ".data/application_context/runtime-qualification-v1/controls-v1.json",
+      "sha256": "3feb825d5a2137d969ce5935c3b843b9283fc54efc90883401a7d3e7fe8fe7c9"
+    },
+    "reference_review": {
+      "path": ".data/application_context/runtime-qualification-v1/blinded-review-receipt-v1.json",
+      "sha256": "194d734195117d8ed785957458cd13ad5636abf12f8fc40e06f307fd9679653e"
+    },
+    "reference_packet": {
+      "path": "docs/experiments/phase-9-application-context/runtime-qualification-packet-v2.json",
+      "sha256": "67e2894f55d001082313a7f1127a06fede696bd89c4a63b19ddfd8af5e804148"
+    },
+    "development_fixture": {
+      "path": "benchmarks/fixtures/application_context/runtime-report-diagnostic-v1.json",
+      "sha256": "27634523f32a7fb0768374e527601a5ab67f33a07a504b4afd0410b30c49087f"
+    },
+    "development_report": {
+      "path": ".data/application_context/runtime-report-residuals-v1/hosted-run/report.json",
+      "sha256": "8879f3975d15ba13f88c02a529271fbb916bff55a27824566a2c6eebb01c22af"
+    }
+  },
+  "exposed_source_families": [
+    "msc_456"
+  ],
+  "exposed_control_ids": [
+    "rtq-036c4b9aab201fa9",
+    "rtq-88f3240ca5a6799b"
+  ],
+  "fresh_control_ids": [
+    "rtq-08a434862c5495a0",
+    "rtq-140b49fb11d46e04",
+    "rtq-159c35bb186e620a",
+    "rtq-1aaed29663d99d6c",
+    "rtq-1de1d2137ef9d039",
+    "rtq-1e0e9e68db0f55eb",
+    "rtq-21cf5dc6356cfab4",
+    "rtq-275ec811038cb105",
+    "rtq-358e2a0dbfca4b7b",
+    "rtq-37f27639350ca6de",
+    "rtq-390c6ab385f11500",
+    "rtq-3a394b90dfcbb264",
+    "rtq-3e934bf55d57f558",
+    "rtq-45407a9463996740",
+    "rtq-45555f3bed1721b2",
+    "rtq-4f564d8361e31739",
+    "rtq-5c9dc1ff03ea3092",
+    "rtq-6611d575d19c4c5c",
+    "rtq-6918707314b84b3c",
+    "rtq-7816d878ae8e5a74",
+    "rtq-85dab7d126d8e195",
+    "rtq-9b80188800bb5a9a",
+    "rtq-9c312be6095cde63",
+    "rtq-a156f2b91507942a",
+    "rtq-a30b6f12247918cd",
+    "rtq-a963a64ba7daecfe",
+    "rtq-c9b0a4b4bbde1df8",
+    "rtq-cb59872d954b3494",
+    "rtq-ce0f8bda56d1d59b",
+    "rtq-d0fbb9796b3a6f11",
+    "rtq-d219338140678c0d",
+    "rtq-d6109e94af025b34",
+    "rtq-dc158582af85e89a",
+    "rtq-e08c74ed8658f69e",
+    "rtq-f0d1e54706e11741",
+    "rtq-f384824c70daa51c",
+    "rtq-f5c5186cdf577b06",
+    "rtq-f9a22c0385ed493a"
+  ],
+  "fresh_primary_total": 38,
+  "exposed_development_primary_total": 2,
+  "fresh_source_families": 15,
+  "baseline_attempts": 895,
+  "baseline_ledger_sha256": "19883e0265101dac74146ca60fd48b7c6bba481e3326e4259de5f1ae47a8ae3f",
+  "known_exact_prior_payload_exposures": {
+    "rtq-036c4b9aab201fa9": [
+      832,
+      833,
+      834,
+      873
+    ]
+  },
+  "rule": "Fresh cases exclude the entire exposed source family. Both exposed cases are separate development controls. All 24 sentinel repeats must use fresh cases. Require exact full references on both groups in addition to the original unchanged gates; stop on first irreversible failure.",
+  "candidate_contract_version": 2,
+  "candidate_prompt_revision": 4,
+  "reference_contract_version": 1,
+  "maximum_requests": 64,
+  "maximum_additional_conservative_usd": "0.1056",
+  "provider_calls_made": 0,
+  "runtime_enabled": false
+}

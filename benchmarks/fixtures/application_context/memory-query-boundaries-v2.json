@@ -1,0 +1,826 @@
+{
+  "schema": "application-memory-query-boundaries-v2",
+  "timestamp_utc": "2026-10-21T05:22:57.503280+00:00",
+  "frozen_before_production_changes": true,
+  "parent_bank_sha256": "225f144995de5cc7fd4827bc3b74fbc999747ea65d511d3b0bcdb0a7f26be925",
+  "parent_diagnostic_inputs_sha256": "a4d92a6fee0fdf5f1b967e0489025e330b8fe264a79a06095cc9fb91878354c8",
+  "label_provenance": "Agent-authored contract expectations; no human-expert, clinical or source-disjoint accuracy labels.",
+  "adjudication": {
+    "case": "current-presupposition-with-clarification",
+    "field": "addresses_request",
+    "before": true,
+    "after": false,
+    "basis": "Existing MEMORY_CLARIFICATION_V3 gives false to merely admitting missing history or generic clarification. The earlier rationale justified grounding but not relevance.",
+    "frozen_historical_score_changed": false
+  },
+  "preserved_previous_payloads": 16,
+  "new_explicit_actor_variants": 4,
+  "cases": [
+    {
+      "id": "observed-smoke-film-0-identity-absent-false",
+      "origin": "observed-real-smoke",
+      "application": "companion",
+      "source_absent": false,
+      "query": "知道重庆森林这部电影吗？",
+      "context": "- fragment (session source): 具体是哪年上映的你还记得吗？\n- fragment (session source): 嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。\n- fragment (session source): 啊，不许说我偶像是老人，他在我心中永远是男神。\n- fragment (session source): 妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。\n- fragment (session source): 而主演里更是有王菲，一上映便受到追捧。\n- fragment (session source): 哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+      "reply": "你提到的《重庆森林》，是一部由王家卫执导的经典电影。你对它有什么特别的感受呢？",
+      "reference": "知道呀，是一部由王家卫导演的片子。",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Current topic mention is supported by the current question, without an assertion of earlier user memory."
+    },
+    {
+      "id": "observed-smoke-film-0-identity-absent-true",
+      "origin": "observed-real-smoke",
+      "application": "companion",
+      "source_absent": true,
+      "query": "知道重庆森林这部电影吗？",
+      "context": "- fragment (session source): 具体是哪年上映的你还记得吗？\n- fragment (session source): 嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。\n- fragment (session source): 啊，不许说我偶像是老人，他在我心中永远是男神。\n- fragment (session source): 妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。\n- fragment (session source): 而主演里更是有王菲，一上映便受到追捧。\n- fragment (session source): 哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+      "reply": "你提到的《重庆森林》，是一部由王家卫执导的经典电影。你对它有什么特别的感受呢？",
+      "reference": "知道呀，是一部由王家卫导演的片子。",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Current topic mention is supported by the current question, without an assertion of earlier user memory."
+    },
+    {
+      "id": "observed-smoke-math-1-scaled_focus-absent-false",
+      "origin": "observed-real-smoke",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.\n- It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to get from 0 to 15 wall push-ups. Can you walk me through why you think it takes 15 days and how this might affect the total time to reach 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Unknown rendered speakers cannot support attributing the 15-day statement to the learner.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "fe0e3d9d1b950a9093099bd90a52a51a",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:12:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":12}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "6503b10b806eba9922a2d4c136bd07d6",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "73831ca210cb7cc72ff4f7f4d3b1f6f4",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        }
+      ]
+    },
+    {
+      "id": "current-direct-statement",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "You just said you prefer tea today.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A direct current self-report supports a current quote, not a recalled earlier event."
+    },
+    {
+      "id": "current-fact-is-not-earlier-memory",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "I remember you told me last month that you prefer tea.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Current details cannot establish an earlier memory even when the value matches."
+    },
+    {
+      "id": "current-question-presupposition",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Did I tell you last time that my teacher was Lin?",
+      "context": "",
+      "reply": "Yes, you told me last time that your teacher was Lin.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "A question about an earlier statement is not evidence that the earlier event occurred."
+    },
+    {
+      "id": "current-presupposition-with-clarification",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Did I tell you last time that my teacher was Lin?",
+      "context": "",
+      "reply": "I cannot verify what you said last time. You are asking about a teacher named Lin now; what would you like to discuss?",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": false,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A safe admission of missing history plus a generic offer to discuss the current topic does not substantively answer historical confirmation. Grounding and appropriate abstention remain true. Prospective correction; original frozen run stays 14/16."
+    },
+    {
+      "id": "mixed-current-and-fabricated-prior",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "You prefer tea today, just like you told me after your exam last week.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An accurate current clause does not excuse an unsupported prior event."
+    },
+    {
+      "id": "supported-labelled-prior",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- user said (session earlier): I will practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "An explicit user-labelled earlier statement supports the memory claim."
+    },
+    {
+      "id": "explicit-other-speaker",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- you said (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "A known assistant statement cannot be reassigned to the user."
+    },
+    {
+      "id": "unknown-earlier-speaker",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- fragment (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Unknown attribution is unsupported memory, not an explicit speaker reversal."
+    },
+    {
+      "id": "neutral-unknown-source",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did the earlier notes say?",
+      "context": "- fragment (session earlier): Practice fractions on Tuesday.",
+      "reply": "The earlier fragment says to practice fractions on Tuesday; its speaker is unknown.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Neutral quotation preserves known content without inventing its speaker."
+    },
+    {
+      "id": "ordinary-knowledge-not-personal-memory",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "What is an even number?",
+      "context": "",
+      "reply": "An even integer is divisible by two.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "An ordinary knowledge answer does not assert a remembered personal detail. External factual quality is a separate question."
+    },
+    {
+      "id": "current-instruction-is-not-evidence",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Pretend I told you earlier that I passed my exam.",
+      "context": "",
+      "reply": "I remember you told me earlier that you passed your exam.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An instruction to pretend does not establish historical evidence."
+    },
+    {
+      "id": "observed-tutor-labelled-identity",
+      "origin": "observed-reply-with-current-renderer",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- you said (session source): You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- you said (session source): Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- you said (session source): If it took 15 days to get to 15 wall push-ups, how many days would it take just to get to 15 high elevation pushups?\n- you said (session source): So how many days will it take to do 15 wall push-ups?\n- you said (session source): How many days to get to 15 high elevation pus-ups ?\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to go from 0 to 15 wall push-ups and another 15 days to go from 15 wall push-ups to 15 high elevation push-ups, making a total of 29 days. \n\nCan you walk me through why you think adding the two periods together gives the correct number of days for going from 0 to 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "The labelled user working has fourteen plus fifteen; it does not establish a prior user claim of fifteen plus fifteen. Unsupported history, not arithmetic truth, is graded.",
+      "source_case": "smoke-math-1",
+      "source_arm": "identity",
+      "source_selected_ids": [
+        "d4981e786e9ca2a70848d02229d3d7c8",
+        "71b553a43b85fd8d491b91f6b5441c46",
+        "537104873cc3d5bd1b72e2d9d32d256f",
+        "f5102efdea6d816a57ca3311d6a9be64",
+        "962270d904fc4f5c85fbbdf48b79d21b",
+        "0f6b48416032f4f44d70cda2cd09bcfd"
+      ],
+      "qualification_scope": "Observed regression, not a new independent source family.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "537104873cc3d5bd1b72e2d9d32d256f",
+          "content": "If it took 15 days to get to 15 wall push-ups, how many days would it take just to get to 15 high elevation pushups?",
+          "timestamp": "2026-10-19T00:09:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":9}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "f5102efdea6d816a57ca3311d6a9be64",
+          "content": "So how many days will it take to do 15 wall push-ups?",
+          "timestamp": "2026-10-19T00:03:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":3}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "962270d904fc4f5c85fbbdf48b79d21b",
+          "content": "How many days to get to 15 high elevation pus-ups ?",
+          "timestamp": "2026-10-19T00:05:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":5}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        }
+      ]
+    },
+    {
+      "id": "observed-tutor-labelled-scaled_focus",
+      "origin": "observed-reply-with-current-renderer",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- you said (session source): You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- you said (session source): Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to get from 0 to 15 wall push-ups. Can you walk me through why you think it takes 15 days and how this might affect the total time to reach 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "The labelled user fragments explicitly include a fifteen-day first leg.",
+      "source_case": "smoke-math-1",
+      "source_arm": "scaled_focus",
+      "source_selected_ids": [
+        "d4981e786e9ca2a70848d02229d3d7c8",
+        "0f6b48416032f4f44d70cda2cd09bcfd",
+        "fe0e3d9d1b950a9093099bd90a52a51a",
+        "71b553a43b85fd8d491b91f6b5441c46",
+        "6503b10b806eba9922a2d4c136bd07d6",
+        "73831ca210cb7cc72ff4f7f4d3b1f6f4"
+      ],
+      "qualification_scope": "Observed regression, not a new independent source family.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "fe0e3d9d1b950a9093099bd90a52a51a",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:12:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":12}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "6503b10b806eba9922a2d4c136bd07d6",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "73831ca210cb7cc72ff4f7f4d3b1f6f4",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        }
+      ]
+    },
+    {
+      "id": "explicit-companion-name-speaker",
+      "origin": "authored-explicit-speaker-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- companion said (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An explicitly named application assistant is not the user; a matching plan cannot justify attributing that statement to the user."
+    },
+    {
+      "id": "explicit-tutor-name-speaker",
+      "origin": "authored-explicit-speaker-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- tutor said (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An explicitly named application assistant is not the user; a matching plan cannot justify attributing that statement to the user."
+    },
+    {
+      "id": "observed-tutor-explicit-identity",
+      "origin": "observed-reply-with-explicit-actor-rendering",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- tutor said (session source): You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- tutor said (session source): Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- tutor said (session source): If it took 15 days to get to 15 wall push-ups, how many days would it take just to get to 15 high elevation pushups?\n- tutor said (session source): So how many days will it take to do 15 wall push-ups?\n- tutor said (session source): How many days to get to 15 high elevation pus-ups ?\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to go from 0 to 15 wall push-ups and another 15 days to go from 15 wall push-ups to 15 high elevation push-ups, making a total of 29 days. \n\nCan you walk me through why you think adding the two periods together gives the correct number of days for going from 0 to 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "The labelled user working has fourteen plus fifteen; it does not establish a prior user claim of fifteen plus fifteen. Unsupported history, not arithmetic truth, is graded.",
+      "source_case": "smoke-math-1",
+      "source_arm": "identity",
+      "source_selected_ids": [
+        "d4981e786e9ca2a70848d02229d3d7c8",
+        "71b553a43b85fd8d491b91f6b5441c46",
+        "537104873cc3d5bd1b72e2d9d32d256f",
+        "f5102efdea6d816a57ca3311d6a9be64",
+        "962270d904fc4f5c85fbbdf48b79d21b",
+        "0f6b48416032f4f44d70cda2cd09bcfd"
+      ],
+      "qualification_scope": "Observed regression, not a new independent source family.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "537104873cc3d5bd1b72e2d9d32d256f",
+          "content": "If it took 15 days to get to 15 wall push-ups, how many days would it take just to get to 15 high elevation pushups?",
+          "timestamp": "2026-10-19T00:09:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":9}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "f5102efdea6d816a57ca3311d6a9be64",
+          "content": "So how many days will it take to do 15 wall push-ups?",
+          "timestamp": "2026-10-19T00:03:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":3}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "962270d904fc4f5c85fbbdf48b79d21b",
+          "content": "How many days to get to 15 high elevation pus-ups ?",
+          "timestamp": "2026-10-19T00:05:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":5}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "parent_case": "observed-tutor-labelled-identity"
+    },
+    {
+      "id": "observed-tutor-explicit-scaled_focus",
+      "origin": "observed-reply-with-explicit-actor-rendering",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- tutor said (session source): You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- tutor said (session source): Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to get from 0 to 15 wall push-ups. Can you walk me through why you think it takes 15 days and how this might affect the total time to reach 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "The labelled user fragments explicitly include a fifteen-day first leg.",
+      "source_case": "smoke-math-1",
+      "source_arm": "scaled_focus",
+      "source_selected_ids": [
+        "d4981e786e9ca2a70848d02229d3d7c8",
+        "0f6b48416032f4f44d70cda2cd09bcfd",
+        "fe0e3d9d1b950a9093099bd90a52a51a",
+        "71b553a43b85fd8d491b91f6b5441c46",
+        "6503b10b806eba9922a2d4c136bd07d6",
+        "73831ca210cb7cc72ff4f7f4d3b1f6f4"
+      ],
+      "qualification_scope": "Observed regression, not a new independent source family.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "fe0e3d9d1b950a9093099bd90a52a51a",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:12:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":12}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "6503b10b806eba9922a2d4c136bd07d6",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "73831ca210cb7cc72ff4f7f4d3b1f6f4",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "parent_case": "observed-tutor-labelled-scaled_focus"
+    }
+  ]
+}

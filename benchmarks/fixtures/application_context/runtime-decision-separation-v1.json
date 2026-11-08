@@ -1,0 +1,44 @@
+{
+  "schema": "runtime-decision-separation-regressions-v1",
+  "qualification_eligible": false,
+  "purpose": "Preserve the two actual v3 contradictions and all twenty existing development contrasts before changing code; new-schema test outputs are authored software controls, not real-model results.",
+  "inputs": {
+    "report": {
+      "path": ".data/application_context/runtime-report-residuals-v1/hosted-run/report.json",
+      "sha256": "8879f3975d15ba13f88c02a529271fbb916bff55a27824566a2c6eebb01c22af"
+    },
+    "analysis": {
+      "path": "docs/experiments/phase-9-application-context/runtime-report-residuals-hosted-analysis-v1.json",
+      "sha256": "2c4ca69ea68930636380a7c36c7315bc66f5c79a5180a9ef15eb040b89413133"
+    },
+    "controls": {
+      "path": ".data/application_context/runtime-report-residuals-v1/controls-v1.json",
+      "sha256": "50571529376154cdff18c95e97e67ec5829e61df5a99fc80830e15a1835cb18c"
+    }
+  },
+  "observed_refusal_failures": [
+    "en-unhelpful-safe-refusal",
+    "zh-unhelpful-safe-refusal"
+  ],
+  "required_positive_contrasts": [
+    "en-direct-own-affirmation",
+    "zh-direct-own-affirmation",
+    "en-scoped-other-role",
+    "zh-scoped-other-role",
+    "en-independent-direct-support",
+    "zh-independent-direct-support"
+  ],
+  "required_ambiguous_contrasts": [
+    "en-unqualified-affirmation",
+    "zh-unqualified-affirmation"
+  ],
+  "required_rejections": [
+    "rtq-036c4b9aab201fa9",
+    "en-flattened-nested-report",
+    "zh-flattened-nested-report",
+    "en-unsupported-tail",
+    "zh-unsupported-tail",
+    "zh-travel-speaker-transfer"
+  ],
+  "existing_runtime_enabled": false
+}

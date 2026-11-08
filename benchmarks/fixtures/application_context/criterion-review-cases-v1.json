@@ -1,0 +1,32 @@
+{
+  "schema": "criterion-review-regression-cases-v1",
+  "origin": "Actual archived judgments and blinded-review findings; software controls do not supply model accuracy.",
+  "bank_path": "benchmarks/fixtures/application_context/memory-query-boundaries-v2.json",
+  "bank_sha256": "603310357f63ed8d412f18f56920600d27edcf620c3a66cf612487e380cf518c",
+  "review_path": "docs/experiments/phase-9-application-context/claim-attribution-blind-review-v1.md",
+  "review_sha256": "486e863555f52e63be213fce9d0887b2c94157e7a222d0e38659a53c9623cfca",
+  "cases": [
+    {
+      "case": "observed-tutor-labelled-identity",
+      "pending_fields": [
+        "attribution_correct"
+      ],
+      "known_criteria": {
+        "grounded": false,
+        "critical_error": true
+      }
+    },
+    {
+      "case": "observed-tutor-explicit-identity",
+      "pending_fields": [
+        "attribution_correct"
+      ],
+      "known_criteria": {
+        "grounded": false,
+        "critical_error": true
+      }
+    }
+  ],
+  "old_expectations_changed": false,
+  "new_provider_calls": 0
+}

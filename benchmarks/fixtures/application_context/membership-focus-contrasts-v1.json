@@ -1,0 +1,52 @@
+{
+  "schema": "membership-focus-contrasts-v1",
+  "provenance": "Authored exposed regression cases, reviewed by the implementing agent before inference. Not users, training data, independent gold or model outputs.",
+  "families": [
+    {
+      "id": "calculation", "application": "tutor", "description_ids": ["calculation", "encouragement"],
+      "descriptions": {
+        "en": ["a statement of the speaker's numerical calculation", "an expression of encouragement to keep trying"],
+        "zh": ["发言者陈述自己所做的数值计算", "鼓励对方继续尝试的发言"]
+      },
+      "focus": {"en": "I calculated twelve divided by three and got four.", "zh": "我计算了十二除以三，得到四。"},
+      "focus_labels": ["match", "nonmatch"],
+      "focus_rationale": "The speaker explicitly reports a numerical calculation. The focus contains no encouragement, regardless of preceding encouragement.",
+      "histories": [
+        {"id": "empty", "en": [], "zh": [], "labels": [], "rationales": []},
+        {"id": "neutral", "en": ["The workbook has a blue cover.", "This section uses black ink."], "zh": ["这本练习册的封面是蓝色的。", "这一节使用黑色墨水。"], "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"]], "rationales": ["A workbook's cover color is neither a numerical calculation nor encouragement.", "An ink-color statement is neither a numerical calculation nor encouragement."]},
+        {"id": "act", "en": ["Keep trying; your effort matters.", "You can make progress if you keep working at it."], "zh": ["继续尝试吧，你的努力很有意义。", "坚持努力，你就能取得进步。"], "labels": [["nonmatch", "match"], ["nonmatch", "match"]], "rationales": ["This encourages persistence without performing a numerical calculation.", "This encourages continued effort without performing a numerical calculation."]}
+      ]
+    },
+    {
+      "id": "occupation", "application": "companion", "description_ids": ["occupation_assertion", "occupation_question"],
+      "descriptions": {
+        "en": ["a statement of the speaker's own occupation", "a question asking another person for their occupation"],
+        "zh": ["发言者陈述自己的职业", "询问对方职业的问题"]
+      },
+      "focus": {"en": "I work as a nurse.", "zh": "我的职业是护士。"},
+      "focus_labels": ["match", "nonmatch"],
+      "focus_rationale": "The speaker asserts their own occupation. This is not a question, even after an occupation inquiry.",
+      "histories": [
+        {"id": "empty", "en": [], "zh": [], "labels": [], "rationales": []},
+        {"id": "neutral", "en": ["I use a blue notebook.", "The cover is made of paper."], "zh": ["我使用一本蓝色笔记本。", "封面是纸做的。"], "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"]], "rationales": ["Notebook use does not state an occupation or ask another person's occupation.", "Cover material does not state an occupation or ask another person's occupation."]},
+        {"id": "act", "en": ["What do you do for a living?", "What is your occupation?"], "zh": ["你从事什么工作？", "你的职业是什么？"], "labels": [["nonmatch", "match"], ["nonmatch", "match"]], "rationales": ["This asks another person's occupation rather than asserting the speaker's occupation.", "This asks another person's occupation rather than asserting the speaker's occupation."]}
+      ]
+    },
+    {
+      "id": "referent", "application": "companion", "description_ids": ["mira_nurse", "jo_nurse"],
+      "descriptions": {
+        "en": ["an assertion that Mira works as a nurse", "an assertion that Jo works as a nurse"],
+        "zh": ["陈述米拉的职业是护士", "陈述小乔的职业是护士"]
+      },
+      "focus": {"en": "She works as a nurse.", "zh": "她的职业是护士。"},
+      "histories": [
+        {"id": "unique", "en": ["The woman in this question is Mira.", "What does Mira do for a living?"], "zh": ["这个问题里的女性是米拉。", "米拉从事什么工作？"], "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"]], "rationales": ["Identifying the woman does not assert anyone's occupation.", "Asking an occupation does not assert that anyone is a nurse."], "focus_labels": ["match", "nonmatch"], "focus_rationale": "Mira is the unique named woman in the supplied window. The focus asserts she is a nurse; Jo is not the referent.", "focus_support": [0, 1]},
+        {"id": "ambiguous", "en": ["Mira and Jo are both women.", "What does either of them do for a living?"], "zh": ["米拉和小乔都是女性。", "她们中的某一位从事什么工作？"], "labels": [["nonmatch", "nonmatch"], ["nonmatch", "nonmatch"]], "rationales": ["Naming two women does not assert an occupation.", "A question about either woman does not assert an occupation."], "focus_labels": ["uncertain", "uncertain"], "focus_rationale": "The focus asserts a nurse occupation but either of two women can be its unresolved pronoun referent. Neither named attribution is definite.", "focus_support": [0, 1]}
+      ]
+    }
+  ],
+  "controls": [
+    {"id": "both", "family": "calculation", "en": "I calculated twelve divided by three and got four. Keep trying; your effort matters.", "zh": "我计算了十二除以三，得到四。继续尝试吧，你的努力很有意义。", "labels": ["match", "match"], "rationale": "The focus explicitly performs both a numerical calculation report and encouragement. Membership does not require exactly one matching description."},
+    {"id": "neither", "family": "calculation", "en": "The workbook has a blue cover.", "zh": "这本练习册的封面是蓝色的。", "labels": ["nonmatch", "nonmatch"], "rationale": "A cover-color statement performs neither a numerical calculation nor encouragement. Membership does not require any positive label."}
+  ]
+}

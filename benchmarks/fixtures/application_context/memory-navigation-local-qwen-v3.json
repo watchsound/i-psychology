@@ -1,0 +1,241 @@
+{
+  "schema": "memory-navigation-local-qwen-v3",
+  "scope": "Exposed development, corrected authored within-language and cross-language controls; local inference only",
+  "base_protocol_sha256": "812a05eebc9d328a19d7582804f750f17069ff466badac5f7a1c74ef6a98280d",
+  "base_catalog_sha256": "7606b55bb7af5f51728b52c9707ffbc4fef5942db9b72cdb6ba55b6da518efea",
+  "case_ids": [
+    "msc_149",
+    "msc_7",
+    "film-767-companion",
+    "film-1038-companion",
+    "msc_9",
+    "msc_132",
+    "math-404",
+    "math-17",
+    "film-821-tutor",
+    "film-1116-tutor",
+    "math-332",
+    "math-2149"
+  ],
+  "authored_controls": [
+    {
+      "id": "authored-v2-en-exams",
+      "app": "companion",
+      "language": "en",
+      "source_language": "en",
+      "query_language": "en",
+      "source_text": "Exams leave me anxious",
+      "query": "Assessments trigger panic",
+      "distractors": [
+        "Assessments trigger classroom seating questions",
+        "Tomorrow the weather should be sunny",
+        "The library closes at six",
+        "I prefer chamomile tea",
+        "The bicycle needs a new tire",
+        "Her exam results were excellent and she felt calm",
+        "The bus route has changed",
+        "I bought fresh tomatoes"
+      ]
+    },
+    {
+      "id": "authored-v2-en-supervisor",
+      "app": "tutor",
+      "language": "en",
+      "source_language": "en",
+      "query_language": "en",
+      "source_text": "My supervisor dismissed the research proposal",
+      "query": "Boss rejected study suggestion",
+      "distractors": [
+        "Boss rejected replacing the printer cartridge",
+        "Tomorrow the weather should be sunny",
+        "The library closes at six",
+        "I prefer chamomile tea",
+        "The bicycle needs a new tire",
+        "A colleague supported the research proposal",
+        "The bus route has changed",
+        "I bought fresh tomatoes"
+      ]
+    },
+    {
+      "id": "authored-v2-zh-exams",
+      "app": "companion",
+      "language": "zh",
+      "source_language": "zh",
+      "query_language": "zh",
+      "source_text": "\u8003\u8bd5\u4f7f\u6211\u7126\u8651",
+      "query": "\u6d4b\u9a8c\u5f15\u53d1\u6050\u614c",
+      "distractors": [
+        "\u6d4b\u9a8c\u5f15\u53d1\u5ea7\u4f4d\u5b89\u6392\u8ba8\u8bba",
+        "\u660e\u5929\u5929\u6c14\u6674\u6717",
+        "\u56fe\u4e66\u9986\u516d\u70b9\u5173\u95e8",
+        "\u6211\u559c\u6b22\u83ca\u82b1\u8336",
+        "\u81ea\u884c\u8f66\u9700\u8981\u6362\u8f6e\u80ce",
+        "\u5979\u8003\u8bd5\u6210\u7ee9\u4f18\u79c0\u800c\u4e14\u5f88\u9547\u5b9a",
+        "\u516c\u4ea4\u7ebf\u8def\u5df2\u7ecf\u8c03\u6574",
+        "\u6211\u4e70\u4e86\u65b0\u9c9c\u756a\u8304"
+      ]
+    },
+    {
+      "id": "authored-v2-zh-supervisor",
+      "app": "tutor",
+      "language": "zh",
+      "source_language": "zh",
+      "query_language": "zh",
+      "source_text": "\u4e3b\u7ba1\u5426\u51b3\u79d1\u7814\u63d0\u6848",
+      "query": "\u8001\u677f\u9a73\u56de\u7814\u7a76\u5efa\u8bae",
+      "distractors": [
+        "\u8001\u677f\u9a73\u56de\u66f4\u6362\u6253\u5370\u673a\u58a8\u76d2",
+        "\u660e\u5929\u5929\u6c14\u6674\u6717",
+        "\u56fe\u4e66\u9986\u516d\u70b9\u5173\u95e8",
+        "\u6211\u559c\u6b22\u83ca\u82b1\u8336",
+        "\u81ea\u884c\u8f66\u9700\u8981\u6362\u8f6e\u80ce",
+        "\u540c\u4e8b\u652f\u6301\u79d1\u7814\u63d0\u6848",
+        "\u516c\u4ea4\u7ebf\u8def\u5df2\u7ecf\u8c03\u6574",
+        "\u6211\u4e70\u4e86\u65b0\u9c9c\u756a\u8304"
+      ]
+    },
+    {
+      "id": "authored-v2-zh-to-en-exams",
+      "app": "companion",
+      "language": "en",
+      "source_language": "zh",
+      "query_language": "en",
+      "source_text": "\u8003\u8bd5\u4f7f\u6211\u7126\u8651",
+      "query": "Assessments trigger panic",
+      "distractors": [
+        "\u6d4b\u9a8c\u5f15\u53d1\u5ea7\u4f4d\u5b89\u6392\u8ba8\u8bba",
+        "\u660e\u5929\u5929\u6c14\u6674\u6717",
+        "\u56fe\u4e66\u9986\u516d\u70b9\u5173\u95e8",
+        "\u6211\u559c\u6b22\u83ca\u82b1\u8336",
+        "\u81ea\u884c\u8f66\u9700\u8981\u6362\u8f6e\u80ce",
+        "\u5979\u8003\u8bd5\u6210\u7ee9\u4f18\u79c0\u800c\u4e14\u5f88\u9547\u5b9a",
+        "\u516c\u4ea4\u7ebf\u8def\u5df2\u7ecf\u8c03\u6574",
+        "\u6211\u4e70\u4e86\u65b0\u9c9c\u756a\u8304"
+      ]
+    },
+    {
+      "id": "authored-v2-zh-to-en-supervisor",
+      "app": "tutor",
+      "language": "en",
+      "source_language": "zh",
+      "query_language": "en",
+      "source_text": "\u4e3b\u7ba1\u5426\u51b3\u79d1\u7814\u63d0\u6848",
+      "query": "Boss rejected study suggestion",
+      "distractors": [
+        "\u8001\u677f\u9a73\u56de\u66f4\u6362\u6253\u5370\u673a\u58a8\u76d2",
+        "\u660e\u5929\u5929\u6c14\u6674\u6717",
+        "\u56fe\u4e66\u9986\u516d\u70b9\u5173\u95e8",
+        "\u6211\u559c\u6b22\u83ca\u82b1\u8336",
+        "\u81ea\u884c\u8f66\u9700\u8981\u6362\u8f6e\u80ce",
+        "\u540c\u4e8b\u652f\u6301\u79d1\u7814\u63d0\u6848",
+        "\u516c\u4ea4\u7ebf\u8def\u5df2\u7ecf\u8c03\u6574",
+        "\u6211\u4e70\u4e86\u65b0\u9c9c\u756a\u8304"
+      ]
+    },
+    {
+      "id": "authored-v2-en-to-zh-exams",
+      "app": "companion",
+      "language": "zh",
+      "source_language": "en",
+      "query_language": "zh",
+      "source_text": "Exams leave me anxious",
+      "query": "\u6d4b\u9a8c\u5f15\u53d1\u6050\u614c",
+      "distractors": [
+        "Assessments trigger classroom seating questions",
+        "Tomorrow the weather should be sunny",
+        "The library closes at six",
+        "I prefer chamomile tea",
+        "The bicycle needs a new tire",
+        "Her exam results were excellent and she felt calm",
+        "The bus route has changed",
+        "I bought fresh tomatoes"
+      ]
+    },
+    {
+      "id": "authored-v2-en-to-zh-supervisor",
+      "app": "tutor",
+      "language": "zh",
+      "source_language": "en",
+      "query_language": "zh",
+      "source_text": "My supervisor dismissed the research proposal",
+      "query": "\u8001\u677f\u9a73\u56de\u7814\u7a76\u5efa\u8bae",
+      "distractors": [
+        "Boss rejected replacing the printer cartridge",
+        "Tomorrow the weather should be sunny",
+        "The library closes at six",
+        "I prefer chamomile tea",
+        "The bicycle needs a new tire",
+        "A colleague supported the research proposal",
+        "The bus route has changed",
+        "I bought fresh tomatoes"
+      ]
+    }
+  ],
+  "cosine_floors": [
+    0.4,
+    0.6,
+    0.8
+  ],
+  "model_identity": {
+    "model": "qwen3-embedding:0.6b",
+    "digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+    "dimension": 1024,
+    "context_length": 32768,
+    "input_policy": "ollama-embed-raw-no-truncate-v1"
+  },
+  "query_prefix": "Instruct: Given a memory recall query, retrieve relevant past experiences\nQuery:",
+  "query_prefix_source": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+  "endpoint": "http://127.0.0.1:11434",
+  "max_local_embedding_requests": 64,
+  "metadata_timeout_s": 5,
+  "request_timeout_s": 60,
+  "hosted_provider_requests": 0,
+  "judge_requests": 0,
+  "generated_application_replies": 0,
+  "byte_cap": 4096,
+  "tokenizer": "jieba",
+  "seed": 0,
+  "top_k": 6,
+  "states": [
+    "cold",
+    "followup"
+  ],
+  "query_forms": [
+    0
+  ],
+  "minimum_observed_gain": 0.05,
+  "absent_hint_rate_max": 0,
+  "heldout_scoring_authorized": false,
+  "limitations": [
+    "Only exposed public development families; no held-out source is scored.",
+    "Eight authored controls are software checks, not population or clinical accuracy.",
+    "Two actual recalls use shared model caches; cold memory does not mean a cold embedding cache.",
+    "Fixed floors and mixture are not tuned after results; no runtime option or adoption claim.",
+    "Public graphs and the 4096-byte cap are unchanged; authored controls have no initial edges and a 16384-byte cap.",
+    "Models use their own frozen query instructions; comparing model systems does not isolate instruction effects.",
+    "No hosted generation, judge calls or private histories. New local model download is 639150858 bytes.",
+    "Five-second process-local artifact metadata reuse is opt-in. Fresh full-tag checks at both batch boundaries; actual inference forces final full metadata attestation. Runtime default TTL remains zero."
+  ],
+  "authored_control_design": {
+    "byte_cap": 16384,
+    "initial_graph": "no_initial_edges",
+    "target_position": "after_eight_distractors",
+    "meaning": "Software controls isolate cold cue discrimination; public cases retain their original 4096-byte cap and graph.",
+    "unrelated_absent_indices": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7
+    ]
+  },
+  "absent_hint_gate_scope": "authored-unrelated-memory-controls-only",
+  "existing_public_absent_hints": "descriptive: source can contain related context without the required answer",
+  "date": "2026-10-24",
+  "authored_source": "authored-memory-navigation-v2",
+  "controls_sha256": "07c1318860aa03556527735715f9fde438378dd61c9eea15f706a128fffa0964",
+  "minimum_unrelated_margin": 0.05,
+  "max_local_embedding_inputs": 256,
+  "embedding_metadata_ttl_s": 5
+}

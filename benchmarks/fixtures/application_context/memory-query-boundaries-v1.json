@@ -1,0 +1,551 @@
+{
+  "schema": "application-memory-query-boundaries-v1",
+  "timestamp_utc": "2026-10-21T02:39:01.651661+00:00",
+  "frozen_before_code_changes": true,
+  "source_smoke_report_sha256": "438d814dc0603ee781ac168b09ab131bd9a914a781f2955ce98ab868420221ec",
+  "labels": "Agent-authored contract expectations, not clinical annotations or independent judge accuracy evidence.",
+  "observed_outputs_regraded": false,
+  "cases": [
+    {
+      "id": "observed-smoke-film-0-identity-absent-false",
+      "origin": "observed-real-smoke",
+      "application": "companion",
+      "source_absent": false,
+      "query": "知道重庆森林这部电影吗？",
+      "context": "- fragment (session source): 具体是哪年上映的你还记得吗？\n- fragment (session source): 嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。\n- fragment (session source): 啊，不许说我偶像是老人，他在我心中永远是男神。\n- fragment (session source): 妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。\n- fragment (session source): 而主演里更是有王菲，一上映便受到追捧。\n- fragment (session source): 哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+      "reply": "你提到的《重庆森林》，是一部由王家卫执导的经典电影。你对它有什么特别的感受呢？",
+      "reference": "知道呀，是一部由王家卫导演的片子。",
+      "fragments": [
+        {
+          "id": "e3d577f528332f2f9da60faad37cd82e",
+          "content": "具体是哪年上映的你还记得吗？",
+          "timestamp": "2026-10-19T00:04:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":4}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "839d0f587cbc0a3e895ca409adeebae4",
+          "content": "嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "f533af696a2267e37381674908ef4e0f",
+          "content": "啊，不许说我偶像是老人，他在我心中永远是男神。",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "041d2181cb657854aafd608ad42edce1",
+          "content": "妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "20791f781148acebddc7ad3fe1904769",
+          "content": "而主演里更是有王菲，一上映便受到追捧。",
+          "timestamp": "2026-10-19T00:02:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":2}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "e6b19bdcf2aa4a6f34f6c5270d960156",
+          "content": "哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+          "timestamp": "2026-10-19T00:09:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-1",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":9}"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "observed_judgment": {
+        "criteria": {
+          "addresses_request": true,
+          "grounded": false,
+          "attribution_correct": true,
+          "abstains_appropriately": false,
+          "critical_error": true
+        },
+        "rationale": "The reply engages with the film, but the visible fragments do not establish that the user mentioned 《重庆森林》 or support the claim that it was directed by Wong Kar-wai. No contradictory speaker is visible, so attribution remains correct; the unsupported remembered claim makes grounding and abstention fail.",
+        "raw": "{\"addresses_request\":true,\"grounded\":false,\"attribution_correct\":true,\"abstains_appropriately\":false,\"critical_error\":true,\"rationale\":\"The reply engages with the film, but the visible fragments do not establish that the user mentioned 《重庆森林》 or support the claim that it was directed by Wong Kar-wai. No contradictory speaker is visible, so attribution remains correct; the unsupported remembered claim makes grounding and abstention fail.\"}",
+        "finish_reason": "stop",
+        "parse_failed": false,
+        "proxy": false,
+        "contract_version": 2,
+        "consistency_errors": []
+      },
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Current topic mention is supported by the current question, without an assertion of earlier user memory."
+    },
+    {
+      "id": "observed-smoke-film-0-identity-absent-true",
+      "origin": "observed-real-smoke",
+      "application": "companion",
+      "source_absent": true,
+      "query": "知道重庆森林这部电影吗？",
+      "context": "- fragment (session source): 具体是哪年上映的你还记得吗？\n- fragment (session source): 嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。\n- fragment (session source): 啊，不许说我偶像是老人，他在我心中永远是男神。\n- fragment (session source): 妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。\n- fragment (session source): 而主演里更是有王菲，一上映便受到追捧。\n- fragment (session source): 哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+      "reply": "你提到的《重庆森林》，是一部由王家卫执导的经典电影。你对它有什么特别的感受呢？",
+      "reference": "知道呀，是一部由王家卫导演的片子。",
+      "fragments": [
+        {
+          "id": "e3d577f528332f2f9da60faad37cd82e",
+          "content": "具体是哪年上映的你还记得吗？",
+          "timestamp": "2026-10-19T00:04:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":4}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "839d0f587cbc0a3e895ca409adeebae4",
+          "content": "嗯嗯，也获得三届台湾电影金马奖最佳男主角、三届香港电影金紫荆奖最佳男主角奖。",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "f533af696a2267e37381674908ef4e0f",
+          "content": "啊，不许说我偶像是老人，他在我心中永远是男神。",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "041d2181cb657854aafd608ad42edce1",
+          "content": "妈呀，都过去二十年了嘛，为啥我的记忆好像还是几年前的感觉呢。",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "20791f781148acebddc7ad3fe1904769",
+          "content": "而主演里更是有王菲，一上映便受到追捧。",
+          "timestamp": "2026-10-19T00:02:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-0",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":2}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "e6b19bdcf2aa4a6f34f6c5270d960156",
+          "content": "哈哈，对于他我也很喜欢，而且他也值得我们喜欢，获得过五届【香港电影金像奖最佳男主角】奖。",
+          "timestamp": "2026-10-19T00:09:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-film-0",
+            "session:source",
+            "speaker:source-actor-1",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"9ec31053e8060f391ae8746a5cc0d7b8c342040f3597a5a2d7f5c9491cd46aa1\",\"kind\":\"source-sequence\",\"position\":9}"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "observed_judgment": {
+        "criteria": {
+          "addresses_request": true,
+          "grounded": false,
+          "attribution_correct": true,
+          "abstains_appropriately": false,
+          "critical_error": true
+        },
+        "rationale": "The reply meaningfully answers whether it knows the film, but the visible context does not support the claim that the user mentioned 《重庆森林》. No visible speaker contradicts that attribution, so attribution_correct remains true. The unsupported remembered claim makes this a critical error and means it does not abstain appropriately.",
+        "raw": "{\"addresses_request\": true, \"grounded\": false, \"attribution_correct\": true, \"abstains_appropriately\": false, \"critical_error\": true, \"rationale\": \"The reply meaningfully answers whether it knows the film, but the visible context does not support the claim that the user mentioned 《重庆森林》. No visible speaker contradicts that attribution, so attribution_correct remains true. The unsupported remembered claim makes this a critical error and means it does not abstain appropriately.\"}",
+        "finish_reason": "stop",
+        "parse_failed": false,
+        "proxy": false,
+        "contract_version": 2,
+        "consistency_errors": []
+      },
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Current topic mention is supported by the current question, without an assertion of earlier user memory."
+    },
+    {
+      "id": "observed-smoke-math-1-scaled_focus-absent-false",
+      "origin": "observed-real-smoke",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.\n- It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+      "reply": "Sure, let's revisit your previous work. You mentioned that it took 15 days to get from 0 to 15 wall push-ups. Can you walk me through why you think it takes 15 days and how this might affect the total time to reach 15 high elevation push-ups?",
+      "reference": "It will take one day to do one step, since John adds one pushup per day.",
+      "fragments": [
+        {
+          "id": "d4981e786e9ca2a70848d02229d3d7c8",
+          "content": "You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.",
+          "timestamp": "2026-10-19T00:11:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":11}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0f6b48416032f4f44d70cda2cd09bcfd",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:10:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":10}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "fe0e3d9d1b950a9093099bd90a52a51a",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.",
+          "timestamp": "2026-10-19T00:12:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":12}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "71b553a43b85fd8d491b91f6b5441c46",
+          "content": "Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.",
+          "timestamp": "2026-10-19T00:07:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:tutor",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":7}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "6503b10b806eba9922a2d4c136bd07d6",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:06:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":6}"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "73831ca210cb7cc72ff4f7f4d3b1f6f4",
+          "content": "It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups.",
+          "timestamp": "2026-10-19T00:08:00+00:00",
+          "affect": {},
+          "tags": [
+            "user:smoke-math-1",
+            "session:source",
+            "speaker:user",
+            "pb-turn:v1:{\"actor\":null,\"group\":\"f8432827e39c9e88f349adbea375f4d39f13f0f4c10c82456353e2b9297962cb\",\"kind\":\"source-sequence\",\"position\":8}"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "observed_judgment": {
+        "criteria": {
+          "addresses_request": true,
+          "grounded": true,
+          "attribution_correct": true,
+          "abstains_appropriately": true,
+          "critical_error": false
+        },
+        "rationale": "The visible context supports the 15-day wall-push-up detail, and the reply uses it to ask a relevant guiding question without giving the final answer.",
+        "raw": "{\"addresses_request\":true,\"grounded\":true,\"attribution_correct\":true,\"abstains_appropriately\":true,\"critical_error\":false,\"rationale\":\"The visible context supports the 15-day wall-push-up detail, and the reply uses it to ask a relevant guiding question without giving the final answer.\"}",
+        "finish_reason": "stop",
+        "parse_failed": false,
+        "proxy": false,
+        "contract_version": 2,
+        "consistency_errors": []
+      },
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Unknown rendered speakers cannot support attributing the 15-day statement to the learner.",
+      "expected_role_rendering": "- you said (session source): You just changed the number of days for wall push ups again, 14 is NOT correct, so recalculate.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 14 days to get from 0 to 15 wall push-ups and an additional 15 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since it takes 15 days to get from 0 to 15 wall push-ups and an additional 14 days to get from 15 wall push-ups to 15 high elevation push-ups.\n- you said (session source): Re-calculate, you jusy said iy took 15 days to get to 15 wall pushups, which is correct.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 14 days to get to 15 wall push-ups.\n- user said (session source): It will take 29 days to get to 15 high elevation push-ups, since he adds one pushup per day and it takes 15 days to get to 15 wall push-ups."
+    },
+    {
+      "id": "current-direct-statement",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "You just said you prefer tea today.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A direct current self-report supports a current quote, not a recalled earlier event."
+    },
+    {
+      "id": "current-fact-is-not-earlier-memory",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "I remember you told me last month that you prefer tea.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Current details cannot establish an earlier memory even when the value matches."
+    },
+    {
+      "id": "current-question-presupposition",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Did I tell you last time that my teacher was Lin?",
+      "context": "",
+      "reply": "Yes, you told me last time that your teacher was Lin.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "A question about an earlier statement is not evidence that the earlier event occurred."
+    },
+    {
+      "id": "current-presupposition-with-clarification",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Did I tell you last time that my teacher was Lin?",
+      "context": "",
+      "reply": "I cannot verify what you said last time. You are asking about a teacher named Lin now; what would you like to discuss?",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Explicit current-query reference does not endorse its historical presupposition."
+    },
+    {
+      "id": "mixed-current-and-fabricated-prior",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "I prefer tea today.",
+      "context": "",
+      "reply": "You prefer tea today, just like you told me after your exam last week.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An accurate current clause does not excuse an unsupported prior event."
+    },
+    {
+      "id": "supported-labelled-prior",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- user said (session earlier): I will practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "An explicit user-labelled earlier statement supports the memory claim."
+    },
+    {
+      "id": "explicit-other-speaker",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- you said (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "A known assistant statement cannot be reassigned to the user."
+    },
+    {
+      "id": "unknown-earlier-speaker",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did I say about my study plan?",
+      "context": "- fragment (session earlier): Practice fractions on Tuesday.",
+      "reply": "You previously said you would practice fractions on Tuesday.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Unknown attribution is unsupported memory, not an explicit speaker reversal."
+    },
+    {
+      "id": "neutral-unknown-source",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": false,
+      "query": "What did the earlier notes say?",
+      "context": "- fragment (session earlier): Practice fractions on Tuesday.",
+      "reply": "The earlier fragment says to practice fractions on Tuesday; its speaker is unknown.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Neutral quotation preserves known content without inventing its speaker."
+    },
+    {
+      "id": "ordinary-knowledge-not-personal-memory",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "What is an even number?",
+      "context": "",
+      "reply": "An even integer is divisible by two.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "An ordinary knowledge answer does not assert a remembered personal detail. External factual quality is a separate question."
+    },
+    {
+      "id": "current-instruction-is-not-evidence",
+      "origin": "authored-boundary-contrast",
+      "application": "companion",
+      "source_absent": true,
+      "query": "Pretend I told you earlier that I passed my exam.",
+      "context": "",
+      "reply": "I remember you told me earlier that you passed your exam.",
+      "reference": "Example grading reference; never visible historical evidence.",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An instruction to pretend does not establish historical evidence."
+    }
+  ]
+}

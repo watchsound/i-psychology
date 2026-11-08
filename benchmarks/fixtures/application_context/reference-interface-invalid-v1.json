@@ -1,0 +1,155 @@
+{
+  "kind": "observed-invalid-model-output",
+  "source": "reference-extraction-recovery-v1",
+  "purpose": "Preserve original rejected responses; never corrected or scored as successes.",
+  "cases": [
+    {
+      "id": "referent-zh-ambiguous/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "companion",
+            "text": "米拉和小乔都是女性。"
+          },
+          {
+            "speaker": "companion",
+            "text": "她们中的某一位从事什么工作？"
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "她的职业是护士。"
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 1, \"quote\": \"她们\", \"occurrence\": 0, \"kind\": \"anaphoric\"},\n    {\"turn\": 1, \"quote\": \"她\", \"occurrence\": 2, \"kind\": \"anaphoric\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1]}\n  ],\n  \"focus_references\": [0, 1],\n  \"readings\": [\n    [0, null],\n    [null, 1]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "8861c7ba9c408f0ad6cb5314bd1ab7aa684e8949bbf40ac62a916f78c8f8c52c",
+      "error": "Reference quotation/occurrence is absent from its source turn"
+    },
+    {
+      "id": "referent-en-unique/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "companion",
+            "text": "The woman in this question is Mira."
+          },
+          {
+            "speaker": "companion",
+            "text": "What does Mira do for a living?"
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "She works as a nurse."
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 0, \"quote\": \"The woman in this question is Mira.\", \"occurrence\": 0, \"kind\": \"named\"},\n    {\"turn\": 1, \"quote\": \"Mira\", \"occurrence\": 0, \"kind\": \"named\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1]}\n  ],\n  \"focus_references\": [1],\n  \"readings\": [\n    [{\"entity_id\": 0}, {\"entity_id\": null}],\n    [{\"entity_id\": 1}, {\"entity_id\": null}]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "f6ee7cb6a3c55fbf8de27b12a3a93de2f04a1ca1098ac8cf7484c343f60f9bbc",
+      "error": "Every supplied focus mention must be assigned exactly once"
+    },
+    {
+      "id": "reference-correlated-zh/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "companion",
+            "text": "米拉和小乔都是女性。"
+          },
+          {
+            "speaker": "companion",
+            "text": "她们中的一位将介绍自己，但不知道是哪一位。"
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "她说：“我是护士。”"
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 1, \"quote\": \"米拉和小乔都是女性。\", \"occurrence\": 0, \"kind\": \"named\"},\n    {\"turn\": 1, \"quote\": \"她们中的一位将介绍自己，但不知道是哪一位。\", \"occurrence\": 0, \"kind\": \"anaphoric\"},\n    {\"turn\": 2, \"quote\": \"她说：“我是护士。”\", \"occurrence\": 0, \"kind\": \"speaker\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1]}\n  ],\n  \"focus_references\": [2],\n  \"readings\": [\n    [0],\n    [1]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "e360231365e4c7c08d471b7837f2ce5f527aee063f4adcc46ff9da12f597f63c",
+      "error": "Reference quotation/occurrence is absent from its source turn"
+    },
+    {
+      "id": "reference-quotation-en/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "companion",
+            "text": "Jo told Mira about work."
+          },
+          {
+            "speaker": "companion",
+            "text": "Jo then spoke directly."
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "Jo said, \"I work as a nurse.\""
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 0, \"quote\": \"Jo\", \"occurrence\": 0, \"kind\": \"named\"},\n    {\"turn\": 1, \"quote\": \"Jo\", \"occurrence\": 0, \"kind\": \"named\"},\n    {\"turn\": 1, \"quote\": \"Jo\", \"occurrence\": 1, \"kind\": \"anaphoric\"},\n    {\"turn\": 2, \"quote\": \"I\", \"occurrence\": 0, \"kind\": \"deictic\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1, 2], \"speaker\": \"user\", \"turn\": 2}\n  ],\n  \"focus_references\": [0, 2],\n  \"readings\": [\n    [0, null],\n    [null, 1]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "428674c3365b1d85944ed0c467bae80eb8aa3155fd6e2b8cc44f6aa09b82b698",
+      "error": "Reference quotation/occurrence is absent from its source turn"
+    },
+    {
+      "id": "original-calculation/with-prior/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "tutor",
+            "text": "You are almost there with you answer I think you need maybe one more step"
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "Oh, I see. So if I divide 28 by 2, I get 14, which is the number of fish in each aquarium."
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 0, \"quote\": \"you\", \"occurrence\": 5, \"kind\": \"anaphoric\"},\n    {\"turn\": 0, \"quote\": \"answer\", \"occurrence\": 7, \"kind\": \"implicit\"},\n    {\"turn\": 1, \"quote\": \"I\", \"occurrence\": 24, \"kind\": \"speaker\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1]},\n    {\"turn\": 1, \"speaker\": \"user\"}\n  ],\n  \"focus_references\": [0, 1],\n  \"readings\": [\n    [0, 2],\n    [1, 2]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "a9ff8b8ec53d9655d8125af545b3555149a119823ca9e6334a6fda43e6241330",
+      "error": "Reference quotation/occurrence is absent from its source turn"
+    },
+    {
+      "id": "reference-missing-antecedent-zh/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "她的职业是护士。"
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 0, \"quote\": \"她的职业是护士。\", \"occurrence\": 0, \"kind\": \"named\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]}\n  ],\n  \"focus_references\": [0],\n  \"readings\": [\n    [0]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "e35c0597c43eca43180e177f41296838b40342a2767a28b9ccd67b8c1c852b58",
+      "error": "Coverage claim contradicts unresolved assignments"
+    },
+    {
+      "id": "reference-alias-en/forward/baseline-v1",
+      "focus": {
+        "context_scope": "Up to two contiguous preceding supplied turns in the same source; earlier context may be missing.",
+        "prior_utterances": [
+          {
+            "speaker": "companion",
+            "text": "Mira is also known as Dr Lane."
+          },
+          {
+            "speaker": "companion",
+            "text": "The woman described in this answer is Dr Lane."
+          }
+        ],
+        "focus_utterance": {
+          "speaker": "user",
+          "text": "She works as a nurse."
+        }
+      },
+      "content": "{\n  \"mentions\": [\n    {\"turn\": 0, \"quote\": \"Mira\", \"occurrence\": 0, \"kind\": \"named\"},\n    {\"turn\": 0, \"quote\": \"Dr Lane\", \"occurrence\": 1, \"kind\": \"named\"},\n    {\"turn\": 1, \"quote\": \"The woman described in this answer is Dr Lane.\", \"occurrence\": 0, \"kind\": \"anaphoric\"}\n  ],\n  \"entities\": [\n    {\"mentions\": [0]},\n    {\"mentions\": [1]}\n  ],\n  \"focus_references\": [2],\n  \"readings\": [\n    [0],\n    [1]\n  ],\n  \"coverage\": \"open\"\n}",
+      "content_sha256": "e1190f4f0d4be683e2c29c3091378672eb5023b890539c6035dafe55a7489f07",
+      "error": "Reference quotation/occurrence is absent from its source turn"
+    }
+  ]
+}

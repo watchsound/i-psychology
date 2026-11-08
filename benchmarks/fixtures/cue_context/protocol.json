@@ -1,0 +1,46 @@
+{
+  "schema": "cue-context-regression-v1",
+  "status": "frozen-before-source-scoring",
+  "arms": [
+    "ordinary_v4",
+    "metadata_only",
+    "cue_context"
+  ],
+  "fixed": {
+    "top_k": 6,
+    "tokenizer": "jieba",
+    "byte_cap": null,
+    "seed": 0,
+    "witness_active": true,
+    "states": [
+      "cold",
+      "followup",
+      "switch"
+    ],
+    "paired_absent": true,
+    "support": "half-maximum-normalized-direct-cue-seed",
+    "normalize_selection_mass": true,
+    "known_cases": 24,
+    "observed_train_cases": 30,
+    "fresh_cases_scored": 0
+  },
+  "gates": {
+    "no_lost_answer_hits": true,
+    "metadata_selection_parity": true,
+    "pooled_and_domain_mrr_nonloss": true,
+    "absent_rate_nonincrease": true,
+    "software_controls": true
+  },
+  "inputs": {
+    "benchmarks/fixtures/recall_carryover/protocol.json": "119fb82f90900c095f03dbbf4a2a957e4e91a649d4448acf5c697c3bd479ed44",
+    "benchmarks/fixtures/recall_carryover/catalog.json": "d6b64df77ecbe7d89f67d57c9d2ac05373da0438f49d690a58e7a142c5860bc7",
+    "benchmarks/fixtures/recall_carryover/controls.json": "e39c3e6f6178324efb20095d466f0c7f3c52fb1b41a8b21a82d4d7a8b5dab6b8",
+    "benchmarks/fixtures/turn_association/protocol-v2.json": "d9e9c993b75c5e9ae7d0ed30824c875b050cd51545aaf716f4d1fdb12f110b51",
+    "benchmarks/fixtures/turn_association/catalog.json": "1c220bdbaf2d6c129ff5b4835b0fdb32767534aad47ed631943e75fddff53956",
+    "docs/phases/phase-9-cue-context-plan.md": "b9ce308e5b81068315f3aeb7cc0f3a13ecec2e63f728b64617723c2b19d5d9be"
+  },
+  "freeze_record": "The plan and initial regression cases were written before candidate implementation; this file pins them before any source-case scoring.",
+  "regression_tests_sha256": "f6ea956b5e6aec534fc65f49078a9cbcab1d848661c2a218ee28e174f213513d",
+  "stop_rule": "Any observed guard failure rejects this candidate before fresh cases or scaling measurements.",
+  "next_stage": "Only after all observed guards pass, freeze a new disjoint development/evaluation catalog and resource protocol before scoring."
+}

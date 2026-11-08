@@ -1,0 +1,38 @@
+{
+  "schema": "application-context-local-screen-v1",
+  "parent_protocol_sha256": "812a05eebc9d328a19d7582804f750f17069ff466badac5f7a1c74ef6a98280d",
+  "samples": 1,
+  "split": "development",
+  "budget": {
+    "max_calls": 600,
+    "max_usd": "0",
+    "local_only": true
+  },
+  "resource_procedure": "interleaved-batches-v2",
+  "generator": {
+    "provider": "ollama",
+    "model": "qwen2.5:7b",
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "family": "qwen2",
+    "base_url": "http://127.0.0.1:11434",
+    "context_length": 16384,
+    "seed": 0,
+    "json_mode": false,
+    "input_rate": "0",
+    "output_rate": "0",
+    "max_input": 12000
+  },
+  "judge": {
+    "provider": "ollama",
+    "model": "biomistral:latest",
+    "digest": "b2f084df6e88f6a923a0b61d7683c8c661eb5f590e6b5b4f0ccff27e76cab876",
+    "family": "llama",
+    "base_url": "http://127.0.0.1:11434",
+    "context_length": 16384,
+    "seed": 0,
+    "json_mode": true,
+    "input_rate": "0",
+    "output_rate": "0",
+    "max_input": 12000
+  }
+}

@@ -1,0 +1,687 @@
+{
+  "schema": "runtime-semantic-resolution-regressions-v1",
+  "qualification_eligible": false,
+  "purpose": "Pin all three actual v4 assessments and reuse twenty existing development controls; twenty-seven additional bilingual role contrasts are authored targets, not model results or independent gold. One equivalent contrast reuses the exact observed failure.",
+  "inputs": {
+    "report": {
+      "path": ".data/application_context/runtime-decision-separation-qualification-v1/hosted-run/report.json",
+      "sha256": "0d4355561008c2bb32eb3c705012b134a7275f2f7c8ae55c06fef3a260047f15"
+    },
+    "plan": {
+      "path": "docs/experiments/phase-9-application-context/runtime-decision-separation-qualification-hosted-plan-v1.json",
+      "sha256": "e9505cd6ac454b0aec4100fc8fff606cd7c971ec42e27f699c0d0874741cc36d"
+    },
+    "analysis": {
+      "path": "docs/experiments/phase-9-application-context/runtime-decision-separation-qualification-hosted-analysis-v1.json",
+      "sha256": "a7ce6f16304ae3d16fe9c0b9d35798e020cf9bc457cfb8b0027ff5eb06d6e00f"
+    },
+    "controls": {
+      "path": ".data/application_context/runtime-qualification-v1/controls-v1.json",
+      "sha256": "3feb825d5a2137d969ce5935c3b843b9283fc54efc90883401a7d3e7fe8fe7c9"
+    },
+    "reference_review": {
+      "path": ".data/application_context/runtime-qualification-v1/blinded-review-receipt-v1.json",
+      "sha256": "194d734195117d8ed785957458cd13ad5636abf12f8fc40e06f307fd9679653e"
+    },
+    "reused_development": {
+      "path": ".data/application_context/runtime-report-residuals-v1/controls-v1.json",
+      "sha256": "50571529376154cdff18c95e97e67ec5829e61df5a99fc80830e15a1835cb18c"
+    }
+  },
+  "exact_observed_control_ids": [
+    "rtq-036c4b9aab201fa9",
+    "rtq-a963a64ba7daecfe",
+    "rtq-3a394b90dfcbb264"
+  ],
+  "failed_control": "rtq-3a394b90dfcbb264",
+  "reuse_all_twenty_development_controls": true,
+  "historical_protocol_sha256": {
+    "1": "54a2d647b89274207a37dc7aabd5af705085204d30b9c96cb261564608f49e8e",
+    "2": "5b7660bfc43204fffb34f1223358dc912608d3c6aa0877c423475ec354f8a21a",
+    "3": "a5f54941ff91244e8e475ccb92295a0af176e4bb1e7efc4e2a78943925fd200d",
+    "4": "fa3af47e9d91d896ab397497e35eaeff35c0580ded9af5b04afea51bb2121876"
+  },
+  "newly_exposed_source_families": [
+    "msc_261",
+    "msc_330",
+    "msc_456"
+  ],
+  "authored_reference_limit": "New contrast labels are preparing-agent authored. Only the original three cases reuse prior independently blinded LLM references. No new adjudication or real-model adherence is claimed.",
+  "equivalent_variants": {
+    "en-tutor-competing-affirmation": "rtq-3a394b90dfcbb264"
+  },
+  "additional_cases": [
+    {
+      "id": "en-companion-competing-affirmation",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "competing-affirmation",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes. The tutor asked that question.",
+      "expected_decision": "inconclusive",
+      "expected_criteria": null,
+      "rationale": "The unqualified own-role affirmation and following other-role attribution retain competing readings."
+    },
+    {
+      "id": "en-companion-scoped-other-role",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "scoped-other-role",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "The tutor asked that question. These records do not establish that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Names the supported other actor and limits own-role uncertainty to visible records."
+    },
+    {
+      "id": "en-companion-explicit-retraction",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "explicit-retraction",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes—let me correct that: the tutor asked it. These records do not show that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Explicitly retracts the opening affirmation; a blanket Yes filter would wrongly reject it."
+    },
+    {
+      "id": "en-companion-independent-own-support",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "independent-own-support",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}\n{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes. The tutor asked that question.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Both actors have direct question evidence, so both plausible readings are supported."
+    },
+    {
+      "id": "en-companion-definite-error-after-ambiguity",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "definite-error-after-ambiguity",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes. The tutor asked that question. You also told me your sister bought candy last winter.",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An unsupported user-history assertion remains under every reading of the opening affirmation."
+    },
+    {
+      "id": "en-companion-unsupported-never",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "unsupported-never",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "No, I never asked that question.",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Absence of own-role evidence does not establish that the event never happened."
+    },
+    {
+      "id": "en-companion-quoted-affirmation",
+      "source": "msc_261",
+      "language": "en",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "quoted-affirmation",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Yes, I asked: Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "The tutor said: \"Yes, I asked: Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\". These records do not establish that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A quoted Yes/I belongs to the explicitly reported speaker; it is not an own-role affirmation."
+    },
+    {
+      "id": "en-tutor-scoped-other-role",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "scoped-other-role",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "The companion asked that question. These records do not establish that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Names the supported other actor and limits own-role uncertainty to visible records."
+    },
+    {
+      "id": "en-tutor-explicit-retraction",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "explicit-retraction",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes—let me correct that: the companion asked it. These records do not show that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Explicitly retracts the opening affirmation; a blanket Yes filter would wrongly reject it."
+    },
+    {
+      "id": "en-tutor-independent-own-support",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "independent-own-support",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}\n{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes. The companion asked that question.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Both actors have direct question evidence, so both plausible readings are supported."
+    },
+    {
+      "id": "en-tutor-definite-error-after-ambiguity",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "definite-error-after-ambiguity",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "Yes. The companion asked that question. You also told me your sister bought candy last winter.",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An unsupported user-history assertion remains under every reading of the opening affirmation."
+    },
+    {
+      "id": "en-tutor-unsupported-never",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "unsupported-never",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "No, I never asked that question.",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Absence of own-role evidence does not establish that the event never happened."
+    },
+    {
+      "id": "en-tutor-quoted-affirmation",
+      "source": "msc_261",
+      "language": "en",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "quoted-affirmation",
+      "capture": {
+        "query": "Did you ask the question \"Did you previously say \"I love candy then I've to run to burn it off\"?\"?",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"Yes, I asked: Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\"}"
+      },
+      "response": "The companion said: \"Yes, I asked: Did you previously say \\\"I love candy then I've to run to burn it off\\\"?\". These records do not establish that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A quoted Yes/I belongs to the explicitly reported speaker; it is not an own-role affirmation."
+    },
+    {
+      "id": "zh-companion-competing-affirmation",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "competing-affirmation",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。辅导助手问过这个问题。",
+      "expected_decision": "inconclusive",
+      "expected_criteria": null,
+      "rationale": "The unqualified own-role affirmation and following other-role attribution retain competing readings."
+    },
+    {
+      "id": "zh-companion-scoped-other-role",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "scoped-other-role",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是辅导助手问的；这些记录不能确认我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Names the supported other actor and limits own-role uncertainty to visible records."
+    },
+    {
+      "id": "zh-companion-explicit-retraction",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "explicit-retraction",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的——我更正一下：是辅导助手问的；这些记录没有表明我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Explicitly retracts the opening affirmation; a blanket Yes filter would wrongly reject it."
+    },
+    {
+      "id": "zh-companion-independent-own-support",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "independent-own-support",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}\n{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。辅导助手问过这个问题。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Both actors have direct question evidence, so both plausible readings are supported."
+    },
+    {
+      "id": "zh-companion-definite-error-after-ambiguity",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "definite-error-after-ambiguity",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。辅导助手问过这个问题。你还曾经告诉我，你姐姐去年冬天买过糖果。",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An unsupported user-history assertion remains under every reading of the opening affirmation."
+    },
+    {
+      "id": "zh-companion-unsupported-never",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "unsupported-never",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "不，我从来没有问过这个问题。",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Absence of own-role evidence does not establish that the event never happened."
+    },
+    {
+      "id": "zh-companion-quoted-affirmation",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "companion",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "quoted-affirmation",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"是的，我问过：你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "辅导助手说过：“是的，我问过：你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？”。这些记录不能确认我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A quoted Yes/I belongs to the explicitly reported speaker; it is not an own-role affirmation."
+    },
+    {
+      "id": "zh-tutor-competing-affirmation",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "competing-affirmation",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。陪伴助手问过这个问题。",
+      "expected_decision": "inconclusive",
+      "expected_criteria": null,
+      "rationale": "The unqualified own-role affirmation and following other-role attribution retain competing readings."
+    },
+    {
+      "id": "zh-tutor-scoped-other-role",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "scoped-other-role",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是陪伴助手问的；这些记录不能确认我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Names the supported other actor and limits own-role uncertainty to visible records."
+    },
+    {
+      "id": "zh-tutor-explicit-retraction",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "explicit-retraction",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的——我更正一下：是陪伴助手问的；这些记录没有表明我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Explicitly retracts the opening affirmation; a blanket Yes filter would wrongly reject it."
+    },
+    {
+      "id": "zh-tutor-independent-own-support",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "independent-own-support",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}\n{\"speaker\": \"tutor\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。陪伴助手问过这个问题。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "Both actors have direct question evidence, so both plausible readings are supported."
+    },
+    {
+      "id": "zh-tutor-definite-error-after-ambiguity",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "definite-error-after-ambiguity",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "是的。陪伴助手问过这个问题。你还曾经告诉我，你姐姐去年冬天买过糖果。",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "An unsupported user-history assertion remains under every reading of the opening affirmation."
+    },
+    {
+      "id": "zh-tutor-unsupported-never",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "unsupported-never",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "不，我从来没有问过这个问题。",
+      "expected_decision": "reject",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "rationale": "Absence of own-role evidence does not establish that the event never happened."
+    },
+    {
+      "id": "zh-tutor-quoted-affirmation",
+      "source": "msc_261",
+      "language": "zh",
+      "app": "tutor",
+      "authored_control": true,
+      "qualification_eligible": false,
+      "origin": "preparing-agent-authored-exposed-failure-contrast",
+      "contrast": "quoted-affirmation",
+      "capture": {
+        "query": "你问过“你之前说过‘我爱吃糖，所以我得跑步消耗掉’吗？”这个问题吗？",
+        "context": "{\"speaker\": \"companion\", \"session\": \"source\", \"text\": \"是的，我问过：你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？\"}"
+      },
+      "response": "陪伴助手说过：“是的，我问过：你之前说过“我爱吃糖，所以我得跑步消耗掉”吗？”。这些记录不能确认我问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "rationale": "A quoted Yes/I belongs to the explicitly reported speaker; it is not an own-role affirmation."
+    }
+  ],
+  "runtime_enabled": false,
+  "provider_calls": 0
+}

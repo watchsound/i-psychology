@@ -1,0 +1,672 @@
+{
+  "status": "Authored pre-inference extraction references, implementer reviewed; not independent gold. Quote vocabularies below are evaluation references only, never runtime rules or provider inputs.",
+  "preserved": {
+    "referent-en-unique": {
+      "names": {
+        "mira": [
+          "Mira"
+        ]
+      },
+      "focus": [
+        [
+          "She",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "mira"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The supplied turns explicitly identify the woman as Mira; the question is about Mira."
+    },
+    "referent-en-ambiguous": {
+      "names": {
+        "mira": [
+          "Mira"
+        ],
+        "jo": [
+          "Jo"
+        ]
+      },
+      "focus": [
+        [
+          "She",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "mira"
+        ],
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The question can concern either named woman. Both referents must remain possible."
+    },
+    "referent-zh-unique": {
+      "names": {
+        "mira": [
+          "米拉"
+        ]
+      },
+      "focus": [
+        [
+          "她",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "mira"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The woman in the question is explicitly Mira."
+    },
+    "referent-zh-ambiguous": {
+      "names": {
+        "mira": [
+          "米拉"
+        ],
+        "jo": [
+          "小乔"
+        ]
+      },
+      "focus": [
+        [
+          "她",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "mira"
+        ],
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "Either named woman can be the focus referent; no unique choice is established."
+    },
+    "reference-unique-other-en": {
+      "names": {
+        "jo": [
+          "Jo"
+        ]
+      },
+      "focus": [
+        [
+          "She",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The same explicit identification now names Jo. Mira cannot be imported from a description."
+    },
+    "reference-unique-other-zh": {
+      "names": {
+        "jo": [
+          "小乔"
+        ]
+      },
+      "focus": [
+        [
+          "她",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The supplied unique woman is Jo, not Mira."
+    },
+    "reference-direct-name-en": {
+      "names": {
+        "mira": [
+          "Mira"
+        ],
+        "jo": [
+          "Jo"
+        ]
+      },
+      "focus": [
+        [
+          "Jo",
+          0,
+          "named"
+        ]
+      ],
+      "readings": [
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "An explicit Jo in the focus resolves its participant despite the earlier either-person question."
+    },
+    "reference-direct-name-zh": {
+      "names": {
+        "mira": [
+          "米拉"
+        ],
+        "jo": [
+          "小乔"
+        ]
+      },
+      "focus": [
+        [
+          "小乔",
+          0,
+          "named"
+        ]
+      ],
+      "readings": [
+        [
+          "jo"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The focus directly names Jo; prior ambiguity is not ambiguity of this named mention."
+    },
+    "reference-missing-antecedent-en": {
+      "names": {},
+      "focus": [
+        [
+          "She",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          null
+        ]
+      ],
+      "coverage": "open",
+      "rationale": "No antecedent or named person is supplied. Preserve an unresolved assignment without inventing Mira or Jo."
+    },
+    "reference-missing-antecedent-zh": {
+      "names": {},
+      "focus": [
+        [
+          "她",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          null
+        ]
+      ],
+      "coverage": "open",
+      "rationale": "The pronoun has no supplied antecedent; it remains unresolved."
+    },
+    "reference-incompatible-act-en": {
+      "names": {},
+      "focus": [
+        [
+          "she",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          null
+        ]
+      ],
+      "coverage": "open",
+      "rationale": "The umbrella question has a missing person referent even though it clearly does not assert an occupation."
+    },
+    "reference-incompatible-act-zh": {
+      "names": {},
+      "focus": [
+        [
+          "她",
+          0,
+          "anaphoric"
+        ]
+      ],
+      "readings": [
+        [
+          null
+        ]
+      ],
+      "coverage": "open",
+      "rationale": "Reference extraction remains open independently of the unrelated question's clear act."
+    },
+    "original-calculation/with-prior": {
+      "names": {},
+      "focus": [
+        [
+          "I",
+          0,
+          "deictic"
+        ],
+        [
+          "I",
+          1,
+          "deictic"
+        ],
+        [
+          "I",
+          2,
+          "deictic"
+        ]
+      ],
+      "readings": [
+        [
+          "speaker:user",
+          "speaker:user",
+          "speaker:user"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "All three unquoted first-person occurrences refer to the known user speaker. Calculation correctness is irrelevant to reference identity."
+    },
+    "original-reflection/with-prior": {
+      "names": {},
+      "focus": [
+        [
+          "I",
+          0,
+          "deictic"
+        ],
+        [
+          "I",
+          1,
+          "deictic"
+        ],
+        [
+          "I",
+          2,
+          "deictic"
+        ]
+      ],
+      "readings": [
+        [
+          "speaker:user",
+          "speaker:user",
+          "speaker:user"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The reflection's three unquoted first-person occurrences refer to its known outer user; this does not turn reflection into calculation."
+    },
+    "both-en": {
+      "names": {},
+      "focus": [
+        [
+          "I",
+          0,
+          "deictic"
+        ],
+        [
+          "Keep trying",
+          0,
+          "implicit"
+        ],
+        [
+          "your",
+          0,
+          "deictic"
+        ]
+      ],
+      "readings": [
+        [
+          "speaker:user",
+          null,
+          null
+        ]
+      ],
+      "coverage": "open",
+      "rationale": "I is the known user. The imperative's omitted you and possessive your address the same unavailable addressee. Application identity is not supplied to extraction, so do not invent a tutor/companion participant. Both requested acts can still be performed with this unresolved recipient."
+    },
+    "denial-zh-act": {
+      "names": {},
+      "focus": [
+        [
+          "我",
+          0,
+          "deictic"
+        ]
+      ],
+      "readings": [
+        [
+          "speaker:user"
+        ]
+      ],
+      "coverage": "enumerated",
+      "rationale": "The explicit unquoted first-person denial has the known user referent; negation does not make reference uncertain."
+    }
+  },
+  "new_cases": [
+    {
+      "id": "reference-alias-en",
+      "family": "alias",
+      "language": "en",
+      "prior": [
+        "Mira is also known as Dr Lane.",
+        "The woman described in this answer is Dr Lane."
+      ],
+      "text": "She works as a nurse.",
+      "reference": {
+        "names": {
+          "mira": [
+            "Mira",
+            "Dr Lane",
+            "Lane"
+          ]
+        },
+        "focus": [
+          [
+            "She",
+            0,
+            "anaphoric"
+          ]
+        ],
+        "readings": [
+          [
+            "mira"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The explicit alias links Mira with Dr Lane and the supplied answer concerns that person. Any correctly anchored equivalent alias denotes the same entity."
+      }
+    },
+    {
+      "id": "reference-alias-zh",
+      "family": "alias",
+      "language": "zh",
+      "prior": [
+        "米拉也叫蓝医生。",
+        "这个回答里说到的女性是蓝医生。"
+      ],
+      "text": "她的职业是护士。",
+      "reference": {
+        "names": {
+          "mira": [
+            "米拉",
+            "蓝医生"
+          ]
+        },
+        "focus": [
+          [
+            "她",
+            0,
+            "anaphoric"
+          ]
+        ],
+        "readings": [
+          [
+            "mira"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The explicitly stated alias denotes Mira, and the answer concerns that named woman."
+      }
+    },
+    {
+      "id": "reference-quotation-en",
+      "family": "quotation",
+      "language": "en",
+      "prior": [
+        "Jo told Mira about work.",
+        "Jo then spoke directly."
+      ],
+      "text": "Jo said, \"I work as a nurse.\"",
+      "reference": {
+        "names": {
+          "mira": [
+            "Mira"
+          ],
+          "jo": [
+            "Jo"
+          ]
+        },
+        "focus": [
+          [
+            "Jo",
+            0,
+            "named"
+          ],
+          [
+            "I",
+            0,
+            "deictic"
+          ]
+        ],
+        "readings": [
+          [
+            "jo",
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The named Jo is the quoted speaker. The inner I refers to Jo, not the outer user who reports the quote; no endorsement is inferred."
+      }
+    },
+    {
+      "id": "reference-quotation-zh",
+      "family": "quotation",
+      "language": "zh",
+      "prior": [
+        "小乔向米拉谈起工作。",
+        "后来小乔直接说话。"
+      ],
+      "text": "小乔说：“我的职业是护士。”",
+      "reference": {
+        "names": {
+          "mira": [
+            "米拉"
+          ],
+          "jo": [
+            "小乔"
+          ]
+        },
+        "focus": [
+          [
+            "小乔",
+            0,
+            "named"
+          ],
+          [
+            "我",
+            0,
+            "deictic"
+          ]
+        ],
+        "readings": [
+          [
+            "jo",
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The quoted first person belongs to the expressly named quoted speaker Jo, not automatically to the outer user."
+      }
+    },
+    {
+      "id": "reference-correlated-en",
+      "family": "correlated",
+      "language": "en",
+      "prior": [
+        "Mira and Jo are both women.",
+        "One of them will introduce herself, but we do not know which."
+      ],
+      "text": "She said, \"I am a nurse.\"",
+      "reference": {
+        "names": {
+          "mira": [
+            "Mira"
+          ],
+          "jo": [
+            "Jo"
+          ]
+        },
+        "focus": [
+          [
+            "She",
+            0,
+            "anaphoric"
+          ],
+          [
+            "I",
+            0,
+            "deictic"
+          ]
+        ],
+        "readings": [
+          [
+            "mira",
+            "mira"
+          ],
+          [
+            "jo",
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "She can be either woman; the quoted I is that same speaker in each reading. Cross-pairs assign the quote to someone else and are excluded."
+      }
+    },
+    {
+      "id": "reference-correlated-zh",
+      "family": "correlated",
+      "language": "zh",
+      "prior": [
+        "米拉和小乔都是女性。",
+        "她们中的一位将介绍自己，但不知道是哪一位。"
+      ],
+      "text": "她说：“我是护士。”",
+      "reference": {
+        "names": {
+          "mira": [
+            "米拉"
+          ],
+          "jo": [
+            "小乔"
+          ]
+        },
+        "focus": [
+          [
+            "她",
+            0,
+            "anaphoric"
+          ],
+          [
+            "我",
+            0,
+            "deictic"
+          ]
+        ],
+        "readings": [
+          [
+            "mira",
+            "mira"
+          ],
+          [
+            "jo",
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The unresolved woman and her quoted first person denote the same person. Preserve both same-person readings without cross-pairs."
+      }
+    },
+    {
+      "id": "reference-implicit-en",
+      "family": "implicit",
+      "language": "en",
+      "prior": [
+        "Mira and Jo are both women.",
+        "What does either of them do for a living?"
+      ],
+      "text": "Works as a nurse.",
+      "reference": {
+        "names": {
+          "mira": [
+            "Mira"
+          ],
+          "jo": [
+            "Jo"
+          ]
+        },
+        "focus": [
+          [
+            "Works as a nurse.",
+            0,
+            "implicit"
+          ]
+        ],
+        "readings": [
+          [
+            "mira"
+          ],
+          [
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The answer fragment omits its subject. Its actual clause anchors the implicit slot, and either explicitly possible woman can fill it; the question does not identify the person."
+      }
+    },
+    {
+      "id": "reference-implicit-zh",
+      "family": "implicit",
+      "language": "zh",
+      "prior": [
+        "米拉和小乔都是女性。",
+        "她们中的某一位从事什么工作？"
+      ],
+      "text": "在医院当护士。",
+      "reference": {
+        "names": {
+          "mira": [
+            "米拉"
+          ],
+          "jo": [
+            "小乔"
+          ]
+        },
+        "focus": [
+          [
+            "在医院当护士。",
+            0,
+            "implicit"
+          ]
+        ],
+        "readings": [
+          [
+            "mira"
+          ],
+          [
+            "jo"
+          ]
+        ],
+        "coverage": "enumerated",
+        "rationale": "The Chinese answer has a zero subject with no pronoun token. Anchor its actual clause and retain both supplied person alternatives."
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "recall-carryover-v2",
+  "status": "frozen-before-development-scoring",
+  "sources": {
+    "music/dev": {
+      "split": "development",
+      "limit": 12,
+      "bytes": 945559,
+      "sha256": "ee34a4af167195db43fdcc910f8d125956222517f0572d248a069057493d557f",
+      "blob_sha1": "72c2ebd51f38c06d81128b4cffee5f0a39d94b3b"
+    },
+    "film/test": {
+      "split": "evaluation",
+      "limit": 12,
+      "bytes": 1547354,
+      "sha256": "5ba2b79f9791bedbe5fe8a1bf5d7cbf277697743ee426ecd05459d9e28bcf21b",
+      "blob_sha1": "2c7ae53a7506c4555a57bc6a6dbec016b33e7072"
+    },
+    "music/test": {
+      "split": "evaluation",
+      "limit": 12,
+      "bytes": 1148564,
+      "sha256": "46f048c5db9dde45127cf6630b2fa06b685be369b71c5bc2dc3022d3f4bbad65",
+      "blob_sha1": "ac81a2679a1d902428ef768d0de576a8488f5d64"
+    }
+  },
+  "selection": {
+    "upstream": "https://github.com/thu-coai/KdConv",
+    "license": "Apache-2.0",
+    "policy": "explicit-relation natural question, exact answer span; one question per dialogue by hash",
+    "target_window_turns": 8,
+    "distractor_windows": 2,
+    "distractor_window_turns": 8,
+    "history_order": "target window then two other source-dialogue windows; preserve source turn order and source session identity within each window",
+    "labels": "upstream structured relation plus exact answer span; mechanically checked, agent-reviewed question fit; no independent human relevance claim"
+  },
+  "fixed": {
+    "top_k": 6,
+    "tokenizer": "jieba",
+    "witness_active": true,
+    "byte_cap": null,
+    "seed": 0,
+    "states": [
+      "cold",
+      "followup",
+      "switch"
+    ],
+    "paired_absent": true
+  },
+  "candidates": [
+    "baseline",
+    "reset",
+    "idf",
+    "cue_gate",
+    "cue_idf",
+    "conservative",
+    "novel_cue"
+  ],
+  "candidate_definitions": {
+    "baseline": "existing count-based cue seeds and unconditional bounded residual",
+    "reset": "zero residual, diagnostic control, ineligible for production",
+    "idf": "smoothed IDF lexical seed weights; existing residual budget",
+    "cue_gate": "count seeds; residual budget multiplied by distribution overlap sum(min(normalized seed, normalized residual)); retain state when no seed evidence",
+    "cue_idf": "IDF seeds plus full overlap gate",
+    "conservative": "IDF seeds; residual budget multiplied by 0.5 + 0.5 * overlap, preserving a half-budget for implicit follow-ups",
+    "novel_cue": "Count seeds unchanged. Among supported cue terms occurring in less than half of live fragments, retain residuals if at least half the smoothed-IDF cue information occurs in the six most active residual fragments; otherwise suppress residuals for this recall only. Retain state when no distinctive supported cue exists."
+  },
+  "gates": {
+    "minimum_switch_recall_gain": 0.05,
+    "cold_recall_must_not_decrease": true,
+    "followup_recall_must_not_decrease": true,
+    "switch_mrr_must_not_decrease": true,
+    "absent_nonempty_rate_must_not_increase": true,
+    "max_p95_latency_ratio": 2.0,
+    "max_peak_python_memory_ratio": 2.0,
+    "software_controls_must_pass": true,
+    "selection": "Select eligible candidate on music/dev by switch recall, then switch MRR, then candidate declaration order. Freeze development report before scoring film/test or music/test. No evaluation-based replacement.",
+    "evaluation": "Same guards on pooled official test cases; cold/followup recall must also not decrease in either domain. All existing regression, bounded activation, scope, provenance, applications, Witness and restore checks must pass before integration."
+  },
+  "limitations": [
+    "Small, relation-filtered two-domain factual recall study; does not establish general retrieval or model-response quality.",
+    "Original order/session identities are preserved within source windows; cross-dialogue chronology and replay timestamps are artificial.",
+    "Absent-evidence nonempty contexts measure context suppression, not answer abstention or hallucination.",
+    "No attachment-weight changes, clinical efficacy claims or human recruitment."
+  ],
+  "catalog_sha256": "d6b64df77ecbe7d89f67d57c9d2ac05373da0438f49d690a58e7a142c5860bc7",
+  "controls_sha256": "e39c3e6f6178324efb20095d466f0c7f3c52fb1b41a8b21a82d4d7a8b5dab6b8",
+  "upstream_revision": "653db76432de09a004ba708a68f8bbd5500e6bec",
+  "revision_reason": "Development v1 rejected all candidates; add a focused novelty gate before any evaluation scoring. Sources, controls, thresholds and case selections unchanged."
+}

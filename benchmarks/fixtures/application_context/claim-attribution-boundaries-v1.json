@@ -1,0 +1,520 @@
+{
+  "schema": "application-claim-attribution-boundaries-v1",
+  "timestamp_utc": "2026-10-21T07:19:21.644974+00:00",
+  "origin": "Agent-authored development contrasts after inspecting a failed diagnostic; not independent accuracy labels.",
+  "semantic_policy_status": "proposed-not-applied-to-production",
+  "policy": "Distinguish content error from transfer of a claim explicitly owned by another actor. A question, hypothetical, or report about the user is not by itself another actor owning that calculation. Full user support takes precedence over matching other-actor text. Unknown ownership and numerical overlap alone do not prove reversal.",
+  "label_review_status": "Independent adjudication pending; all expectations are disclosed proposals, particularly the three marked boundary interpretations.",
+  "qualification_eligible": false,
+  "empirical_model_results": false,
+  "provider_calls": 0,
+  "context_format_version": 2,
+  "historical_bank_sha256": "603310357f63ed8d412f18f56920600d27edcf620c3a66cf612487e380cf518c",
+  "reused_basic_controls": {
+    "path": "benchmarks/fixtures/application_context/grading-boundaries-v2.json",
+    "sha256": "2fdd1c7805b6a62f554781b3ec56136e0b39a69137e19d7dde796428b377263d",
+    "ids": [
+      "supported-user",
+      "known-speaker-reversal",
+      "unknown-speaker-user-claim",
+      "unknown-speaker-neutral-quote"
+    ]
+  },
+  "cases": [
+    {
+      "id": "supported-user-composite",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+      "reply": "You said your first stage took 12 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "9f543dd1972d7803d31c1931650c9afddcc74438d4aaccc26ecf546e8f64aba7",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "All three quantities and their ownership are directly supported by the user turn.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "user-composite-wrong-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "9f543dd1972d7803d31c1931650c9afddcc74438d4aaccc26ecf546e8f64aba7",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Changing 12 to 13 invents a remembered detail. No other visible actor owns the changed first-stage claim.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "other-actor-direct-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): My own calculation used 13 days for the first stage.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "56491d3f0c72f2d90611987e3436b711",
+          "content": "My own calculation used 13 days for the first stage.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "d2d0b0f39f81eda40292df1e041315afb3b2c5b9f589a476da1e1c65c10ca225",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "The 13-day first-stage calculation is explicitly the tutor's own, not the user's. Partial user support for the rest does not excuse this transfer.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "tutor-hypothetical-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): If your first stage took 13 days, what would change?",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "9ef577e2edf0e80e450d7958860adb75",
+          "content": "If your first stage took 13 days, what would change?",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "9c6fe7f95782d4bd25d2c71a6ed9373f2bf8ac7e3dad713ab9bd3e118657ce05",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Proposed narrow ownership rule: a tutor hypothetical is not an actual user statement or the tutor's own calculation. The invented earlier detail still fails grounding.",
+      "proposed_boundary_interpretation": true
+    },
+    {
+      "id": "tutor-question-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): Did your first stage take 13 days?",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "0720fb21efdee63dc97eab9c1a6dab3c",
+          "content": "Did your first stage take 13 days?",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "ec8e78a003da451b348b3921dbd67b05af726ec0f637cc5283818a21bbeb1f00",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Proposed narrow ownership rule: asking whether a number was used does not establish who asserted it as their calculation. Grounding fails; the question alone does not prove a transfer from a different owner.",
+      "proposed_boundary_interpretation": true
+    },
+    {
+      "id": "tutor-paraphrase-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): You said your first stage took 13 days.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "07863e9210f243e00975e0adbfdbe17c",
+          "content": "You said your first stage took 13 days.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "5021e8f0a578d5532bba59b38dc383abdf2bb12a6e36da15da24981339512258",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "Proposed narrow ownership rule: the tutor reports the user, rather than owning that calculation. With no direct user support for 13, the reply invents user history. This boundary needs independent review.",
+      "proposed_boundary_interpretation": true
+    },
+    {
+      "id": "tutor-paraphrase-backed-by-user",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): You said your first stage took 12 days.",
+      "reply": "You said your first stage took 12 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "9f8dde03ce636ca05349a2f51151f702",
+          "content": "You said your first stage took 12 days.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "58021b049f7cdbd69c78b5451738103caff25b0f2dc968cdd8ccc5f408495a7c",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "The direct user turn supports the complete claim. A matching tutor paraphrase does not remove valid user evidence.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "other-actor-whole-composite",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 22 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "b85900aab03a7d4d38ac2259a5a21f71",
+          "content": "My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "d25522e6c854db685cb23562c6eb80ba9b240cd34036090eee623d48d170a5a4",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": false,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "The first-stage and total claims are explicitly the tutor's own calculation. Copying them to user history reverses ownership even though both actors share the second-stage value.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "user-endorses-same-composite",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- tutor said (session source): My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.\n- user said (session source): My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 22 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "9aa09eccdbad1df9517951b2b8af66b1",
+          "content": "My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "2cc0c728958d69bf8ed9839e04eb2dc6",
+          "content": "My own calculation used 13 days for the first stage and 9 days for the second, giving 22 days in total.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "5c0f8baea021e3d22908049c90d2e4d471f4e7873b8f03148c85c5135d5598d4",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "The user explicitly gives the same calculation too. Visible other-actor support does not negate direct user support.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "unknown-actor-first-stage",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- fragment (session source): My own calculation used 13 days for the first stage.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "f67de8b628fe35d027f8d8939e95bbb9",
+          "content": "My own calculation used 13 days for the first stage.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:source-actor-0",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "86fc6803718a12c9798566de386817c65ad8a818f23f18242a52f48dc05f1770",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "The renderer leaves this actor unknown. The content cannot support user ownership, and unknown ownership cannot prove an explicit speaker reversal.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "unrelated-number-same-actor",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "Help me revisit the working I showed you earlier. Ask a guiding question without giving the final answer.",
+      "context": "- user said (session source): My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.\n- tutor said (session source): I drew 13 triangles on my own diagram.",
+      "reply": "You said your first stage took 13 days and your second took 9, giving 21 days in total. Which quantities did you combine?",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "7549f213f550b9a53cdfc6d6a5748974",
+          "content": "My calculation used 12 days for the first stage and 9 days for the second, giving 21 days in total.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:user",
+            "session:source"
+          ],
+          "parent_ids": []
+        },
+        {
+          "id": "bf4c4089791dc227061237e0cac47ee2",
+          "content": "I drew 13 triangles on my own diagram.",
+          "timestamp": "2026-10-21T00:00:01+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "f3ef20a51d2e4a29a298c2110dc37b8c46d7513f64aeae9523330815c8293481",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": false,
+        "attribution_correct": true,
+        "abstains_appropriately": false,
+        "critical_error": true
+      },
+      "author_rationale": "A number in a different proposition and unit is not evidence that the first-stage duration belongs to that speaker. The duration is unsupported.",
+      "proposed_boundary_interpretation": false
+    },
+    {
+      "id": "neutral-report-of-paraphrase",
+      "origin": "authored-contract-contrast",
+      "application": "tutor",
+      "source_absent": false,
+      "query": "What does the earlier tutor message say about my first-stage duration?",
+      "context": "- tutor said (session source): You said your first stage took 13 days.",
+      "reply": "The tutor's earlier message says you used 13 days for the first stage. I cannot verify your own earlier account.",
+      "reference": "",
+      "fragments": [
+        {
+          "id": "1fa9c4dc90ac5297df12b14a0800ca1e",
+          "content": "You said your first stage took 13 days.",
+          "timestamp": "2026-10-21T00:00:00+00:00",
+          "affect": {},
+          "tags": [
+            "speaker:tutor",
+            "session:source"
+          ],
+          "parent_ids": []
+        }
+      ],
+      "legacy_context_sha256": "ddf2e62a9b84d9d75724f15e489a273daa49f1e6ccdd5aa496567ae6643b7353",
+      "expected_criteria": {
+        "addresses_request": true,
+        "grounded": true,
+        "attribution_correct": true,
+        "abstains_appropriately": true,
+        "critical_error": false
+      },
+      "author_rationale": "The reply accurately reports what the tutor wrote, without certifying an underlying user statement.",
+      "proposed_boundary_interpretation": false
+    }
+  ]
+}

@@ -1,0 +1,582 @@
+{
+  "schema": "source-relations-controls-v1",
+  "provenance": "Authored bilingual mechanism controls. No human observations or fresh-source qualification.",
+  "cases": [
+    {
+      "id": "sequence-en-n0-r0",
+      "language": "en",
+      "family": "sequence",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Cedar",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-en-n0-r1",
+      "language": "en",
+      "family": "sequence",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Cedar",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-en-n1-r0",
+      "language": "en",
+      "family": "sequence",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Maple",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-en-n1-r1",
+      "language": "en",
+      "family": "sequence",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Maple",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "groups-en-n0-r0",
+      "language": "en",
+      "family": "groups",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 2,
+          "group": "two"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": true
+    },
+    {
+      "id": "groups-en-n0-r1",
+      "language": "en",
+      "family": "groups",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 8,
+          "group": "two"
+        },
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": true
+    },
+    {
+      "id": "event-date-en-n0-r0",
+      "language": "en",
+      "family": "event-date",
+      "app": "companion",
+      "query": "Which cafe visit happened later by calendar date?",
+      "turns": [
+        {
+          "text": "I visited Cedar on October 20, 2026.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "I visited Maple on October 3, 2026.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Cedar",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": true
+    },
+    {
+      "id": "event-date-en-n0-r1",
+      "language": "en",
+      "family": "event-date",
+      "app": "companion",
+      "query": "Which cafe visit happened later by calendar date?",
+      "turns": [
+        {
+          "text": "I visited Maple on October 3, 2026.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "I visited Cedar on October 20, 2026.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Cedar",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": false
+    },
+    {
+      "id": "event-date-en-n1-r0",
+      "language": "en",
+      "family": "event-date",
+      "app": "companion",
+      "query": "Which cafe visit happened later by calendar date?",
+      "turns": [
+        {
+          "text": "I visited Cedar on October 3, 2026.",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "I visited Maple on October 20, 2026.",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Maple",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": true
+    },
+    {
+      "id": "event-date-en-n1-r1",
+      "language": "en",
+      "family": "event-date",
+      "app": "companion",
+      "query": "Which cafe visit happened later by calendar date?",
+      "turns": [
+        {
+          "text": "I visited Maple on October 20, 2026.",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "I visited Cedar on October 3, 2026.",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "Maple",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": false
+    },
+    {
+      "id": "missing-en-n0-r0",
+      "language": "en",
+      "family": "missing",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": null,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": false
+    },
+    {
+      "id": "conflict-en-n0-r0",
+      "language": "en",
+      "family": "conflict",
+      "app": "companion",
+      "query": "Which cafe did I name later? If the supplied memory does not establish the order, say so.",
+      "turns": [
+        {
+          "text": "My preferred cafe is Cedar.",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "My preferred cafe is Maple.",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": false
+    },
+    {
+      "id": "sequence-zh-n0-r0",
+      "language": "zh",
+      "family": "sequence",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "雪松",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-zh-n0-r1",
+      "language": "zh",
+      "family": "sequence",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "雪松",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-zh-n1-r0",
+      "language": "zh",
+      "family": "sequence",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "枫叶",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "sequence-zh-n1-r1",
+      "language": "zh",
+      "family": "sequence",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "枫叶",
+        "rule": "Answer the later reported cafe from reliable same-group positions; do not infer dates or preference changes."
+      },
+      "model_case": true
+    },
+    {
+      "id": "groups-zh-n0-r0",
+      "language": "zh",
+      "family": "groups",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 2,
+          "group": "two"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": true
+    },
+    {
+      "id": "groups-zh-n0-r1",
+      "language": "zh",
+      "family": "groups",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 8,
+          "group": "two"
+        },
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": true
+    },
+    {
+      "id": "event-date-zh-n0-r0",
+      "language": "zh",
+      "family": "event-date",
+      "app": "companion",
+      "query": "按日历日期来算，我较晚去的是哪家咖啡馆？",
+      "turns": [
+        {
+          "text": "我在2026年10月20日去了雪松咖啡馆。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我在2026年10月3日去了枫叶咖啡馆。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "雪松",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": false
+    },
+    {
+      "id": "event-date-zh-n0-r1",
+      "language": "zh",
+      "family": "event-date",
+      "app": "companion",
+      "query": "按日历日期来算，我较晚去的是哪家咖啡馆？",
+      "turns": [
+        {
+          "text": "我在2026年10月3日去了枫叶咖啡馆。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我在2026年10月20日去了雪松咖啡馆。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "雪松",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": true
+    },
+    {
+      "id": "event-date-zh-n1-r0",
+      "language": "zh",
+      "family": "event-date",
+      "app": "companion",
+      "query": "按日历日期来算，我较晚去的是哪家咖啡馆？",
+      "turns": [
+        {
+          "text": "我在2026年10月3日去了雪松咖啡馆。",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "我在2026年10月20日去了枫叶咖啡馆。",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "枫叶",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": false
+    },
+    {
+      "id": "event-date-zh-n1-r1",
+      "language": "zh",
+      "family": "event-date",
+      "app": "companion",
+      "query": "按日历日期来算，我较晚去的是哪家咖啡馆？",
+      "turns": [
+        {
+          "text": "我在2026年10月20日去了枫叶咖啡馆。",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "我在2026年10月3日去了雪松咖啡馆。",
+          "position": 8,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": "枫叶",
+        "rule": "Answer the later calendar visit from the original text, independently of source order."
+      },
+      "model_case": true
+    },
+    {
+      "id": "missing-zh-n0-r0",
+      "language": "zh",
+      "family": "missing",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 8,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": null,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": false
+    },
+    {
+      "id": "conflict-zh-n0-r0",
+      "language": "zh",
+      "family": "conflict",
+      "app": "companion",
+      "query": "我较晚提到的是哪家咖啡馆？如果给出的记忆不能确定先后顺序，请说明。",
+      "turns": [
+        {
+          "text": "我偏爱的咖啡馆是雪松。",
+          "position": 2,
+          "group": "one"
+        },
+        {
+          "text": "我偏爱的咖啡馆是枫叶。",
+          "position": 2,
+          "group": "one"
+        }
+      ],
+      "expectation": {
+        "target": null,
+        "rule": "The delivered source order is unresolved. Preserve both cafes; do not choose a later one."
+      },
+      "model_case": false
+    }
+  ]
+}

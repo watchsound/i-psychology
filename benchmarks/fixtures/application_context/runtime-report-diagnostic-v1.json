@@ -1,0 +1,40 @@
+{
+  "schema": "runtime-report-diagnostic-v1",
+  "qualification_eligible": false,
+  "origin": "Preparing-agent authored development contrasts plus an exact observed verifier failure. No new model results or independent gold are asserted.",
+  "inputs": {
+    "development_bank": {"path": "benchmarks/fixtures/application_context/runtime-report-boundaries-v1.json", "sha256": "ca58a00694c3f95ac139e73dc7cf4e79f56ba490add111fdbcea852525fc5ae9"},
+    "failed_report": {"path": ".data/application_context/runtime-qualification-hosted-v1/report.json", "sha256": "5d57a979f1eb8c0d4bd041cb4ba37abc5dfb6612bd5e2fbb43328b62a33e265e"},
+    "controls": {"path": ".data/application_context/runtime-qualification-v1/controls-v1.json", "sha256": "3feb825d5a2137d969ce5935c3b843b9283fc54efc90883401a7d3e7fe8fe7c9"}
+  },
+  "failed_control": "rtq-036c4b9aab201fa9",
+  "additional_cases": [
+    {
+      "id": "zh-travel-scoped-report", "language": "zh", "app": "tutor",
+      "query": "关于“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”，这些记录实际表明谁说过什么？",
+      "context_from_failed_control": true,
+      "response": "tutor 的记录转述 companion 说过：“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”。这些记录本身没有 companion 的直接发言。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Retains the outer tutor reporting source without denying that the embedded event could have happened."
+    },
+    {
+      "id": "zh-travel-direct-support", "language": "zh", "app": "tutor",
+      "query": "关于“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”，这些记录实际表明谁说过什么？",
+      "records": [{"speaker": "companion", "session": "source", "text": "我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。"}],
+      "response": "companion 之前说过：“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "The exact previously rejected reply becomes supported when an actual direct companion record supplies the utterance."
+    },
+    {
+      "id": "zh-travel-speaker-transfer", "language": "zh", "app": "tutor",
+      "query": "关于“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”，这些记录实际表明谁说过什么？",
+      "records": [{"speaker": "companion", "session": "source", "text": "我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。"}],
+      "response": "你之前说过：“我喜欢旅行，但不喜欢开车，堵车让我烦，尤其是在城市里。”。",
+      "expected_decision": "reject",
+      "expected_criteria": {"addresses_request": true, "grounded": false, "attribution_correct": false, "abstains_appropriately": false, "critical_error": true},
+      "rationale": "Transfers an affirmative companion self-report to the human user despite no direct user support."
+    }
+  ]
+}

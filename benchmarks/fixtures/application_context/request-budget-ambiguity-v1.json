@@ -1,0 +1,158 @@
+{
+  "query": "Which phrase was reported earlier: red notebook or blue notebook?",
+  "input_bound": 1020,
+  "full_context": "{\"speaker\":\"user\",\"session\":\"one\",\"text\":\"I carried the red notebook.\",\"source_order\":{\"group\":\"4bcbf0153380d739f58b9ed8718abd8c\",\"position\":0}}\n{\"speaker\":\"user\",\"session\":\"one\",\"text\":\"I carried the blue notebook.\",\"source_order\":{\"group\":\"4bcbf0153380d739f58b9ed8718abd8c\",\"position\":1}}\n{\"speaker\":\"user\",\"session\":\"one\",\"text\":\"My friend carried the red notebook.\",\"source_order\":{\"group\":\"4bcbf0153380d739f58b9ed8718abd8c\",\"position\":2}}",
+  "selected_context": "{\"speaker\":\"user\",\"session\":\"one\",\"text\":\"I carried the red notebook.\",\"source_order\":{\"group\":\"4bcbf0153380d739f58b9ed8718abd8c\",\"position\":0}}\n{\"speaker\":\"user\",\"session\":\"one\",\"text\":\"I carried the blue notebook.\",\"source_order\":{\"group\":\"4bcbf0153380d739f58b9ed8718abd8c\",\"position\":1}}",
+  "original_binding": {
+    "request_identity": "4117c3a7e41d1a22c1fccfb7af3848eccf8783732d49701d994d5251e1254c2e",
+    "intent": {
+      "language": "en",
+      "polarity": "earlier",
+      "selector": null,
+      "requested_actor": null,
+      "verb": "mention",
+      "quotations": [],
+      "phrases": [
+        "red notebook",
+        "blue notebook"
+      ],
+      "descriptions": [],
+      "operation": "reporting_order",
+      "scope": "delivered_occurrences"
+    },
+    "alternatives": [
+      [
+        {
+          "record_id": 0,
+          "start": 14,
+          "end": 26,
+          "text": "red notebook",
+          "speaker": "user",
+          "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+          "source_position": 0
+        },
+        {
+          "record_id": 2,
+          "start": 22,
+          "end": 34,
+          "text": "red notebook",
+          "speaker": "user",
+          "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+          "source_position": 2
+        }
+      ],
+      [
+        {
+          "record_id": 1,
+          "start": 14,
+          "end": 27,
+          "text": "blue notebook",
+          "speaker": "user",
+          "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+          "source_position": 1
+        }
+      ]
+    ],
+    "resolution": {
+      "language": "en",
+      "polarity": "earlier",
+      "status": "unresolved",
+      "reason": "ambiguous_target",
+      "record_ids": [],
+      "query_target": null
+    },
+    "selected": null,
+    "unbound_record_ids": []
+  },
+  "pruned_binding": {
+    "request_identity": "f88794e8953e90b2c555677ba53186daace3603e540b43a0b418e2d0e7745b2f",
+    "intent": {
+      "language": "en",
+      "polarity": "earlier",
+      "selector": null,
+      "requested_actor": null,
+      "verb": "mention",
+      "quotations": [],
+      "phrases": [
+        "red notebook",
+        "blue notebook"
+      ],
+      "descriptions": [],
+      "operation": "reporting_order",
+      "scope": "delivered_occurrences"
+    },
+    "alternatives": [
+      [
+        {
+          "record_id": 0,
+          "start": 14,
+          "end": 26,
+          "text": "red notebook",
+          "speaker": "user",
+          "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+          "source_position": 0
+        }
+      ],
+      [
+        {
+          "record_id": 1,
+          "start": 14,
+          "end": 27,
+          "text": "blue notebook",
+          "speaker": "user",
+          "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+          "source_position": 1
+        }
+      ]
+    ],
+    "resolution": {
+      "language": "en",
+      "polarity": "earlier",
+      "status": "resolved",
+      "reason": "source_positions",
+      "record_ids": [
+        0,
+        1
+      ],
+      "query_target": 1
+    },
+    "selected": {
+      "record_id": 0,
+      "start": 14,
+      "end": 26,
+      "text": "red notebook",
+      "speaker": "user",
+      "source_group": "4bcbf0153380d739f58b9ed8718abd8c",
+      "source_position": 0
+    },
+    "unbound_record_ids": []
+  },
+  "trace": {
+    "version": "ordered-occurrences-v1",
+    "mode": "legacy",
+    "selected": [
+      {
+        "id": "049da20086ae1ad906a8121bc3b82a5b",
+        "score": 3,
+        "reason": "ranked_fill"
+      },
+      {
+        "id": "c0be8b3cf1d1da78ae3c123ff57530f6",
+        "score": 2,
+        "reason": "ranked_fill"
+      }
+    ],
+    "links": [],
+    "skips": [
+      {
+        "id": "4b255930d7e808408ede11d1dfc0ac32",
+        "reason": "byte_limit",
+        "role": "ranked_fill"
+      }
+    ],
+    "rendered_bytes": 290,
+    "max_bytes": 290
+  },
+  "source_sha256": "b25d48f9237a358190cbceeedf90d9143fdcb164478f0e2570c51741fa5dfad0",
+  "label": "Authored software counterexample: resource pruning removes a competing occurrence and creates false uniqueness. No model calls."
+}

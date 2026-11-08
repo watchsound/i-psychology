@@ -1,0 +1,49 @@
+{
+  "schema": "application-context-hybrid-screen-v3",
+  "parent_protocol_sha256": "812a05eebc9d328a19d7582804f750f17069ff466badac5f7a1c74ef6a98280d",
+  "samples": 1,
+  "split": "development",
+  "budget": {
+    "max_calls": 600,
+    "max_usd": "1",
+    "local_only": false
+  },
+  "resource_procedure": "interleaved-batches-v2",
+  "generator": {
+    "provider": "ollama",
+    "model": "qwen2.5:7b",
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "family": "qwen2",
+    "base_url": "http://127.0.0.1:11434",
+    "context_length": 16384,
+    "seed": 0,
+    "json_mode": false,
+    "input_rate": "0",
+    "output_rate": "0",
+    "max_input": 12000
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "family": "gpt",
+    "reasoning_effort": "none",
+    "json_mode": true,
+    "input_rate": "0.125",
+    "output_rate": "0.50",
+    "max_input": 12000
+  },
+  "memory_rubric": {
+    "path": "benchmarks/fixtures/application_context/memory-rubric-v2.json",
+    "sha256": "fc9131d7d776ddb46afd1af0a98db072fe167abd30ebfc897e40252c613712e1"
+  },
+  "qualification": {
+    "path": "benchmarks/fixtures/application_context/qualification-v3.json",
+    "sha256": "39c6987d8fffdcf19450ea8c4944427721d530200a433e6a6de20f630f231b85"
+  },
+  "memory_evidence": {
+    "report": ".data/application_context/hybrid-screen-v2-calibration.json",
+    "report_sha256": "d043f2b95cc1dce15deafed35e37e10ce128eec41e121cea398f5df4d8f637bd",
+    "freeze": "docs/experiments/phase-9-application-context/hybrid-screen-v2-input-freeze.json",
+    "freeze_sha256": "2de269c6c79ea12cf998a8b37f05bb75ea519e5d8a8551524b17676ea31166f4"
+  }
+}

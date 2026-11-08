@@ -1,0 +1,19 @@
+{
+  "kind": "hand_authored_software_controls",
+  "timestamp": "2026-10-18T12:00:00+00:00",
+  "edge_pair": ["我最近感到很焦虑", "最近感到焦虑"],
+  "recall": [
+    {"id": "anxiety", "observation": "我最近感到很焦虑，工作压力很大。", "cue": "最近的焦虑和什么有关？", "supporting_span": "工作压力很大"},
+    {"id": "guide_dog", "observation": "我的姐姐养了一只叫米索的导盲犬。", "cue": "我姐姐的导盲犬叫什么？", "supporting_span": "叫米索的导盲犬"},
+    {"id": "mixed_script", "observation": "我最近用Python学习数据分析，觉得很焦虑。", "cue": "学习Python时为什么焦虑？", "supporting_span": "用Python学习数据分析"}
+  ],
+  "changed_facts": ["我姐姐的导盲犬叫米索。", "我姐姐的导盲犬现在叫小雪，不叫米索。"],
+  "english": ["It's a state-of-the-art guide-dog program.", "My sister's dog is called Miso.", "I feel anxious about work, but running helps."],
+  "diagnostics": [
+    {"id": "bank_subterm", "observation": "中国农业发展银行", "cue": "农业"},
+    {"id": "university_subterm", "observation": "北京大学", "cue": "大学"},
+    {"id": "width", "observation": "我用Ｐｙｔｈｏｎ学习", "cue": "Python"},
+    {"id": "numeric_identifier", "observation": "我的订单编号是AB1234。", "cue": "AB1234"},
+    {"id": "unrelated_shared_character", "observation": "我在北京大学读书", "cue": "京剧表演"}
+  ]
+}

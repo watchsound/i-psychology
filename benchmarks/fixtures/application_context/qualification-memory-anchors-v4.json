@@ -1,0 +1,78 @@
+{
+  "schema": "application-context-memory-anchors-v4",
+  "origin": "Author-reviewed actual user statements from all 12 remaining pinned MSC train families. Four do not satisfy the legacy arbitrary length/word filter. Not clinical labels.",
+  "anchors": [
+    {
+      "source": "msc_34",
+      "source_row": 10,
+      "source_turn": 10,
+      "reference_sha256": "4327a273a77d4920782eb1d6dd577a2380b66d248df5a89c67d7deb2ea11dc25"
+    },
+    {
+      "source": "msc_42",
+      "source_row": 13,
+      "source_turn": 4,
+      "reference_sha256": "76694f209b3e9db24dc36c607261943abed7669834e9d41fb1e4b1e7d6604132"
+    },
+    {
+      "source": "msc_49",
+      "source_row": 18,
+      "source_turn": 2,
+      "reference_sha256": "8ba4ec02e8390c609adbab7c77b666e25ba9995de9008922822ea12e40aaa73b"
+    },
+    {
+      "source": "msc_58",
+      "source_row": 20,
+      "source_turn": 2,
+      "reference_sha256": "f4f137802eace9113c540e5af569caeac123138e7d016778990ab8c1ca97a30e"
+    },
+    {
+      "source": "msc_90",
+      "source_row": 30,
+      "source_turn": 4,
+      "reference_sha256": "672d6dc574afafaa80049ca663a071eca63697795377e5ae1bd65f991162d207"
+    },
+    {
+      "source": "msc_105",
+      "source_row": 32,
+      "source_turn": 4,
+      "reference_sha256": "eb41f2d398ac875c5fbd90d0fa3ca708bff43a0e393093c296427076374cba5d"
+    },
+    {
+      "source": "msc_106",
+      "source_row": 33,
+      "source_turn": 6,
+      "reference_sha256": "97c8cc34c2a5d7940a858be3a13a58f52730ef7d010af9a82f56e358b9530dd0"
+    },
+    {
+      "source": "msc_117",
+      "source_row": 37,
+      "source_turn": 4,
+      "reference_sha256": "101e97bbed0029a92d0c9eb1f6c490d4e229c448002b9f927165c67d579d682d"
+    },
+    {
+      "source": "msc_121",
+      "source_row": 40,
+      "source_turn": 8,
+      "reference_sha256": "2fe8e6ddc0c6a4b1cfa6379c2c1d01fd1566dabe87ce0eb9e70fed05768b20b0"
+    },
+    {
+      "source": "msc_138",
+      "source_row": 45,
+      "source_turn": 10,
+      "reference_sha256": "64bfca5a6b50b9d2ba49057f29f0fef7b76416d544fea2034d5447e52496474a"
+    },
+    {
+      "source": "msc_144",
+      "source_row": 48,
+      "source_turn": 2,
+      "reference_sha256": "c05798dd4b3c425df63463b23b13045ff614d054d0b52329ca757a356b0fd76e"
+    },
+    {
+      "source": "msc_189",
+      "source_row": 58,
+      "source_turn": 10,
+      "reference_sha256": "a2ab8cf3f80788a5f5f99b3dcb11a78c80e81b9b6e44250b553039ba29f9f01b"
+    }
+  ]
+}

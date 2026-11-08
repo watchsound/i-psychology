@@ -1,0 +1,1443 @@
+{
+  "schema": "application-context-v1",
+  "cases": [
+    {
+      "id": "film-767-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 767,
+      "target": 4,
+      "topic": "《幸福终点站》的出品国家",
+      "cues": [
+        "美国"
+      ],
+      "queries": [
+        "之前交流时，我们关于《幸福终点站》的出品国家说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《幸福终点站》的出品国家了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-1038-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 1038,
+      "target": 6,
+      "topic": "玛丽·杜布瓦的国籍",
+      "cues": [
+        "法国"
+      ],
+      "queries": [
+        "之前交流时，我们关于玛丽·杜布瓦的国籍说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的玛丽·杜布瓦的国籍了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-68-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 68,
+      "target": 3,
+      "topic": "阿米尔·汗的生日",
+      "cues": [
+        "1965",
+        "3月14"
+      ],
+      "queries": [
+        "之前交流时，我们关于阿米尔·汗的生日说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的阿米尔·汗的生日了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-942-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 942,
+      "target": 3,
+      "topic": "卢卡·瓜达格尼诺的国籍",
+      "cues": [
+        "意大利"
+      ],
+      "queries": [
+        "之前交流时，我们关于卢卡·瓜达格尼诺的国籍说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的卢卡·瓜达格尼诺的国籍了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-872-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 872,
+      "target": 5,
+      "topic": "《音乐之声》的导演",
+      "cues": [
+        "罗伯特",
+        "怀斯"
+      ],
+      "queries": [
+        "之前交流时，我们关于《音乐之声》的导演说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《音乐之声》的导演了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-751-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 751,
+      "target": 3,
+      "topic": "《神偷奶爸》的上映日期",
+      "cues": [
+        "2010",
+        "06月27"
+      ],
+      "queries": [
+        "之前交流时，我们关于《神偷奶爸》的上映日期说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《神偷奶爸》的上映日期了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-821-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 821,
+      "target": 3,
+      "topic": "西井幸人的出生地点",
+      "cues": [
+        "琦玉",
+        "埼玉"
+      ],
+      "queries": [
+        "之前交流时，我们关于西井幸人的出生地点说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的西井幸人的出生地点了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-1116-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 1116,
+      "target": 5,
+      "topic": "电影《我爱你》的片长",
+      "cues": [
+        "118"
+      ],
+      "queries": [
+        "之前交流时，我们关于电影《我爱你》的片长说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的电影《我爱你》的片长了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-211-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 211,
+      "target": 2,
+      "topic": "肯尼斯·罗纳根的奥斯卡奖项",
+      "cues": [
+        "89",
+        "原创剧本"
+      ],
+      "queries": [
+        "之前交流时，我们关于肯尼斯·罗纳根的奥斯卡奖项说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的肯尼斯·罗纳根的奥斯卡奖项了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-198-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 198,
+      "target": 3,
+      "topic": "詹姆斯·麦斯登的出生地",
+      "cues": [
+        "俄克拉何马",
+        "静水城"
+      ],
+      "queries": [
+        "之前交流时，我们关于詹姆斯·麦斯登的出生地说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的詹姆斯·麦斯登的出生地了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-548-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 548,
+      "target": 5,
+      "topic": "《大明宫词》的故事主线",
+      "cues": [
+        "武则天",
+        "太平公主"
+      ],
+      "queries": [
+        "之前交流时，我们关于《大明宫词》的故事主线说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《大明宫词》的故事主线了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "film-95-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/film/train.json",
+      "row": 95,
+      "target": 3,
+      "topic": "汤姆·克鲁斯的出生地点",
+      "cues": [
+        "纽约"
+      ],
+      "queries": [
+        "之前交流时，我们关于汤姆·克鲁斯的出生地点说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的汤姆·克鲁斯的出生地点了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-637-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 637,
+      "target": 3,
+      "topic": "《失落沙洲》的作曲者",
+      "cues": [
+        "徐佳莹"
+      ],
+      "queries": [
+        "之前交流时，我们关于《失落沙洲》的作曲者说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《失落沙洲》的作曲者了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-1174-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 1174,
+      "target": 3,
+      "topic": "《思念是一种病》相关专辑的名称",
+      "cues": [
+        "纪念日"
+      ],
+      "queries": [
+        "之前交流时，我们关于《思念是一种病》相关专辑的名称说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《思念是一种病》相关专辑的名称了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-210-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 210,
+      "target": 2,
+      "topic": "歌曲《宝贝》的原唱",
+      "cues": [
+        "张悬"
+      ],
+      "queries": [
+        "之前交流时，我们关于歌曲《宝贝》的原唱说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的歌曲《宝贝》的原唱了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-429-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 429,
+      "target": 4,
+      "topic": "《timeflies》的歌曲数量",
+      "cues": [
+        "6首",
+        "六首"
+      ],
+      "queries": [
+        "之前交流时，我们关于《timeflies》的歌曲数量说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《timeflies》的歌曲数量了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-62-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 62,
+      "target": 2,
+      "topic": "《八度空间》的发行日期",
+      "cues": [
+        "2002",
+        "07月18"
+      ],
+      "queries": [
+        "之前交流时，我们关于《八度空间》的发行日期说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《八度空间》的发行日期了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-343-companion",
+      "app": "companion",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 343,
+      "target": 1,
+      "topic": "《未完成》的销量",
+      "cues": [
+        "200万"
+      ],
+      "queries": [
+        "之前交流时，我们关于《未完成》的销量说过什么？请依据我们当时实际说过的话回答。",
+        "又想到上次聊的《未完成》的销量了，你还记得当时的说法吗？请依据我们当时实际说过的话回答。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-970-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 970,
+      "target": 3,
+      "topic": "《知足 just my pride 最真杰作选》的语言",
+      "cues": [
+        "国语",
+        "闽南语"
+      ],
+      "queries": [
+        "之前交流时，我们关于《知足 just my pride 最真杰作选》的语言说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《知足 just my pride 最真杰作选》的语言了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-273-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 273,
+      "target": 1,
+      "topic": "绿洲乐队的成立年份",
+      "cues": [
+        "1991"
+      ],
+      "queries": [
+        "之前交流时，我们关于绿洲乐队的成立年份说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的绿洲乐队的成立年份了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-423-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 423,
+      "target": 3,
+      "topic": "《特务J》的发行年份",
+      "cues": [
+        "2007"
+      ],
+      "queries": [
+        "之前交流时，我们关于《特务J》的发行年份说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《特务J》的发行年份了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-532-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 532,
+      "target": 4,
+      "topic": "《to hebe》的歌曲数量",
+      "cues": [
+        "11首",
+        "十一首"
+      ],
+      "queries": [
+        "之前交流时，我们关于《to hebe》的歌曲数量说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《to hebe》的歌曲数量了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-988-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 988,
+      "target": 3,
+      "topic": "《a rush of blood to the head》的音乐风格",
+      "cues": [
+        "alternative",
+        "post-britpop"
+      ],
+      "queries": [
+        "之前交流时，我们关于《a rush of blood to the head》的音乐风格说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《a rush of blood to the head》的音乐风格了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "music-638-tutor",
+      "app": "tutor",
+      "stratum": "native_zh_bridge",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/kdconv/data/music/train.json",
+      "row": 638,
+      "target": 3,
+      "topic": "《我要我们在一起》的时长",
+      "cues": [
+        "04:26"
+      ],
+      "queries": [
+        "之前交流时，我们关于《我要我们在一起》的时长说过什么？请只提示我回想的方法，不要直接报出答案。",
+        "又想到上次聊的《我要我们在一起》的时长了，你还记得当时的说法吗？请只提示我回想的方法，不要直接报出答案。"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_149",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 51,
+      "target": 8,
+      "topic": "protein drinks",
+      "cues": [
+        "muscle milk",
+        "protein"
+      ],
+      "queries": [
+        "When we spoke about protein drinks, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about protein drinks. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_7",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 2,
+      "target": 2,
+      "topic": "what I was doing before we talked",
+      "cues": [
+        "writ",
+        "writing"
+      ],
+      "queries": [
+        "When we spoke about what I was doing before we talked, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about what I was doing before we talked. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null,
+      "absent_exclude_refs": [
+        4
+      ]
+    },
+    {
+      "id": "msc_125",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 42,
+      "target": 2,
+      "topic": "my phone",
+      "cues": [
+        "i phone",
+        "iphone"
+      ],
+      "queries": [
+        "When we spoke about my phone, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about my phone. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_171",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 55,
+      "target": 2,
+      "topic": "my dog",
+      "cues": [
+        "french bulldog"
+      ],
+      "queries": [
+        "When we spoke about my dog, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about my dog. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_88",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 28,
+      "target": 6,
+      "topic": "my taste in singers",
+      "cues": [
+        "katy perry"
+      ],
+      "queries": [
+        "When we spoke about my taste in singers, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about my taste in singers. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_35",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 11,
+      "target": 4,
+      "topic": "playing an instrument",
+      "cues": [
+        "guitar"
+      ],
+      "queries": [
+        "When we spoke about playing an instrument, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about playing an instrument. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_145",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 49,
+      "target": 6,
+      "topic": "places I have travelled",
+      "cues": [
+        "tahiti"
+      ],
+      "queries": [
+        "When we spoke about places I have travelled, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about places I have travelled. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_135",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 44,
+      "target": 2,
+      "topic": "news about my family life",
+      "cues": [
+        "engaged",
+        "wedding",
+        "paris",
+        "tammy",
+        "brothers",
+        "sisters"
+      ],
+      "queries": [
+        "When we spoke about news about my family life, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about news about my family life. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_44",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 14,
+      "target": 2,
+      "topic": "how I help people where I live",
+      "cues": [
+        "bak",
+        "retirement home"
+      ],
+      "queries": [
+        "When we spoke about how I help people where I live, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about how I help people where I live. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_79",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 24,
+      "target": 2,
+      "topic": "how others describe my thinking",
+      "cues": [
+        "obsess"
+      ],
+      "queries": [
+        "When we spoke about how others describe my thinking, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about how others describe my thinking. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_23",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 7,
+      "target": 8,
+      "topic": "food while studying",
+      "cues": [
+        "sushi"
+      ],
+      "queries": [
+        "When we spoke about food while studying, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about food while studying. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_148",
+      "app": "companion",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 50,
+      "target": 4,
+      "topic": "my outdoor routine",
+      "cues": [
+        "hunting",
+        "hinting",
+        "early rising"
+      ],
+      "queries": [
+        "When we spoke about my outdoor routine, what did I tell you about myself? Ask one follow-up grounded in that detail.",
+        "I am returning to our earlier conversation about my outdoor routine. Can you connect what I told you then with a relevant next question?"
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "msc_9",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 3,
+      "target": 6,
+      "topic": "读书",
+      "cues": [
+        "library",
+        "图书馆"
+      ],
+      "queries": [
+        "上次谈到阅读时，我提到自己在筹备什么？请结合它问个后续问题。",
+        "又想到之前那个阅读相关的小项目了。你还记得我说在打造什么吗？请接着那一点提问。"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "16359791e7910aed12c8250ef4c515c7ef49c3813fc22de2764bd58de15c11dd"
+      }
+    },
+    {
+      "id": "msc_132",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 43,
+      "target": 6,
+      "topic": "我对工作的想法",
+      "cues": [
+        "work",
+        "mom dad",
+        "工作",
+        "爸妈"
+      ],
+      "queries": [
+        "上次聊到我对工作的想法时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的我对工作的想法了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "e8714685b7664ca4063aeafa0f13b41433f8367c4b786625cc5571dc9ba2cfb7"
+      }
+    },
+    {
+      "id": "msc_113",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 36,
+      "target": 6,
+      "topic": "我的音乐喜好",
+      "cues": [
+        "rock and roll",
+        "摇滚"
+      ],
+      "queries": [
+        "上次聊到我的音乐喜好时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的我的音乐喜好了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "94bcf73a9ce00d2306a80e69e33b4b199f33a862a5bfabf9f8bc4ad678f69382"
+      }
+    },
+    {
+      "id": "msc_77",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/msc/train.jsonl",
+      "row": 23,
+      "target": 2,
+      "topic": "最近买的耳机",
+      "cues": [
+        "red",
+        "headsets",
+        "红色",
+        "耳机"
+      ],
+      "queries": [
+        "上次聊到最近买的耳机时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的最近买的耳机了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "15afa433d8a92fdf6ffe9df72f54914b0948b4623db8b59aa1eb281a166c6605"
+      }
+    },
+    {
+      "id": "msc_124",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 41,
+      "target": 2,
+      "topic": "公益活动",
+      "cues": [
+        "volunt",
+        "donat",
+        "charit",
+        "志愿",
+        "慈善"
+      ],
+      "queries": [
+        "上次聊到公益活动时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的公益活动了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "aab735cc428a3abd50be0e5645daf616f4a1c1fa31d9851864802504642c1add"
+      }
+    },
+    {
+      "id": "msc_85",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 26,
+      "target": 4,
+      "topic": "想养的宠物",
+      "cues": [
+        "pig",
+        "宠物猪"
+      ],
+      "queries": [
+        "上次聊到想养的宠物时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的想养的宠物了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "f6d909c90d0f9930396b748bc78440f06694f4925b389823f45e354640928f15"
+      }
+    },
+    {
+      "id": "msc_119",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 38,
+      "target": 2,
+      "topic": "写作计划",
+      "cues": [
+        "romance novel",
+        "爱情小说"
+      ],
+      "queries": [
+        "上次说到小说写作时，我说正在为故事琢磨哪一方面？请联系那个环节问我一个后续问题。",
+        "接着上次的小说筹备聊吧，我当时正在想什么？请根据那个具体环节提问。"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "514aa1c6a1ff712686cb61fb98ed7299ef6c510e32d97f7fa8c5971260885e16"
+      }
+    },
+    {
+      "id": "msc_87",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 27,
+      "target": 2,
+      "topic": "今天的工作安排",
+      "cues": [
+        "movie theater",
+        "电影院"
+      ],
+      "queries": [
+        "上次聊到今天的工作安排时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的今天的工作安排了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "468bc439adb90280309bd80a38d46840738e6e02793fa978910ac4d6b2405410"
+      }
+    },
+    {
+      "id": "msc_32",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 9,
+      "target": 8,
+      "topic": "我的头发",
+      "cues": [
+        "hair",
+        "头发"
+      ],
+      "queries": [
+        "上次聊到我的头发时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的我的头发了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "0ebcb464fb6e64cb017d127ecc62f3b4e46da5b789a5b92b3ab788fdfa727a5f"
+      }
+    },
+    {
+      "id": "msc_65",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 21,
+      "target": 4,
+      "topic": "我的家庭分工",
+      "cues": [
+        "two kids",
+        "husband",
+        "两个孩子",
+        "丈夫"
+      ],
+      "queries": [
+        "上次聊到家里的分工，我提到谁负责挣钱、谁照顾孩子？请结合这个安排问我一个后续问题。",
+        "接着我们上次聊的家庭分工，挣钱和带孩子这两件事当时是怎样分担的？你能据此问我个问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "5d38193bd4edeaa0ef0e3ddc29218a2eb3a21cbe32f17b80cee34259a81b43e6"
+      }
+    },
+    {
+      "id": "msc_142",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 47,
+      "target": 6,
+      "topic": "喜欢的乐队",
+      "cues": [
+        "ween"
+      ],
+      "queries": [
+        "上次聊到喜欢的乐队时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的喜欢的乐队了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "034ce9b2b004bcf8412b3aec03b675273f78f8e3163aa1f6ea48318b14db9a8c"
+      }
+    },
+    {
+      "id": "msc_15",
+      "app": "companion",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/msc/train.jsonl",
+      "row": 5,
+      "target": 10,
+      "topic": "周末的旅行",
+      "cues": [
+        "canada",
+        "加拿大"
+      ],
+      "queries": [
+        "上次聊到周末的旅行时，我说过自己什么情况？请结合那一点问我一个后续问题。",
+        "现在又想到之前聊的周末的旅行了。你能接着我当时说的情况，问一个有针对性的问题吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; surrounding source turns remain English",
+        "target_sha256": "5771c0271a9a97caa6a46e1773b56430c1504910487233bb1e75adb1b1172b91"
+      }
+    },
+    {
+      "id": "math-404",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 404,
+      "target": 3,
+      "topic": "lemonade cups",
+      "cues": [],
+      "queries": [
+        "Back on the lemonade cups problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the lemonade cups exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-17",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 17,
+      "target": 2,
+      "topic": "meatballs for the family",
+      "cues": [],
+      "queries": [
+        "Back on the meatballs for the family problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the meatballs for the family exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-101",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 101,
+      "target": 1,
+      "topic": "the sports survey",
+      "cues": [],
+      "queries": [
+        "Back on the the sports survey problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the sports survey exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-1395",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1395,
+      "target": 1,
+      "topic": "starting current of machines",
+      "cues": [],
+      "queries": [
+        "Back on the starting current of machines problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the starting current of machines exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-1030",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1030,
+      "target": 7,
+      "topic": "the river lengths",
+      "cues": [],
+      "queries": [
+        "Back on the the river lengths problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the river lengths exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-506",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 506,
+      "target": 1,
+      "topic": "the flower purchase",
+      "cues": [],
+      "queries": [
+        "Back on the the flower purchase problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the flower purchase exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-105",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 105,
+      "target": 1,
+      "topic": "the flight via Germany",
+      "cues": [],
+      "queries": [
+        "Back on the the flight via Germany problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the flight via Germany exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-1857",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1857,
+      "target": 2,
+      "topic": "the canoe with a dog",
+      "cues": [],
+      "queries": [
+        "Back on the the canoe with a dog problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the canoe with a dog exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-263",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 263,
+      "target": 3,
+      "topic": "glass panels in windows",
+      "cues": [],
+      "queries": [
+        "Back on the glass panels in windows problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the glass panels in windows exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-344",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 344,
+      "target": 1,
+      "topic": "the sloth buying shoes",
+      "cues": [],
+      "queries": [
+        "Back on the the sloth buying shoes problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the sloth buying shoes exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-57",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 57,
+      "target": 1,
+      "topic": "the weekly paycheck",
+      "cues": [],
+      "queries": [
+        "Back on the the weekly paycheck problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the the weekly paycheck exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-251",
+      "app": "tutor",
+      "stratum": "native_en_application",
+      "language": "en",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 251,
+      "target": 1,
+      "topic": "dozens of pens",
+      "cues": [],
+      "queries": [
+        "Back on the dozens of pens problem, what part of my first working should we revisit? Refer to my actual earlier attempt and ask a guiding question, not the final answer.",
+        "I am picking up the dozens of pens exercise from our previous session. Connect your next hint to the way I worked on it before, without solving it for me."
+      ],
+      "adaptation": null
+    },
+    {
+      "id": "math-332",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 332,
+      "target": 1,
+      "topic": "购物折扣",
+      "cues": [],
+      "queries": [
+        "回到购物折扣那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次购物折扣的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "b01dd1931ce4e84d1b12207453e2bedefefbbb1110a044d77b2e83942ccce1a5"
+      }
+    },
+    {
+      "id": "math-2149",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 2149,
+      "target": 1,
+      "topic": "运送干草",
+      "cues": [],
+      "queries": [
+        "回到运送干草那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次运送干草的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "6dc9f2c87796cc1f7f8406daad7da570eb0c4847b6e3a87188729917be7aedf6"
+      }
+    },
+    {
+      "id": "math-1485",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1485,
+      "target": 1,
+      "topic": "买巧克力棒",
+      "cues": [],
+      "queries": [
+        "回到买巧克力棒那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次买巧克力棒的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "e43f977815086a80677217df260d06c51295c5daaf1a06caefca1a9006bc8fa9"
+      }
+    },
+    {
+      "id": "math-408",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "development",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 408,
+      "target": 1,
+      "topic": "树上的猴子和鸟",
+      "cues": [],
+      "queries": [
+        "回到树上的猴子和鸟那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次树上的猴子和鸟的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "3e1c9c957ac31677bd50c11eaafb92da8ccc8503beef55999dfbb1e7962bb3fd"
+      }
+    },
+    {
+      "id": "math-1644",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1644,
+      "target": 1,
+      "topic": "量取面粉",
+      "cues": [],
+      "queries": [
+        "回到量取面粉那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次量取面粉的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "d0e51d0b036581ba9d6144e03c424028e8c9225ecaa97fdd83e27dfd4be05eab"
+      }
+    },
+    {
+      "id": "math-122",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 122,
+      "target": 1,
+      "topic": "主日学校分班",
+      "cues": [],
+      "queries": [
+        "回到主日学校分班那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次主日学校分班的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "0fa7fa311d689d5a8c17fe1b33a8a5ca39b854cffbfa790d61615ebbb6d59c9c"
+      }
+    },
+    {
+      "id": "math-180",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 180,
+      "target": 1,
+      "topic": "去动物园",
+      "cues": [],
+      "queries": [
+        "回到去动物园那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次去动物园的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "a54ad5ccd44f95441fc126a824c4c44ad3a37e467e3e6d853b93f145aca8ba84"
+      }
+    },
+    {
+      "id": "math-119",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 119,
+      "target": 1,
+      "topic": "弹珠比赛",
+      "cues": [],
+      "queries": [
+        "回到弹珠比赛那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次弹珠比赛的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "2bc313061195fee59b0b726bda590365c40c80d40c5096d869f0c245b332632f"
+      }
+    },
+    {
+      "id": "math-505",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 505,
+      "target": 1,
+      "topic": "汽车里程",
+      "cues": [],
+      "queries": [
+        "回到汽车里程那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次汽车里程的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "31aa53ba6bfef88077e87756bed0f2988674fff863873704ad4ebe36d1f293c5"
+      }
+    },
+    {
+      "id": "math-44",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 44,
+      "target": 1,
+      "topic": "三月晨练",
+      "cues": [],
+      "queries": [
+        "回到三月晨练那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次三月晨练的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "8c400d21cf51bf9d84668b69c4ec9b218412fbb453e575580ac9b70d8b79fcf1"
+      }
+    },
+    {
+      "id": "math-763",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 763,
+      "target": 1,
+      "topic": "停车场的车辆",
+      "cues": [],
+      "queries": [
+        "回到停车场的车辆那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次停车场的车辆的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "5a108208fd5afd4d4570cd1099ba827de63132341611f563b489e41d3870d273"
+      }
+    },
+    {
+      "id": "math-1179",
+      "app": "tutor",
+      "stratum": "adapted_zh_application",
+      "language": "zh",
+      "split": "evaluation",
+      "source": ".data/mathdial/train.jsonl",
+      "row": 1179,
+      "target": 1,
+      "topic": "赶校车",
+      "cues": [],
+      "queries": [
+        "回到赶校车那道题，我第一次的做法里哪一步值得再检查？请联系我当时的尝试提一个引导问题，不要给最终答案。",
+        "我想接着上次赶校车的练习。你能根据我之前的做法给一个提示，让我自己想下一步吗？"
+      ],
+      "adaptation": {
+        "scope": "Chinese target and probes; problem and surrounding source turns remain English",
+        "target_sha256": "241ba2b5889d42d9a780ecc0313ae76c8ff44e065948c68fab6bb154c727c8fc"
+      }
+    }
+  ]
+}

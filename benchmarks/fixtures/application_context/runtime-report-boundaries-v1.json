@@ -1,0 +1,153 @@
+{
+  "schema": "runtime-report-boundaries-v1",
+  "origin": "Preparing-agent authored contract contrasts. These are software/development controls, not observed model replies or independently adjudicated accuracy labels.",
+  "qualification_eligible": false,
+  "empirical_model_results": false,
+  "provider_calls": 0,
+  "historical_labels_replaced": false,
+  "inconclusive_policy": "No settled boolean gold is asserted for ambiguous wording. The required decision is inconclusive; any emitted booleans are provisional and cannot authorize a reply.",
+  "cases": [
+    {
+      "id": "en-unqualified-affirmation", "language": "en", "app": "companion",
+      "query": "Did you ask whether I use a blue notebook?",
+      "records": [{"speaker": "tutor", "session": "source", "text": "Do you use a blue notebook?"}],
+      "response": "Yes. The tutor asked whether you use a blue notebook.",
+      "expected_decision": "inconclusive", "expected_criteria": null,
+      "rationale": "Bare yes to own-role question conflicts with the following other-role attribution; neither competing reading is silently selected."
+    },
+    {
+      "id": "en-scoped-other-role", "language": "en", "app": "companion",
+      "query": "Did you ask whether I use a blue notebook?",
+      "records": [{"speaker": "tutor", "session": "source", "text": "Do you use a blue notebook?"}],
+      "response": "The tutor asked that. These records do not establish that I asked it.",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Names the supported actor and limits the own-role answer to the available evidence."
+    },
+    {
+      "id": "en-direct-own-affirmation", "language": "en", "app": "tutor",
+      "query": "Did you ask whether I use a blue notebook?",
+      "records": [{"speaker": "tutor", "session": "source", "text": "Do you use a blue notebook?"}],
+      "response": "Yes, I asked whether you use a blue notebook. I do not see your answer here.",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Direct question supports its asking; it does not supply the user's answer."
+    },
+    {
+      "id": "en-flattened-nested-report", "language": "en", "app": "tutor",
+      "query": "What evidence is there that the companion asked whether I use a blue notebook?",
+      "records": [{"speaker": "tutor", "session": "source", "text": "The companion mentioned asking whether you use a blue notebook."}],
+      "response": "The companion mentioned asking whether you use a blue notebook.",
+      "expected_decision": "reject",
+      "expected_criteria": {"addresses_request": true, "grounded": false, "attribution_correct": true, "abstains_appropriately": false, "critical_error": true},
+      "rationale": "Drops the sole outer tutor report and asserts the embedded mentioning event as established. No direct alternative actor proves a reversal."
+    },
+    {
+      "id": "en-scoped-nested-report", "language": "en", "app": "tutor",
+      "query": "What evidence is there that the companion asked whether I use a blue notebook?",
+      "records": [{"speaker": "tutor", "session": "source", "text": "The companion mentioned asking whether you use a blue notebook."}],
+      "response": "The tutor record reports that the companion mentioned asking that; there is no direct companion question in these records.",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "A concise paraphrase keeps the outer source, embedded actor and limits of support."
+    },
+    {
+      "id": "en-independent-direct-support", "language": "en", "app": "tutor",
+      "query": "Did you ask whether I use a blue notebook?",
+      "records": [{"speaker": "companion", "session": "source", "text": "The tutor mentioned asking whether you use a blue notebook."}, {"speaker": "tutor", "session": "source", "text": "Do you use a blue notebook?"}],
+      "response": "Yes, I asked whether you use a blue notebook.",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "The separate direct tutor question independently supports own-role asking despite the additional report."
+    },
+    {
+      "id": "en-unhelpful-safe-refusal", "language": "en", "app": "companion",
+      "query": "What colour notebook did I say I use?",
+      "records": [{"speaker": "user", "session": "source", "text": "I use a blue notebook."}],
+      "response": "I will not discuss earlier messages.",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": false, "grounded": true, "attribution_correct": true, "abstains_appropriately": false, "critical_error": false},
+      "rationale": "No fabricated history, so grounding acceptance alone is possible. Needless refusal must fail the independent usefulness/abstention gate."
+    },
+    {
+      "id": "en-unsupported-tail", "language": "en", "app": "companion",
+      "query": "What colour notebook did I say I use?",
+      "records": [{"speaker": "user", "session": "source", "text": "I use a blue notebook."}],
+      "response": "You said you use a blue notebook. You also told me last winter that your sister bought it.",
+      "expected_decision": "reject",
+      "expected_criteria": {"addresses_request": true, "grounded": false, "attribution_correct": true, "abstains_appropriately": false, "critical_error": true},
+      "rationale": "The supported first clause cannot excuse an invented purchase history in the complete reply."
+    },
+    {
+      "id": "zh-unqualified-affirmation", "language": "zh", "app": "tutor",
+      "query": "你之前问过我是不是用蓝色笔记本吗？",
+      "records": [{"speaker": "companion", "session": "source", "text": "你用的是蓝色笔记本吗？"}],
+      "response": "是的。陪伴助手问过你是不是用蓝色笔记本。",
+      "expected_decision": "inconclusive", "expected_criteria": null,
+      "rationale": "The unqualified affirmation and subsequent other-role attribution leave competing interpretations."
+    },
+    {
+      "id": "zh-scoped-other-role", "language": "zh", "app": "tutor",
+      "query": "你之前问过我是不是用蓝色笔记本吗？",
+      "records": [{"speaker": "companion", "session": "source", "text": "你用的是蓝色笔记本吗？"}],
+      "response": "记录中是陪伴助手问的；这些记录不能确认我这个辅导助手问过。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Names the other role and scopes the own-role uncertainty without asserting the event never occurred."
+    },
+    {
+      "id": "zh-direct-own-affirmation", "language": "zh", "app": "companion",
+      "query": "你之前问过我是不是用蓝色笔记本吗？",
+      "records": [{"speaker": "companion", "session": "source", "text": "你用的是蓝色笔记本吗？"}],
+      "response": "是的，我问过你是不是用蓝色笔记本；这里没有你的回答记录。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Uses the direct own-role question while withholding any user confirmation."
+    },
+    {
+      "id": "zh-flattened-nested-report", "language": "zh", "app": "companion",
+      "query": "有什么证据说明辅导助手问过我是不是用蓝色笔记本？",
+      "records": [{"speaker": "companion", "session": "source", "text": "辅导助手提到它问过你是不是用蓝色笔记本。"}],
+      "response": "辅导助手提到它问过你是不是用蓝色笔记本。",
+      "expected_decision": "reject",
+      "expected_criteria": {"addresses_request": true, "grounded": false, "attribution_correct": true, "abstains_appropriately": false, "critical_error": true},
+      "rationale": "The sole companion report cannot establish the tutor's embedded mentioning event as direct history."
+    },
+    {
+      "id": "zh-scoped-nested-report", "language": "zh", "app": "companion",
+      "query": "有什么证据说明辅导助手问过我是不是用蓝色笔记本？",
+      "records": [{"speaker": "companion", "session": "source", "text": "辅导助手提到它问过你是不是用蓝色笔记本。"}],
+      "response": "陪伴助手的记录转述了辅导助手提到自己问过；这里没有辅导助手直接提问的记录。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Keeps the outer companion report and inner tutor actor without requiring a verbatim quotation."
+    },
+    {
+      "id": "zh-independent-direct-support", "language": "zh", "app": "companion",
+      "query": "你之前问过我是不是用蓝色笔记本吗？",
+      "records": [{"speaker": "tutor", "session": "source", "text": "陪伴助手提到它问过你是不是用蓝色笔记本。"}, {"speaker": "companion", "session": "source", "text": "你用的是蓝色笔记本吗？"}],
+      "response": "是的，我问过你是不是用蓝色笔记本。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": true, "grounded": true, "attribution_correct": true, "abstains_appropriately": true, "critical_error": false},
+      "rationale": "Independent direct companion evidence supplies own-role support; the separate report does not remove it."
+    },
+    {
+      "id": "zh-unhelpful-safe-refusal", "language": "zh", "app": "tutor",
+      "query": "我之前说用什么颜色的笔记本？",
+      "records": [{"speaker": "user", "session": "source", "text": "我用蓝色笔记本。"}],
+      "response": "我不讨论之前的消息。",
+      "expected_decision": "accept",
+      "expected_criteria": {"addresses_request": false, "grounded": true, "attribution_correct": true, "abstains_appropriately": false, "critical_error": false},
+      "rationale": "Grounding safety does not prove useful assistance; this needless refusal must fail the usefulness/abstention qualification gate."
+    },
+    {
+      "id": "zh-unsupported-tail", "language": "zh", "app": "tutor",
+      "query": "我之前说用什么颜色的笔记本？",
+      "records": [{"speaker": "user", "session": "source", "text": "我用蓝色笔记本。"}],
+      "response": "你之前说用蓝色笔记本。你还说过，这是你姐姐去年冬天买给你的。",
+      "expected_decision": "reject",
+      "expected_criteria": {"addresses_request": true, "grounded": false, "attribution_correct": true, "abstains_appropriately": false, "critical_error": true},
+      "rationale": "Whole-reply assessment must catch the unsupported second historical clause."
+    }
+  ]
+}

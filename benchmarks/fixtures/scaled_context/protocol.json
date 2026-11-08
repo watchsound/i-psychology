@@ -1,0 +1,49 @@
+{
+  "schema": "scaled-context-regression-v1",
+  "status": "frozen-before-source-scoring",
+  "arms": [
+    "ordinary_v4",
+    "metadata_only",
+    "focus_companion",
+    "scaled_focus"
+  ],
+  "fixed": {
+    "top_k": 6,
+    "tokenizer": "jieba",
+    "byte_cap": null,
+    "seed": 0,
+    "witness_active": true,
+    "states": [
+      "cold",
+      "followup",
+      "switch"
+    ],
+    "paired_absent": true,
+    "support": "half-maximum-normalized-active-question-seed-times-selection-mass",
+    "normalize_selection_mass": true,
+    "known_cases": 24,
+    "observed_train_cases": 30,
+    "fresh_cases_scored": 0,
+    "focus": "last-provided-cue-turn",
+    "primary": "scaled_focus",
+    "witness_primary_policy": "production-identity",
+    "ablation": "focus_companion"
+  },
+  "gates": {
+    "no_lost_answer_hits": true,
+    "metadata_selection_parity": true,
+    "pooled_and_domain_mrr_nonloss": true,
+    "absent_rate_nonincrease": true,
+    "software_controls": true,
+    "witness_baseline_view": true
+  },
+  "inputs": {
+    "benchmarks/fixtures/focused_context/protocol.json": "5bd1ca8fd2ef19334631582b5ec2d5164943b82d0cd4ff71e377c7532c58ea66",
+    "docs/experiments/phase-9-focused-context/review-observed.json": "ef9a8baf091146ca246a905d34f60e514bf05b3e11dd244c353261c43d722d16",
+    "docs/experiments/phase-9-focused-context/review-validation.json": "7bd5edff46ec64edc1c885f1ebeb6eb9630c960222395734c99841da151c78b7",
+    "docs/phases/phase-9-scaled-context-plan.md": "3eda5c0676936dc0948bb913ed8b7d55bd64e55bddc300bb32d56650ea264ad3",
+    "tests/test_scaled_context.py": "456a36b2ab8a211c55963b1de337a9ccd1335d350acfd194b517d25164fb825b"
+  },
+  "stop_rule": "Reject the fixed scaled primary on any observed guard failure; previous focus policy is ablation only.",
+  "next_stage": "A pass permits a separately frozen fresh catalog and resource protocol, never production activation."
+}
