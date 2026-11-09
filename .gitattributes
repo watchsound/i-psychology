@@ -1,0 +1,9 @@
+# Pin Python source to LF regardless of the user's `core.autocrlf` setting.
+# 13 tracked tests and runtime modules compute SHA256 fingerprints over
+# `Path(...).read_bytes()` of `.py` files (see `tests/test_memory_grounding_contract.py:92-95`
+# as a representative case). On Windows clones with the default
+# `core.autocrlf=true`, git would convert `\n` → `\r\n` at checkout time,
+# producing a different byte stream and a different SHA than the fixture
+# pin, failing the fingerprint tests on fresh clone. `* text=auto eol=lf`
+# forces consistent LF on checkout across platforms.
+*.py text eol=lf
