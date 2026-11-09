@@ -78,6 +78,57 @@ collect_ignore = [
     if not (_REPO_ROOT / sentinel).exists()
 ]
 
+# Unconditional collect_ignore: ported from the gitignored root `conftest.py`
+# because pytest's `collect_ignore = ["tests/foo.py"]` is a cross-directory
+# no-op — only `collect_ignore_glob` works across directories (verified via
+# minimal repro 2026-11-09). Same-dir `collect_ignore` DOES work, so moving
+# these filename-only entries into tests/conftest.py makes the ignore take
+# effect regardless of root conftest.py presence. All entries are gitignored
+# under .gitignore (buckets at :66+ one-off names); on fresh clone they're
+# absent so this list is harmless, on dev checkout they're ignored so
+# optional-dependency import failures and known-drift tests don't fail the
+# suite. Mirrors the semantics the root conftest.py always intended.
+collect_ignore += [
+    # Known-drift tracked test (listed in root conftest.py:66 as unconditional).
+    # Also appears in `_PHASE_9_SPRAWL_DEPENDENT_TESTS` above as a fresh-clone
+    # sentinel; the unconditional entry here covers dev-checkout too.
+    "test_isolated_interpretation_review.py",
+    # One-off gitignored test files (ported from root conftest.py:69-103).
+    "test_annotated_dataset_reuse.py",
+    "test_chinese_zero_seed_recall.py",
+    "test_cue_context_study.py",
+    "test_evidence_utility.py",
+    "test_evidence_utility_integration.py",
+    "test_focused_context.py",
+    "test_independent_membership_continuation.py",
+    "test_interpretation_policy_v3.py",
+    "test_interpretation_policy_v4.py",
+    "test_local_sentinel_resumption.py",
+    "test_membership_checkpoint_finalization.py",
+    "test_membership_contract_boundaries.py",
+    "test_membership_evidence_boundary_adjudication.py",
+    "test_membership_ordinal_data.py",
+    "test_membership_resume.py",
+    "test_membership_teacher_capability.py",
+    "test_memory_navigation.py",
+    "test_metadata_publication.py",
+    "test_native_english_review.py",
+    "test_native_membership_preparation.py",
+    "test_native_membership_sources.py",
+    "test_native_qualification_coverage_comparison.py",
+    "test_native_qualification_coverage_sources.py",
+    "test_native_qualification_extension.py",
+    "test_native_semantics_packet.py",
+    "test_natural_interpretation_validation.py",
+    "test_original_32_ledger.py",
+    "test_pointwise_membership.py",
+    "test_pointwise_membership_audit.py",
+    "test_runtime_ambiguity.py",
+    "test_source_blocks.py",
+    "test_source_support.py",
+    "test_turn_association_study.py",
+]
+
 
 @pytest.fixture(scope="session")
 def chinese_cases():
