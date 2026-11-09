@@ -48,6 +48,29 @@ _PHASE_9_SPRAWL_DEPENDENT_TESTS = {
     # (see `.gitignore:101-103`). Same sentinel pattern: ignore when absent.
     "test_chinese_retrieval_study.py": "benchmarks/scripts/phase9_chinese_retrieval_run.py",
     "test_recall_distinct_evidence.py": "benchmarks/scripts/phase9_recall_diagnosis.py",
+    # Tracked tests whose test-function bodies read gitignored research
+    # artifacts or import gitignored sibling tests. They collect fine but fail
+    # at runtime on a fresh clone. Same sentinel pattern.
+    "test_context_allocation_integration.py": "docs/experiments/phase-9-memory-navigation/run-episode-context-v1.py",
+    "test_interpretation_packet.py": "docs/experiments/phase-9-memory-navigation/run-interpretation-source-v2.py",
+    "test_native_local_backend.py": "docs/experiments/phase-9-memory-navigation/run-membership-native-sentinel-v1.py",
+    "test_prompt_interference.py": "docs/experiments/phase-9-memory-navigation/run-prompt-interference-v1.py",
+    "test_prompt_interference_audit.py": "docs/experiments/phase-9-memory-navigation/run-prompt-interference-v1.py",
+    "test_recall_carryover.py": "docs/experiments/phase-9-recall-carryover/evaluation-v2.json",
+    "test_request_headroom.py": "docs/experiments/phase-9-memory-navigation/request-headroom-development-freeze-v1.json",
+    "test_runtime_context_selection.py": "docs/experiments/phase-9-runtime-context-selection/before.json",
+    "test_tongyi_interpretation_screen.py": "docs/experiments/phase-9-memory-navigation/run-tongyi-interpretation-screen-v1.py",
+    # Runtime body reads `.data/` payloads provisioned by `benchmarks/scripts/
+    # provision_*.py` (gitignored per `.gitignore:38 .data/`). Fresh clones
+    # don't have `.data/` until a provision step runs.
+    "test_runtime_decision_separation.py": ".data/application_context/runtime-report-residuals-v1/hosted-run/report.json",
+    # Tracked tests that import gitignored sibling test modules. The sentinel
+    # is the sibling file itself; its absence means the import will fail.
+    "test_compact_membership_format4.py": "tests/test_reporting_membership_session.py",
+    "test_focused_context_review.py": "tests/test_cue_context_study.py",
+    "test_focused_context_study.py": "tests/test_cue_context_study.py",
+    "test_native_membership_batch.py": "tests/test_native_semantics_packet.py",
+    "test_offline_local_deadlines.py": "tests/test_membership_local_sentinel.py",
 }
 collect_ignore = [
     name
