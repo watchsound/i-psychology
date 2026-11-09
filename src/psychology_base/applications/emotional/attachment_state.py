@@ -80,11 +80,11 @@ LIKERT_MID: float = 4.0
 # a per-turn-normalised rate ∈ [0, 1]). Chosen so saturated-positive +
 # zero-negative lands at or near LIKERT_MAX, and vice-versa.
 _W_MIRROR: float = 1.5
-_W_REPAIR: float = 1.0
-_W_CONSISTENCY: float = 0.5
-_W_RUPTURE: float = -1.0
-_W_SYCOPHANCY: float = -1.0
-_W_OVER_DISCLOSURE: float = -0.8
+_W_REPAIR: float = 0.5
+_W_CONSISTENCY: float = 0.75
+_W_RUPTURE: float = -2.0
+_W_SYCOPHANCY: float = -1.5
+_W_OVER_DISCLOSURE: float = -1.6
 
 # Cross-session trust EMA — recent session weighted higher than history
 # but history has a floor contribution. Matches the Woebot adaptation
