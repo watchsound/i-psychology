@@ -1,0 +1,11 @@
+{
+  "min_ratio_cell": {
+    "policy": "baseline",
+    "schedule": "MonthlySchedule",
+    "ep_long": 5000,
+    "ratio": 0.9894057726775695
+  },
+  "max_ep_long_at_or_above_0_80": 10000,
+  "broken_cells_below_0_80": [],
+  "verdict": "PASS: \u7ef5\u5ef6 ratio \u2265 0.80 holds across the full sweep horizon."
+}
