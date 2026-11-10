@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import math
 import re
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from statistics import mean
@@ -248,6 +249,8 @@ def administer_wai_sr_simulated(
     subject_noun: str = "Companion",
     scope_hint: str | None = None,
     temperature_override: float | None = None,
+    sample_count: int = 1,
+    samples_out: dict[int, tuple[int, ...]] | None = None,
 ) -> WAISRResponseSet:
     """Administer the 5-item WAI-SR to a simulated seeker.
 
@@ -269,7 +272,24 @@ def administer_wai_sr_simulated(
     mutable ``temperature`` attribute (as :func:`make_llm_simulated_user`
     does); silently ignored on seekers without that attribute so
     scripted-test shims continue to work.
+
+    ``sample_count`` draws N independent replies per item (default 1 =
+    byte-identical). When N > 1, the returned :class:`WAISRResponseSet`
+    carries the modal pick per item (Counter.most_common; insertion-order
+    tie-break), and — if ``samples_out`` is provided — the raw sample
+    tuple per item is filled into that dict keyed by ``item_id``. This is
+    the variance-emit probe: the WAI-SR integer parse-target reports a
+    single mode per administration, but the seeker's internal rating
+    distribution may be dispersed; ``samples_out`` exposes that
+    dispersion to the caller without changing the back-compat return
+    contract. Each repeated call drives the seeker's closure forward one
+    turn just like a single call — the sampled replies see the seeker's
+    growing history across its own rating turns, not a reset state.
     """
+    if sample_count < 1:
+        raise ValueError(
+            f"sample_count must be >= 1, got {sample_count}"
+        )
     should_swap = temperature_override is not None and hasattr(
         seeker, "temperature"
     )
@@ -289,8 +309,16 @@ def administer_wai_sr_simulated(
                 prompt = f"{scope_hint} {rating_line}"
             else:
                 prompt = rating_line
-            reply = seeker(prompt)
-            score = _parse_likert(reply)
+            raw_samples: list[int] = []
+            for _ in range(sample_count):
+                reply = seeker(prompt)
+                raw_samples.append(_parse_likert(reply))
+            if samples_out is not None:
+                samples_out[item_id] = tuple(raw_samples)
+            if len(raw_samples) == 1:
+                score = raw_samples[0]
+            else:
+                score = Counter(raw_samples).most_common(1)[0][0]
             responses.append(
                 WAISRResponse(item_id=item_id, subscale=subscale, score=score)
             )

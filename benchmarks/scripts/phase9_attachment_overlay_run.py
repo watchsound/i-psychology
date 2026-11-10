@@ -53,7 +53,8 @@ import time
 from pathlib import Path
 from statistics import mean, pstdev
 
-sys.stdout.reconfigure(line_buffering=True)
+if sys.stdout is not None:
+    sys.stdout.reconfigure(line_buffering=True)
 
 REPO = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(REPO / "src"))
@@ -262,6 +263,7 @@ def _run_one_user(
     scope_hint: str | None = None,
     seeker_factory=None,
     wai_sr_temperature: float | None = None,
+    wai_sr_samples: int = 1,
 ) -> dict:
     """Score one MSC conversation under both traces.
 
@@ -288,6 +290,7 @@ def _run_one_user(
     state = AttachmentState(user_id=user_id)
     behavior_series: list[float] = []
     llm_series: list[float] = []
+    within_sample_std_series: list[float] = []
     per_session: list[dict] = []
     handoff = False
 
@@ -324,6 +327,10 @@ def _run_one_user(
         state = beh_report.new_state
 
         # WAI-SR administration (LLM-reported bond for this session).
+        session_wai_sr_samples: dict[int, tuple[int, ...]] | None = (
+            {} if wai_sr_samples > 1 else None
+        )
+        session_within_sample_std: float | None = None
         try:
             admin_ts = session_start + _dt.timedelta(
                 seconds=30.0 * max_turns_per_session + 60.0
@@ -334,8 +341,18 @@ def _run_one_user(
                 administered_at_seconds=admin_ts.timestamp(),
                 scope_hint=scope_hint,
                 temperature_override=wai_sr_temperature,
+                sample_count=wai_sr_samples,
+                samples_out=session_wai_sr_samples,
             )
             llm_bond = score_wai_sr(rs).bond
+            if session_wai_sr_samples:
+                per_item_stds = [
+                    pstdev(list(samples))
+                    for samples in session_wai_sr_samples.values()
+                    if len(samples) >= 2
+                ]
+                if per_item_stds:
+                    session_within_sample_std = mean(per_item_stds)
         except Exception as exc:  # parse failure, etc. — skip LLM for this session
             llm_bond = None
             print(
@@ -345,22 +362,29 @@ def _run_one_user(
         if llm_bond is not None:
             behavior_series.append(beh_report.session_bond_estimate)
             llm_series.append(llm_bond)
+            if session_within_sample_std is not None:
+                within_sample_std_series.append(session_within_sample_std)
 
-        per_session.append(
-            {
-                "session_id": session.session_id,
-                "n_companion_turns": beh_report.companion_turns_scored,
-                "behavior_bond": beh_report.session_bond_estimate,
-                "llm_bond": llm_bond,
-                "mirror_hits": beh_report.mirror_hits,
-                "rupture_hits": beh_report.rupture_hits,
-                "repair_hits": beh_report.repair_hits,
-                "sycophancy_hits": beh_report.sycophancy_hits,
-                "over_disclosure_hits": beh_report.over_disclosure_hits,
-                "consistency_hits": beh_report.consistency_hits,
-                "trust_ema_after": state.trust_ema,
+        session_record: dict = {
+            "session_id": session.session_id,
+            "n_companion_turns": beh_report.companion_turns_scored,
+            "behavior_bond": beh_report.session_bond_estimate,
+            "llm_bond": llm_bond,
+            "mirror_hits": beh_report.mirror_hits,
+            "rupture_hits": beh_report.rupture_hits,
+            "repair_hits": beh_report.repair_hits,
+            "sycophancy_hits": beh_report.sycophancy_hits,
+            "over_disclosure_hits": beh_report.over_disclosure_hits,
+            "consistency_hits": beh_report.consistency_hits,
+            "trust_ema_after": state.trust_ema,
+        }
+        if session_wai_sr_samples is not None:
+            session_record["wai_sr_item_samples"] = {
+                str(item_id): list(samples)
+                for item_id, samples in session_wai_sr_samples.items()
             }
-        )
+            session_record["within_sample_std_mean"] = session_within_sample_std
+        per_session.append(session_record)
         if transcript.handoff_triggered:
             handoff = True
             break
@@ -368,6 +392,9 @@ def _run_one_user(
     convergence = compute_trajectory_convergence(behavior_series, llm_series)
     llm_bond_std = pstdev(llm_series) if len(llm_series) >= 2 else 0.0
     behavior_bond_std = pstdev(behavior_series) if len(behavior_series) >= 2 else 0.0
+    mean_within_sample_std = (
+        mean(within_sample_std_series) if within_sample_std_series else None
+    )
     return {
         "user_id": user_id,
         "conversation_id": convo.conversation_id,
@@ -379,6 +406,7 @@ def _run_one_user(
         "max_divergence_session_index": convergence.max_divergence_session_index,
         "llm_bond_std": llm_bond_std,
         "behavior_bond_std": behavior_bond_std,
+        "mean_within_sample_std": mean_within_sample_std,
         "final_trust_ema": state.trust_ema,
         "final_behavior_bond": behavior_series[-1] if behavior_series else None,
         "final_llm_bond": llm_series[-1] if llm_series else None,
@@ -406,6 +434,11 @@ def _aggregate(user_runs: list[dict]) -> dict:
     final_trust = [r["final_trust_ema"] for r in user_runs]
     llm_stds = [r["llm_bond_std"] for r in user_runs if r["n_paired_sessions"] >= 2]
     behavior_stds = [r["behavior_bond_std"] for r in user_runs if r["n_paired_sessions"] >= 2]
+    within_sample_stds = [
+        r["mean_within_sample_std"]
+        for r in user_runs
+        if r.get("mean_within_sample_std") is not None
+    ]
     return {
         "n_users": len(user_runs),
         "n_users_pearson_scoreable": len(scoreable),
@@ -414,6 +447,12 @@ def _aggregate(user_runs: list[dict]) -> dict:
         "mean_llm_bond_std": mean(llm_stds) if llm_stds else 0.0,
         "mean_behavior_bond_std": mean(behavior_stds) if behavior_stds else 0.0,
         "max_llm_bond_std": max(llm_stds) if llm_stds else 0.0,
+        "mean_within_sample_std": (
+            mean(within_sample_stds) if within_sample_stds else None
+        ),
+        "max_within_sample_std": (
+            max(within_sample_stds) if within_sample_stds else None
+        ),
         "mean_final_behavior_bond": mean(final_behavior) if final_behavior else 0.0,
         "mean_final_llm_bond": mean(final_llm) if final_llm else 0.0,
         "mean_final_trust_ema": mean(final_trust) if final_trust else 0.0,
@@ -509,6 +548,20 @@ def build_parser() -> argparse.ArgumentParser:
             "flatness ceiling with overlapping semantics)."
         ),
     )
+    p.add_argument(
+        "--wai-sr-samples",
+        type=int,
+        default=1,
+        help=(
+            "Draw N independent replies per WAI-SR item at the seeker's "
+            "sampling temperature and emit the raw per-item sample arrays "
+            "alongside the modal-pick Bond score. Probes whether the "
+            "seeker's internal rating distribution is genuinely peaked "
+            "(single integer repeatedly) or dispersed-but-mode-reported. "
+            "Default 1 is byte-identical to prior baselines. Composable "
+            "with every other flag."
+        ),
+    )
     return p
 
 
@@ -543,6 +596,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.per_session_seeker and args.persona_reroll_per_session:
         raise SystemExit(
             "--per-session-seeker and --persona-reroll-per-session are mutually exclusive."
+        )
+    if args.wai_sr_samples < 1:
+        raise SystemExit(
+            f"--wai-sr-samples must be >= 1, got {args.wai_sr_samples}"
         )
     if args.session_scoped_wai_sr:
         scope_hint = args.scope_hint or SESSION_SCOPE_HINT
@@ -592,6 +649,7 @@ def main(argv: list[str] | None = None) -> int:
                 scope_hint=scope_hint,
                 seeker_factory=seeker_factory,
                 wai_sr_temperature=args.wai_sr_temperature,
+                wai_sr_samples=args.wai_sr_samples,
             )
         except Exception as exc:
             print(f"  [{idx+1}/{len(convs)}] {convo.conversation_id}: FAIL {exc!r}")
@@ -643,6 +701,7 @@ def main(argv: list[str] | None = None) -> int:
         "per_session_seeker": bool(args.per_session_seeker),
         "persona_reroll_per_session": bool(args.persona_reroll_per_session),
         "wai_sr_temperature": args.wai_sr_temperature,
+        "wai_sr_samples": args.wai_sr_samples,
         "scope_hint_variant": scope_hint_variant,
         "scope_hint": scope_hint,
         "cohort": cohort,

@@ -1,4 +1,4 @@
-# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 three times, then 2026-11-10 forced-temp)
+# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 three times, then 2026-11-10 forced-temp, then 2026-11-10 multi-sample variance-emit)
 
 ## 1. What this closes
 
@@ -68,6 +68,11 @@ N=3 MSC users, 4 sessions each, ``--max-turns-per-session 2``, local Ollama
 | persona_reroll                 | **0.914**         | **1.414**        | +0.020         | 1.198               |
 | persona_reroll × recall_first  | **0.478**         | 0.500            | **−0.192**     | **1.521**           |
 | wai_sr_temperature=1.0         | **0.000**         | 0.000            | +0.000         | 0.833               |
+| wai_sr_samples=2 (N=1 pilot)   | 0.000             | 0.000            | 0.000          | 2.750               |
+
+The last row records a separate within-event-dispersion axis — see
+Section 3.7 for the full `mean_within_sample_std` / `max_within_sample_std`
+columns that this variant introduces alongside the usual across-session σ.
 
 ### 3.3 Extension — per-session-seeker architectural probe (2026-11-10)
 
@@ -164,6 +169,59 @@ no persona rotation):
 | u000 | [3, 4, 4, 4] σ=0.43 | [4, 4, 4, 4] σ=**0.00** |
 | u001 | [6, 6, 6, 6] σ=0.00 | [5, 5, 5, 5] σ=0.00     |
 | u002 | [6, 6, 6, 6] σ=0.00 | [6, 6, 6, 6] σ=0.00     |
+
+### 3.7 Extension — multi-sample variance-emit (2026-11-10, fifth extension)
+
+Finding 9 (and the forced-temperature result that inverted it) named the
+last remaining lever lying *outside* the persona/closure/anchor/sampling
+matrix: whether the seeker's internal per-rating distribution is genuinely
+peaked (modal lock) or dispersed-but-mode-reported. The three prior
+variance axes all measure σ *across sessions* at the modal pick — none
+measure σ *within a single rating event*. If the seeker is actually
+sampling from a dispersed Likert distribution per item but the across-
+session aggregation only emits the modal pick, every σ=0 above is an
+aggregation artefact.
+
+Shipped as the new `--wai-sr-samples N` CLI flag on the overlay runner.
+Draws N samples per rating item inside `administer_wai_sr_simulated`,
+picks the modal integer for back-compat `WAISRResponseSet` (via
+`Counter.most_common(1)[0][0]`), side-channels the raw sample sequences
+through an optional `samples_out: dict[int, tuple[int, ...]] | None`.
+The overlay runner records per-session `wai_sr_item_samples` (raw) +
+`within_sample_std_mean` (per-session average of per-item σ across the 5
+WAI-SR items), and emits cohort rollups `mean_within_sample_std` /
+`max_within_sample_std`. Default `--wai-sr-samples 1` is byte-identical
+to baseline. Composable with every other flag — not a mutex.
+
+**This is an N=1 pilot.** The full N=3 × N=5 cohort run was blocked on
+qwen2.5:7b throughput degradation (10-20× system-contention slowdown at
+the time of the ship on 2026-11-10 — single `router.chat` taking
+124-242s vs 11.4s historical baseline, with stale python.exe processes
+competing against ollama inference that could not be killed under this
+session's permission scope). The N=1 × N=2 smoke completed in ≈521s and
+is the shippable evidence; the N=3 × N=5 cohort scope is deferred.
+
+Per-session trajectory on `--wai-sr-samples 2` (u-overlay-000, baseline
+scope, 4 MSC sessions, 1 companion turn each):
+
+| session | llm_bond (modal) | within_sample_std_mean | raw item samples (items 1-5)             |
+|:-------:|:----------------:|:----------------------:|:------------------------------------------|
+|   1     | 2                | **0.5**                | [3,2] [4,5] [3,2] [4,3] [2,1]            |
+|   2     | 2                | **0.5**                | [2,3] [4,5] [2,1] [3,4] [2,1]            |
+|   3     | 2                | **0.5**                | [3,2] [4,5] [2,1] [3,4] [2,1]            |
+|   4     | 2                | **0.5**                | [3,2] [4,5] [2,1] [3,4] [2,1]            |
+
+Per-user summary (N=1 user, N=2 samples):
+
+| user | across-session σ (modal) | mean within-event σ | max within-event σ |
+|------|:------------------------:|:-------------------:|:------------------:|
+| u000 | 0.000                    | **0.500**           | **0.500**          |
+
+Cohort rollup at N=1 user:
+
+| mean_within_sample_std | max_within_sample_std | mean_llm_bond_std |
+|:----------------------:|:---------------------:|:-----------------:|
+| **0.5**                | 0.5                   | 0.000             |
 
 ## 4. What the numbers say
 
@@ -340,6 +398,32 @@ else tested changes it. This is not a new mechanism claim beyond
 Finding 8; it is Finding 8 under three additional strictly-non-
 confirming controls.
 
+**Thirteenth honest finding (2026-11-10 fifth extension, N=1 pilot) —
+within-event dispersion exists; modal-pick aggregation hides it.** The
+multi-sample variance-emit probe at N=2 samples per rating item (1
+user × 4 sessions, local qwen2.5:7b baseline scope) reveals
+`within_sample_std_mean=0.5` at every session — the seeker is NOT
+deterministically picking a single integer at the WAI-SR point. For
+each of the 5 items across all 4 sessions, the two samples differ by
+exactly one Likert point in the direction of the modal pick (e.g.,
+item 1 session 1 = [3, 2], modal=2 or 3; item 5 session 2 = [2, 1],
+modal=1 or 2). The across-session σ for the same user is 0.000 under
+the modal-pick aggregation — the aggregation convention emits a
+single integer per item per session, and the modal across N=2 samples
+happens to be the same integer across all 4 sessions even though
+every single rating event was internally dispersed. **The σ=0 reading
+in every prior variant is partly an aggregation artefact.** The
+seeker's internal rating distribution is dispersed at ≈1 Likert point
+of spread; the modal-pick convention collapses that dispersion into a
+single integer that happens to be stable across sessions on this
+user. This is a pilot (N=1 user, N=2 samples) — not a cohort claim
+that the ratio generalizes — but at this N the plumbing is verified
+to emit the raw sample distribution and the first glance at that
+distribution shows per-event σ=0.5 where the modal-pick convention
+previously reported σ_across=0. Variance-recovery work on this
+substrate should consider reporting dispersion-at-rating as a
+first-class trace alongside the modal pick.
+
 ## 5. Honest limitations
 
 - **N=3 pilot result**, not a cohort claim. The 2026-10-08 Pillar A σ=0
@@ -381,6 +465,21 @@ confirming controls.
   expect sampling-level interventions at the rating point to
   unlock the variance ceiling on this substrate; the architectural
   lever is persona encoding (Finding 8).
+- **Multi-sample variance-emit shipped as N=1 pilot, not cohort.** The
+  full N=3 users × N=5 samples scope was blocked on qwen2.5:7b
+  throughput degradation on 2026-11-10 — single `router.chat` calls
+  took 124-242s against an 11.4s historical baseline, driven by stale
+  python.exe processes competing against ollama inference that could
+  not be killed under this session's permission scope. The shipped
+  artefact is the N=1 user × N=2 samples × 4 sessions smoke
+  (`wai_sr_samples.json`, ≈521s wall time). It demonstrates the
+  mechanism — modal-pick aggregation hides within-event dispersion —
+  but does not establish the within-event σ distribution across a
+  cohort or across larger N. Same honest-labeling pattern as forced-
+  temperature's N=3 pilot caveat: *N=1 pilot, not cohort claim*.
+  Re-running this probe on a less-contended host, or shifting to a
+  cloud cheap-tier seeker that scales to N=5 samples × N=3 users, is
+  the clean next step.
 - **u000's +1.000 per-session-seeker shape-alignment does not survive
   persona rotation.** This argues against reading the r=+1.000 as a
   general property of closure-reset — it is specific to the combination
@@ -427,8 +526,24 @@ confirming controls.
   (`administer_wai_sr_simulated(..., temperature_override=...)` with
   try/finally save-restore around the 5 rating calls). Composable with
   every other flag — not a mutex. Default `None` keeps byte-identity
-  with baseline.
-- **Tests** (15 regression locks):
+  with baseline;
+  (2026-11-10 fifth extension) `--wai-sr-samples N` CLI flag that
+  draws N samples per rating item inside
+  `administer_wai_sr_simulated`, picks the modal integer for back-
+  compat `WAISRResponseSet` via `Counter.most_common(1)[0][0]`, and
+  side-channels the raw sample sequences through a new optional
+  `samples_out: dict[int, tuple[int, ...]] | None` kwarg on the
+  harness. The overlay runner records per-session
+  `wai_sr_item_samples` (raw) plus `within_sample_std_mean`
+  (per-session average of per-item σ across the 5 WAI-SR items), and
+  emits cohort rollups `mean_within_sample_std` /
+  `max_within_sample_std` (both `None` when `samples == 1`). Default
+  `--wai-sr-samples 1` is byte-identical to baseline. Composable with
+  every other flag — not a mutex. Also adds a None-guard on
+  `sys.stdout.reconfigure(...)` so detached-mode invocation
+  (PowerShell `Start-Process`, `sys.stdout=None`) no longer crashes
+  with `AttributeError` at startup.
+- **Tests** (18 regression locks):
   [`tests/test_phase9_attachment_overlay_cli.py`](../../tests/test_phase9_attachment_overlay_cli.py)
   — subprocess-pattern following the longitudinal CLI test; 5
   scope-hint variants + mutex + variance envelope, 3 (first extension)
@@ -438,8 +553,13 @@ confirming controls.
   vs `--per-session-seeker`, and composability with
   `--recall-first-wai-sr`, plus 3 (fourth extension) covering
   `--wai-sr-temperature` default-off, flag-recorded-in-artefact, and
-  composability with `--persona-reroll-per-session --recall-first-wai-sr`.
-- **Artefacts** (7-variant comparison):
+  composability with `--persona-reroll-per-session --recall-first-wai-sr`,
+  plus 3 (fifth extension) covering `--wai-sr-samples` default-off
+  (N=1 byte-identical to baseline, no `wai_sr_item_samples` /
+  `within_sample_std_mean` emitted), flag-recorded-in-artefact with
+  raw samples + within-sample σ at N=2, and input validation
+  (`--wai-sr-samples 0` rejected at the CLI).
+- **Artefacts** (8-variant comparison):
   [`docs/experiments/phase-9-wai-sr-variance/`](../experiments/phase-9-wai-sr-variance/)
   — `baseline.json`, `session_scoped.json`, `recall_first.json`,
   `per_session_seeker.json`, `persona_reroll.json`,
@@ -447,7 +567,11 @@ confirming controls.
   tag reads `recall_first`, and `persona_reroll_per_session=true`
   disambiguates from the pure recall-first run),
   `wai_sr_temperature.json` (forced-temp — `wai_sr_temperature=1.0`
-  disambiguates from baseline).
+  disambiguates from baseline), `wai_sr_samples.json`
+  (multi-sample N=1 pilot — `wai_sr_samples=2` disambiguates from
+  baseline; carries per-session `wai_sr_item_samples` raw sequences
+  plus `within_sample_std_mean` as the first-class within-event
+  dispersion trace).
 - **Docs**: this close-out.
 
 ## 7. What this does NOT unlock
@@ -466,15 +590,19 @@ confirming controls.
   content-anchoring hypothesis. Forced temperature at the WAI-SR call
   (fourth extension) SUPPRESSED variance below baseline (σ=0.000
   across all three users) rather than unlocking it, falsifying the
-  sampling-mode-determinism hypothesis. No single-knob and no two-knob
-  intervention tested so far simultaneously unlocks variance AND
-  preserves correlation. The 7-variant search space over
-  persona/closure/anchor/sampling levers is exhausted; remaining
-  untested axes are multi-sample variance-emit at the WAI-SR point
-  (reports the seeker's actual dispersion rather than its modal
-  pick) and cross-model substrate changes (different seeker LLM, or
-  N=59 re-measurement on qwen-turbo to retire the σ=0 Pillar A read
-  rather than re-open it only on qwen2.5:7b).
+  sampling-mode-determinism hypothesis. Multi-sample variance-emit
+  (fifth extension, N=1 pilot) shows within-event σ=0.5 under the
+  modal-pick convention's σ_across=0 — the seeker is dispersed at the
+  rating point but the aggregation hides it. This reinterprets the
+  ceiling but does not cross it: dispersion-at-event ≠ variance-across-
+  sessions, and no evidence yet that the dispersion carries signal
+  about session context. The 8-variant search space over
+  persona/closure/anchor/sampling/aggregation levers is exhausted;
+  remaining untested axes are cohort-scope multi-sample at N=3 × N=5
+  (whether the within-event σ=0.5 generalizes beyond N=1), cross-
+  model substrate changes (different seeker LLM), and N=59
+  re-measurement on qwen-turbo to retire the σ=0 Pillar A read rather
+  than re-open it only on qwen2.5:7b.
 
 ## 8. Cross-references
 

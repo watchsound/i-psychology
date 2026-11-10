@@ -207,3 +207,51 @@ def test_wai_sr_temperature_composes_with_persona_reroll(tmp_path: Path) -> None
     assert artefact["persona_reroll_per_session"] is True
     assert artefact["recall_first_wai_sr"] is True
     assert artefact["scope_hint_variant"] == "recall_first"
+
+
+def test_wai_sr_samples_default_off(tmp_path: Path) -> None:
+    out = tmp_path / "default.json"
+    result = _invoke(output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["wai_sr_samples"] == 1
+    # Cohort rollup absent when N=1 (no within-sample dispersion defined).
+    assert artefact["cohort"].get("mean_within_sample_std") is None
+    assert artefact["cohort"].get("max_within_sample_std") is None
+    # Per-session records omit the samples side-channel at N=1.
+    for run in artefact["per_user_runs"]:
+        assert run.get("mean_within_sample_std") is None
+        for s in run["per_session"]:
+            assert "wai_sr_item_samples" not in s
+
+
+def test_wai_sr_samples_flag_recorded_in_artefact(tmp_path: Path) -> None:
+    out = tmp_path / "samples.json"
+    result = _invoke("--wai-sr-samples", "3", output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["wai_sr_samples"] == 3
+    # Composable with every other flag — not a mutex.
+    assert artefact["scope_hint_variant"] == "baseline"
+    assert artefact["persona_reroll_per_session"] is False
+    assert artefact["wai_sr_temperature"] is None
+    # Per-session records carry the raw sample arrays when N>1.
+    scripted_sample_count_seen = False
+    for run in artefact["per_user_runs"]:
+        for s in run["per_session"]:
+            samples = s.get("wai_sr_item_samples")
+            if samples is None:
+                continue
+            scripted_sample_count_seen = True
+            # 5 items, N=3 samples each — every value is an int in [1,7].
+            assert set(samples.keys()) == {"1", "2", "3", "4", "5"}
+            for arr in samples.values():
+                assert len(arr) == 3
+                assert all(isinstance(x, int) and 1 <= x <= 7 for x in arr)
+    assert scripted_sample_count_seen
+
+
+def test_wai_sr_samples_rejects_zero(tmp_path: Path) -> None:
+    result = _invoke("--wai-sr-samples", "0", output=tmp_path / "bad.json")
+    assert result.returncode != 0
+    assert ">= 1" in result.stdout + result.stderr
