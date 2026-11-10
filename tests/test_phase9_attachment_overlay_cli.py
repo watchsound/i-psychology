@@ -97,3 +97,33 @@ def test_artefact_records_within_user_variance_stats(tmp_path: Path) -> None:
     for run in artefact["per_user_runs"]:
         assert "llm_bond_std" in run
         assert "behavior_bond_std" in run
+
+
+def test_per_session_seeker_flag_recorded_in_artefact(tmp_path: Path) -> None:
+    out = tmp_path / "per_session_seeker.json"
+    result = _invoke("--per-session-seeker", output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["per_session_seeker"] is True
+    # Composable with scope hints — not a mutex.
+    assert artefact["scope_hint_variant"] == "baseline"
+
+
+def test_per_session_seeker_default_off(tmp_path: Path) -> None:
+    out = tmp_path / "default.json"
+    result = _invoke(output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["per_session_seeker"] is False
+
+
+def test_per_session_seeker_composes_with_recall_first(tmp_path: Path) -> None:
+    out = tmp_path / "composed.json"
+    result = _invoke(
+        "--per-session-seeker", "--recall-first-wai-sr", output=out
+    )
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["per_session_seeker"] is True
+    assert artefact["scope_hint_variant"] == "recall_first"
+    assert artefact["recall_first_wai_sr"] is True

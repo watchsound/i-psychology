@@ -1,4 +1,4 @@
-# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09)
+# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10)
 
 ## 1. What this closes
 
@@ -59,11 +59,34 @@ N=3 MSC users, 4 sessions each, ``--max-turns-per-session 2``, local Ollama
 
 ### 3.2 Cohort rollup
 
-| variant        | mean_llm_bond_std | max_llm_bond_std | mean Pearson r | mean abs divergence |
-|----------------|:-----------------:|:----------------:|:--------------:|:-------------------:|
-| baseline       | **0.144**         | 0.433            | +0.058         | 0.729               |
-| session_scoped | **0.000**         | 0.000            | +0.000         | 1.479               |
-| recall_first   | **0.289**         | 0.433            | −0.053         | 0.792               |
+| variant            | mean_llm_bond_std | max_llm_bond_std | mean Pearson r | mean abs divergence |
+|--------------------|:-----------------:|:----------------:|:--------------:|:-------------------:|
+| baseline           | **0.144**         | 0.433            | +0.058         | 0.729               |
+| session_scoped     | **0.000**         | 0.000            | +0.000         | 1.479               |
+| recall_first       | **0.289**         | 0.433            | −0.053         | 0.792               |
+| per_session_seeker | **0.144**         | 0.433            | **+0.333**     | 1.250               |
+
+### 3.3 Extension — per-session-seeker architectural probe (2026-11-10)
+
+The 2-of-3 flatness ceiling observed under every prompt-level
+intervention motivated an architectural test: does the saturation
+hypothesis (that `make_llm_simulated_user` closure's accumulated history
+across MSC sessions is what pins u001/u002 at Bond=6) hold up when the
+seeker is rebuilt per-session?
+
+New CLI flag `--per-session-seeker` on the overlay runner wires a
+`seeker_factory` through `_run_one_user` and rebuilds the seeker at
+every session boundary (session 1 still uses the initial seeker so the
+backstory/opener is stable). Composable with the scope-hint flags —
+not a mutex.
+
+Per-user trajectories under `--per-session-seeker` (no scope hint):
+
+| user | baseline            | per_session_seeker  |
+|------|---------------------|---------------------|
+| u000 | [3, 4, 4, 4] σ=0.43 | [3, 3, 3, 2] σ=0.43 |
+| u001 | [6, 6, 6, 6] σ=0.00 | [6, 6, 6, 6] σ=0.00 |
+| u002 | [6, 6, 6, 6] σ=0.00 | [6, 6, 6, 6] σ=0.00 |
 
 ## 4. What the numbers say
 
@@ -109,6 +132,33 @@ dispersed ratings on most users. The one user who did vary (u000) did so
 identically under baseline and recall-first. Larger N or longer chains
 may change this — this is an N=3 pilot result, not a cohort claim.
 
+**Sixth honest finding (2026-11-10 extension) — the saturation
+hypothesis is falsified; the flatness is persona/content-driven, not
+closure-history-driven.** Rebuilding the seeker at every session
+boundary leaves `mean_llm_bond_std` unchanged at **0.144** (identical
+to baseline, identical max 0.433). u001 and u002 remain stuck at
+[6, 6, 6, 6] even when every session's seeker has zero prior-session
+memory. The persistent pinning is not an artefact of
+`make_llm_simulated_user`'s closure accumulating state — it is the
+seeker's persona + backstory + MSC session opener converging the
+rating line on a single value regardless of whether it has memory.
+**The next variance-recovery lever is NOT per-session-fresh seeker.**
+Plausible candidates remaining: forced temperature on just the WAI-SR
+call (currently 0.7 global), persona re-roll per session (not just
+closure-reset — resample backstory itself), multiple samples per
+rating with majority-vote or variance-emit.
+
+**Seventh honest finding — per-session-seeker IS the first variant to
+produce non-trivial Pearson r.** Mean r rises from +0.058 (baseline)
+to +0.333, driven by u000 achieving r=+1.000 on its 4-session
+trajectory: llm `[3, 3, 3, 2]` tracks behavior `[5.5, 5.5, 5.5, 4.75]`
+with a shared end-of-chain drop. Absolute divergence worsens (0.729 →
+1.250) because the fresh seeker pulls u000's ratings further from the
+behavior-trace magnitude — but **the shape converges**. This is an N=1
+existence proof that the two-trace architecture CAN align when the
+seeker's biases are not allowed to cement — a weaker claim than
+convergence, a stronger claim than "no signal exists."
+
 ## 5. Honest limitations
 
 - **N=3 pilot result**, not a cohort claim. The 2026-10-08 Pillar A σ=0
@@ -119,15 +169,18 @@ may change this — this is an N=3 pilot result, not a cohort claim.
   different model. It does NOT re-measure qwen-turbo cloud σ. The
   Pillar A finding as written is specific to qwen-turbo at the time of
   the 2026-10-08 ship.
-- **Two users still flat under every variant.** Recall-first breaks
-  flatness on u002 only. u001 is immovable to both prompt-level
-  anchors. Further interventions (persona re-roll per session / forced
-  temperature sampling / per-session fresh seeker — architectural, not
-  prompt-level) are plausible next steps if N=59 re-run confirms the
-  flatness persists under qwen2.5:7b at scale.
-- **Divergence vs behavior-trace is mostly unchanged.** Variance recovery
-  is necessary but not sufficient for convergence. The two-trace
-  architecture still produces near-zero Pearson r.
+- **Two users still flat under every variant tested, including the
+  architectural one.** Per-session-seeker (2026-11-10) rules out
+  closure-history saturation as the mechanism. Plausible next
+  candidates: forced-temperature on the WAI-SR call only, per-session
+  persona re-roll (resample backstory, not just closure-reset), or
+  multi-sample variance-emit. None scheduled.
+- **Divergence vs behavior-trace is mostly unchanged under the
+  prompt-level variants, but WORSE under per-session-seeker** (0.729 →
+  1.250). The fresh seeker pulls u000's absolute ratings further from
+  the behavior-trace magnitude — this is the cost of the +1.000
+  within-user Pearson it produced on that user. Variance recovery and
+  shape convergence are not the same axis as magnitude agreement.
 - **Local-mode execution-policy lift** required to run at all on
   qwen2.5:7b (600s request / 1800s operation via
   `offline_local_diagnostic=True`, matching
@@ -139,27 +192,40 @@ may change this — this is an N=3 pilot result, not a cohort claim.
 
 ## 6. Shippable artefacts
 
-- **Source change** (new CLI flag + variance recording):
+- **Source change** (new CLI flags + variance recording + architectural
+  probe):
   [`benchmarks/scripts/phase9_attachment_overlay_run.py`](../../benchmarks/scripts/phase9_attachment_overlay_run.py)
   — `RECALL_FIRST_HINT` constant, `--recall-first-wai-sr` CLI flag with
   mutex vs `--session-scoped-wai-sr`, per-user `llm_bond_std`/
   `behavior_bond_std`, cohort `mean_llm_bond_std`/`max_llm_bond_std`/
-  `mean_behavior_bond_std`, `scope_hint_variant` tag, and
-  local-mode execution-policy lift via `offline_local_diagnostic=True`.
-- **Tests** (5 regression locks):
+  `mean_behavior_bond_std`, `scope_hint_variant` tag, local-mode
+  execution-policy lift via `offline_local_diagnostic=True`, and
+  (2026-11-10) `--per-session-seeker` CLI flag wiring a `seeker_factory`
+  through `_run_one_user` to rebuild the seeker at every session
+  boundary (session 1 keeps the initial seeker so the opener is stable).
+  Composable with scope-hint flags — not a mutex.
+- **Tests** (8 regression locks):
   [`tests/test_phase9_attachment_overlay_cli.py`](../../tests/test_phase9_attachment_overlay_cli.py)
-  — subprocess-pattern following the longitudinal CLI test.
-- **Artefacts** (3-variant comparison):
+  — subprocess-pattern following the longitudinal CLI test; 5 scope-hint
+  variants + mutex + variance envelope, plus 3 (2026-11-10) covering
+  `--per-session-seeker` default-off, tagging, and composability with
+  `--recall-first-wai-sr`.
+- **Artefacts** (4-variant comparison):
   [`docs/experiments/phase-9-wai-sr-variance/`](../experiments/phase-9-wai-sr-variance/)
-  — `baseline.json`, `session_scoped.json`, `recall_first.json`.
+  — `baseline.json`, `session_scoped.json`, `recall_first.json`,
+  `per_session_seeker.json`.
 - **Docs**: this close-out.
 
 ## 7. What this does NOT unlock
 
 - A new Pillar A finding. σ=0 under qwen-turbo at N=59 stands as written.
 - A new Companion default. The default `administer_wai_sr_simulated`
-  path is still no scope hint.
-- Two-trace convergence. Pearson r ≈ 0 under every variant.
+  path is still no scope hint and the default seeker is still the
+  single-closure path.
+- Full two-trace convergence. Mean Pearson r ≈ 0 under all three
+  prompt-level variants. Per-session-seeker lifts mean r to +0.333,
+  driven entirely by one user hitting r=+1.000 — an N=1 existence
+  proof of shape alignment, not a cohort convergence claim.
 
 ## 8. Cross-references
 

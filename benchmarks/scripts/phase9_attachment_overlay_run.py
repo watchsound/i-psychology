@@ -217,6 +217,7 @@ def _run_one_user(
     seeker: SimulatedUser,
     max_turns_per_session: int,
     scope_hint: str | None = None,
+    seeker_factory=None,
 ) -> dict:
     """Score one MSC conversation under both traces.
 
@@ -224,6 +225,11 @@ def _run_one_user(
     state. ``behavior_bond_series`` and ``llm_bond_series`` are same-length
     (one entry per completed session where both measurements succeeded).
     Handoff mid-chain truncates both series at the same session index.
+
+    ``seeker_factory`` (optional, no-arg callable): if provided, rebuild
+    the seeker at every session boundary so the closure history cannot
+    saturate across sessions. The initial ``seeker`` argument is still
+    used for the first session (so the backstory/opener remains stable).
     """
     user_id = f"u-overlay-{user_idx:03d}"
     session_id = f"s-overlay-{user_idx:03d}"
@@ -243,9 +249,11 @@ def _run_one_user(
 
     base = BASE_TS + _dt.timedelta(days=user_idx * 60)
     cumulative_days = 0.0
-    for session in convo.sessions:
+    for session_idx, session in enumerate(convo.sessions):
         cumulative_days += session.time_interval_days
         session_start = base + _dt.timedelta(days=cumulative_days)
+        if seeker_factory is not None and session_idx > 0:
+            seeker = seeker_factory()
         try:
             transcript = run_msc_session(
                 session,
@@ -416,6 +424,18 @@ def build_parser() -> argparse.ArgumentParser:
             "--session-scoped-wai-sr / --recall-first-wai-sr is set."
         ),
     )
+    p.add_argument(
+        "--per-session-seeker",
+        action="store_true",
+        help=(
+            "Rebuild the simulated seeker at every session boundary so the "
+            "closure history cannot saturate across sessions. Probes the "
+            "architectural hypothesis behind the 2-of-3 within-user "
+            "flatness ceiling observed under prompt-level interventions. "
+            "Loses persona-continuity across sessions; use alongside the "
+            "scope-hint flags, not as a replacement for them."
+        ),
+    )
     return p
 
 
@@ -462,8 +482,16 @@ def main(argv: list[str] | None = None) -> int:
     for idx, convo in enumerate(convs):
         if args.mode == "scripted":
             seeker = _make_scripted_seeker()
+            seeker_factory = (
+                _make_scripted_seeker if args.per_session_seeker else None
+            )
         else:
             seeker = make_msc_seeker(router, convo)
+            seeker_factory = (
+                (lambda convo=convo: make_msc_seeker(router, convo))
+                if args.per_session_seeker
+                else None
+            )
         t_u = time.time()
         try:
             run = _run_one_user(
@@ -473,6 +501,7 @@ def main(argv: list[str] | None = None) -> int:
                 seeker=seeker,
                 max_turns_per_session=args.max_turns_per_session,
                 scope_hint=scope_hint,
+                seeker_factory=seeker_factory,
             )
         except Exception as exc:
             print(f"  [{idx+1}/{len(convs)}] {convo.conversation_id}: FAIL {exc!r}")
@@ -521,6 +550,7 @@ def main(argv: list[str] | None = None) -> int:
         "max_turns_per_session": args.max_turns_per_session,
         "session_scoped_wai_sr": bool(args.session_scoped_wai_sr),
         "recall_first_wai_sr": bool(args.recall_first_wai_sr),
+        "per_session_seeker": bool(args.per_session_seeker),
         "scope_hint_variant": scope_hint_variant,
         "scope_hint": scope_hint,
         "cohort": cohort,
