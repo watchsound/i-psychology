@@ -51,7 +51,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from statistics import mean
+from statistics import mean, pstdev
 
 sys.stdout.reconfigure(line_buffering=True)
 
@@ -102,6 +102,13 @@ SESSION_SCOPE_HINT = (
     "answering, not your overall sense of this relationship."
 )
 
+RECALL_FIRST_HINT = (
+    "Before answering, briefly recall ONE concrete moment from THIS most recent "
+    "session (not earlier sessions). In one short sentence, say what the "
+    "companion did or said in that moment. Then rate the statement based on "
+    "how it felt in THIS session only."
+)
+
 
 # ---------------------------------------------------------------------------
 # Scripted-mode shims (zero LLM, CI-safe plumbing check)
@@ -146,10 +153,24 @@ def _make_scripted_seeker() -> SimulatedUser:
 def _config_with_overrides(mode: str):
     cfg = load_config()
     if mode == "local":
+        # Local Ollama (qwen2.5:7b) generates far slower than the
+        # production-paid 60s per-request / 60s per-operation defaults —
+        # a single Companion turn with prior history can exceed 60s on a
+        # 7B model. Lift deadlines via the ``offline_local_diagnostic``
+        # escape hatch (same pattern as
+        # ``local_membership_diagnostic.py``) so the WAI-SR variance
+        # experiment can complete.
+        from psychology_base.llm.execution import ExecutionPolicy
         cfg = _dc.replace(
             cfg,
             local_ollama=_dc.replace(
                 cfg.local_ollama, enabled=True, force_cloud_chat=False
+            ),
+            execution=ExecutionPolicy(
+                mode="local",
+                request_timeout_s=600.0,
+                operation_timeout_s=1800.0,
+                offline_local_diagnostic=True,
             ),
         )
     elif mode == "cloud":
@@ -292,6 +313,8 @@ def _run_one_user(
             break
 
     convergence = compute_trajectory_convergence(behavior_series, llm_series)
+    llm_bond_std = pstdev(llm_series) if len(llm_series) >= 2 else 0.0
+    behavior_bond_std = pstdev(behavior_series) if len(behavior_series) >= 2 else 0.0
     return {
         "user_id": user_id,
         "conversation_id": convo.conversation_id,
@@ -301,6 +324,8 @@ def _run_one_user(
         "mean_abs_divergence": convergence.mean_abs_divergence,
         "max_divergence": convergence.max_divergence,
         "max_divergence_session_index": convergence.max_divergence_session_index,
+        "llm_bond_std": llm_bond_std,
+        "behavior_bond_std": behavior_bond_std,
         "final_trust_ema": state.trust_ema,
         "final_behavior_bond": behavior_series[-1] if behavior_series else None,
         "final_llm_bond": llm_series[-1] if llm_series else None,
@@ -326,11 +351,16 @@ def _aggregate(user_runs: list[dict]) -> dict:
         r["final_llm_bond"] for r in user_runs if r["final_llm_bond"] is not None
     ]
     final_trust = [r["final_trust_ema"] for r in user_runs]
+    llm_stds = [r["llm_bond_std"] for r in user_runs if r["n_paired_sessions"] >= 2]
+    behavior_stds = [r["behavior_bond_std"] for r in user_runs if r["n_paired_sessions"] >= 2]
     return {
         "n_users": len(user_runs),
         "n_users_pearson_scoreable": len(scoreable),
         "mean_pearson_r": mean(pearsons) if pearsons else 0.0,
         "mean_abs_divergence": mean(divergences) if divergences else 0.0,
+        "mean_llm_bond_std": mean(llm_stds) if llm_stds else 0.0,
+        "mean_behavior_bond_std": mean(behavior_stds) if behavior_stds else 0.0,
+        "max_llm_bond_std": max(llm_stds) if llm_stds else 0.0,
         "mean_final_behavior_bond": mean(final_behavior) if final_behavior else 0.0,
         "mean_final_llm_bond": mean(final_llm) if final_llm else 0.0,
         "mean_final_trust_ema": mean(final_trust) if final_trust else 0.0,
@@ -366,12 +396,24 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument(
+        "--recall-first-wai-sr",
+        action="store_true",
+        help=(
+            "Prepend a recall-first hint instructing the seeker to recall "
+            "ONE concrete moment from THIS session before rating. "
+            "Mutually exclusive with --session-scoped-wai-sr. The parse "
+            "logic takes the first integer in [1,7] so the recall "
+            "sentence is naturally ignored. Probes whether prompt-level "
+            "session anchoring recovers within-user variance."
+        ),
+    )
+    p.add_argument(
         "--scope-hint",
         type=str,
         default=None,
         help=(
-            "Override the default scope hint text. Only consulted when "
-            "--session-scoped-wai-sr is set."
+            "Override the preset hint text. Only consulted when one of "
+            "--session-scoped-wai-sr / --recall-first-wai-sr is set."
         ),
     )
     return p
@@ -401,10 +443,19 @@ def main(argv: list[str] | None = None) -> int:
         responder = make_llm_responder(router, tier=tier)
     print(f"Routing [mode={args.mode} tier={args.tier}]: {routing_note}")
 
+    if args.session_scoped_wai_sr and args.recall_first_wai_sr:
+        raise SystemExit(
+            "--session-scoped-wai-sr and --recall-first-wai-sr are mutually exclusive."
+        )
     if args.session_scoped_wai_sr:
         scope_hint = args.scope_hint or SESSION_SCOPE_HINT
+        scope_hint_variant = "session_scoped"
+    elif args.recall_first_wai_sr:
+        scope_hint = args.scope_hint or RECALL_FIRST_HINT
+        scope_hint_variant = "recall_first"
     else:
         scope_hint = None
+        scope_hint_variant = "baseline"
 
     user_runs: list[dict] = []
     t0 = time.time()
@@ -454,6 +505,11 @@ def main(argv: list[str] | None = None) -> int:
         f"mean_final_llm_bond={cohort['mean_final_llm_bond']:.3f} "
         f"mean_final_trust_ema={cohort['mean_final_trust_ema']:.3f}"
     )
+    print(
+        f"  mean_llm_bond_std={cohort['mean_llm_bond_std']:.3f} "
+        f"max_llm_bond_std={cohort['max_llm_bond_std']:.3f} "
+        f"(variant={scope_hint_variant})"
+    )
 
     out = {
         "benchmark": "phase9_attachment_overlay",
@@ -464,6 +520,8 @@ def main(argv: list[str] | None = None) -> int:
         "limit": args.limit,
         "max_turns_per_session": args.max_turns_per_session,
         "session_scoped_wai_sr": bool(args.session_scoped_wai_sr),
+        "recall_first_wai_sr": bool(args.recall_first_wai_sr),
+        "scope_hint_variant": scope_hint_variant,
         "scope_hint": scope_hint,
         "cohort": cohort,
         "per_user_runs": user_runs,
