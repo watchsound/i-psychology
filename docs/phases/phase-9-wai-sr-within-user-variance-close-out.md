@@ -1,4 +1,4 @@
-# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 twice)
+# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 three times)
 
 ## 1. What this closes
 
@@ -59,13 +59,14 @@ N=3 MSC users, 4 sessions each, ``--max-turns-per-session 2``, local Ollama
 
 ### 3.2 Cohort rollup
 
-| variant            | mean_llm_bond_std | max_llm_bond_std | mean Pearson r | mean abs divergence |
-|--------------------|:-----------------:|:----------------:|:--------------:|:-------------------:|
-| baseline           | **0.144**         | 0.433            | +0.058         | 0.729               |
-| session_scoped     | **0.000**         | 0.000            | +0.000         | 1.479               |
-| recall_first       | **0.289**         | 0.433            | −0.053         | 0.792               |
-| per_session_seeker | **0.144**         | 0.433            | **+0.333**     | 1.250               |
-| persona_reroll     | **0.914**         | **1.414**        | +0.020         | 1.198               |
+| variant                        | mean_llm_bond_std | max_llm_bond_std | mean Pearson r | mean abs divergence |
+|--------------------------------|:-----------------:|:----------------:|:--------------:|:-------------------:|
+| baseline                       | **0.144**         | 0.433            | +0.058         | 0.729               |
+| session_scoped                 | **0.000**         | 0.000            | +0.000         | 1.479               |
+| recall_first                   | **0.289**         | 0.433            | −0.053         | 0.792               |
+| per_session_seeker             | **0.144**         | 0.433            | **+0.333**     | 1.250               |
+| persona_reroll                 | **0.914**         | **1.414**        | +0.020         | 1.198               |
+| persona_reroll × recall_first  | **0.478**         | 0.500            | **−0.192**     | **1.521**           |
 
 ### 3.3 Extension — per-session-seeker architectural probe (2026-11-10)
 
@@ -116,6 +117,30 @@ Per-user convergence under `--persona-reroll-per-session`:
 | u000 | **+1.000**           | +0.000           | **2.313**                 |
 | u001 | ill-defined (σ=0)    | −0.577           | 0.688                     |
 | u002 | ill-defined (σ=0)    | **+0.636**       | 0.594                     |
+
+### 3.5 Extension — composed persona-reroll × recall-first (2026-11-10, third extension)
+
+Section 3.4 closed by naming the cleanest remaining hypothesis: whether
+*content-anchoring* (`--recall-first-wai-sr`) can convert persona-reroll's
+noise-variance back into signal-variance. Launched as the composed
+invocation — no new source change, just two existing composable flags
+set simultaneously.
+
+Per-user trajectories under `--persona-reroll-per-session --recall-first-wai-sr`:
+
+| user | baseline            | persona_reroll        | persona_reroll × recall_first |
+|------|---------------------|-----------------------|-------------------------------|
+| u000 | [3, 4, 4, 4] σ=0.43 | [3, 5, 1, 3] σ=**1.41** | [3, 2, 3, 2] σ=0.50           |
+| u001 | [6, 6, 6, 6] σ=0.00 | [6, 5, 6, 5] σ=**0.50** | [5, 4, 4, 5] σ=0.50           |
+| u002 | [6, 6, 6, 6] σ=0.00 | [6, 4, 6, 5] σ=**0.83** | [5, 4, 5, 5] σ=0.43           |
+
+Per-user convergence under composed variant:
+
+| user | persona_reroll r | composed r | composed divergence |
+|------|:----------------:|:----------:|:-------------------:|
+| u000 | +0.000           | **−0.577** | 1.688               |
+| u001 | −0.577           | +0.000     | 1.250               |
+| u002 | +0.636           | +0.000     | 1.625               |
 
 ## 4. What the numbers say
 
@@ -226,6 +251,33 @@ content-grounded recall (recall-first × persona-reroll composed —
 tests whether session-content anchoring can convert reroll's
 noise-variance back into signal-variance).
 
+**Tenth honest finding (2026-11-10 third extension) — the composition
+`--persona-reroll-per-session --recall-first-wai-sr` falsifies the
+content-anchoring hypothesis.** Running both knobs simultaneously was
+the cleanest remaining lever named at the end of Finding 9: whether
+session-content anchoring could convert reroll's noise-variance into
+signal-variance. It did not. `mean_llm_bond_std` lands at **0.478** —
+halfway between persona-reroll alone (0.914) and recall-first alone
+(0.289); the content anchor *dampens* reroll's variance-cracking
+magnitude. `max_llm_bond_std` falls from 1.414 → 0.500. **But mean
+Pearson r falls to −0.192 (the most-negative of any variant), and mean
+abs divergence rises to 1.521 (the WORST of any variant including
+session-scoped).** u000 swings from r=+0.000 under reroll alone to
+r=−0.577 under composition; u001 and u002 flip to r=+0.000 under the
+composition (previously −0.577 and +0.636 respectively). The two
+interventions are not additive — they interact destructively on every
+axis the probe measures: variance magnitude down, correlation down,
+divergence up. The content anchor does not rescue signal from
+persona-rotation noise; it narrows the variance band without steering
+it toward the behavior trace. **Content-anchoring and persona-rotation
+are not composable on this substrate.** This closes the single-knob
+and two-knob search space over persona-plus-closure-plus-anchor
+levers; the remaining untested axes lie elsewhere — forced temperature
+on the WAI-SR call only (preserves persona + closure + anchor, adds
+pure sampling noise) and multi-sample variance-emit (reports the
+seeker's actual dispersion at the WAI-SR point rather than its modal
+pick).
+
 ## 5. Honest limitations
 
 - **N=3 pilot result**, not a cohort claim. The 2026-10-08 Pillar A σ=0
@@ -244,12 +296,20 @@ noise-variance back into signal-variance).
   correlation are not the same axis; this experiment separates them
   empirically on this substrate.
 - **Divergence vs behavior-trace is mostly unchanged under the
-  prompt-level variants, but WORSE under both architectural variants**
-  — per-session-seeker 0.729 → 1.250, persona-reroll 0.729 → 1.198.
+  prompt-level variants, but WORSE under both architectural variants
+  and WORST under their composition** — per-session-seeker 0.729 →
+  1.250, persona-reroll 0.729 → 1.198, composed 0.729 → **1.521**.
   Any intervention that moves the LLM-reported ratings away from their
   default fixed point pulls them further from the behavior trace's
   magnitude. Variance recovery, shape convergence, and magnitude
   agreement are three separate axes on this substrate.
+- **Composition is destructive, not additive.** The composed
+  `--persona-reroll-per-session --recall-first-wai-sr` variant
+  (third extension) is worse than EITHER constituent on every axis
+  that matters: variance smaller than persona-reroll alone (0.478 vs
+  0.914), correlation worse than both (−0.192 vs +0.020 and −0.053),
+  divergence worst of any variant (1.521). Do not read the two flags
+  as orthogonal controls that can be stacked.
 - **u000's +1.000 per-session-seeker shape-alignment does not survive
   persona rotation.** This argues against reading the r=+1.000 as a
   general property of closure-reset — it is specific to the combination
@@ -295,10 +355,13 @@ noise-variance back into signal-variance).
   extension) covering `--persona-reroll-per-session` default-off,
   tagging, mutex vs `--per-session-seeker`, and composability with
   `--recall-first-wai-sr`.
-- **Artefacts** (5-variant comparison):
+- **Artefacts** (6-variant comparison):
   [`docs/experiments/phase-9-wai-sr-variance/`](../experiments/phase-9-wai-sr-variance/)
   — `baseline.json`, `session_scoped.json`, `recall_first.json`,
-  `per_session_seeker.json`, `persona_reroll.json`.
+  `per_session_seeker.json`, `persona_reroll.json`,
+  `persona_reroll_recall_first.json` (composed — `scope_hint_variant`
+  tag reads `recall_first`, and `persona_reroll_per_session=true`
+  disambiguates from the pure recall-first run).
 - **Docs**: this close-out.
 
 ## 7. What this does NOT unlock
@@ -312,8 +375,11 @@ noise-variance back into signal-variance).
   hitting r=+1.000). Persona-reroll cracks the σ=0 flatness ceiling
   but delivers variance-as-noise rather than variance-as-signal — mean
   r collapses back to +0.020 and u000's per-session-seeker shape
-  alignment evaporates. No variant tested so far simultaneously
-  unlocks variance AND preserves correlation.
+  alignment evaporates. The composed persona-reroll × recall-first
+  attempt pushed r further negative (−0.192), falsifying the
+  content-anchoring hypothesis. No single-knob and no two-knob
+  intervention tested so far simultaneously unlocks variance AND
+  preserves correlation.
 
 ## 8. Cross-references
 
