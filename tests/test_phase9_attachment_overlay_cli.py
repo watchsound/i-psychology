@@ -127,3 +127,47 @@ def test_per_session_seeker_composes_with_recall_first(tmp_path: Path) -> None:
     assert artefact["per_session_seeker"] is True
     assert artefact["scope_hint_variant"] == "recall_first"
     assert artefact["recall_first_wai_sr"] is True
+
+
+def test_persona_reroll_flag_recorded_in_artefact(tmp_path: Path) -> None:
+    out = tmp_path / "persona_reroll.json"
+    result = _invoke("--persona-reroll-per-session", output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["persona_reroll_per_session"] is True
+    # Composable with scope hints — not a mutex.
+    assert artefact["scope_hint_variant"] == "baseline"
+    # Mutex partner stays off.
+    assert artefact["per_session_seeker"] is False
+
+
+def test_persona_reroll_default_off(tmp_path: Path) -> None:
+    out = tmp_path / "default.json"
+    result = _invoke(output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["persona_reroll_per_session"] is False
+
+
+def test_persona_reroll_and_per_session_seeker_are_mutually_exclusive(
+    tmp_path: Path,
+) -> None:
+    result = _invoke(
+        "--persona-reroll-per-session",
+        "--per-session-seeker",
+        output=tmp_path / "mutex.json",
+    )
+    assert result.returncode != 0
+    assert "mutually exclusive" in result.stdout + result.stderr
+
+
+def test_persona_reroll_composes_with_recall_first(tmp_path: Path) -> None:
+    out = tmp_path / "composed.json"
+    result = _invoke(
+        "--persona-reroll-per-session", "--recall-first-wai-sr", output=out
+    )
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["persona_reroll_per_session"] is True
+    assert artefact["scope_hint_variant"] == "recall_first"
+    assert artefact["recall_first_wai_sr"] is True

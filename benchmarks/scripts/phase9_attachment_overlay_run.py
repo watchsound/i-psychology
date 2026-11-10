@@ -67,6 +67,7 @@ from psychology_base.applications.emotional.attachment_state import (  # noqa: E
 from psychology_base.applications.llm_responders import (  # noqa: E402
     SimulatedUser,
     make_llm_responder,
+    make_llm_simulated_user,
 )
 from psychology_base.applications.measurement.wai_sr import score_wai_sr  # noqa: E402
 from psychology_base.companion.system import CompanionSystem  # noqa: E402
@@ -77,8 +78,11 @@ from psychology_base.eval.benchmarks.public_datasets.esconv_wai_sr_harness impor
 from psychology_base.eval.benchmarks.public_datasets.msc import (  # noqa: E402
     MSCConversation,
     iter_msc_conversations,
+    self_opening_utterance,
+    self_persona,
 )
 from psychology_base.eval.benchmarks.public_datasets.msc_bond_longitudinal import (  # noqa: E402
+    _DEFAULT_SEEKER_PERSONA_FRAME,
     make_msc_seeker,
     run_msc_session,
 )
@@ -108,6 +112,45 @@ RECALL_FIRST_HINT = (
     "companion did or said in that moment. Then rate the statement based on "
     "how it felt in THIS session only."
 )
+
+
+def _shuffled_scenario_prompt_for(convo: MSCConversation, seed: int) -> str:
+    """Scenario prompt with persona bullets in a seed-deterministic order.
+
+    Same MSC-provided bullets, different ordering — probes whether the
+    in-prompt ordering of backstory facts is what pins the LLM-WAI-SR
+    rating to a single Likert value across sessions. **Preserves MSC
+    user identity by construction** — no bullet is added, removed, or
+    reworded. This is NOT a full persona resample.
+    """
+    import random
+    bullets = list(self_persona(convo))
+    if not bullets:
+        return "You have no specific backstory beyond this conversation."
+    rng = random.Random(seed)
+    rng.shuffle(bullets)
+    joined = " ".join(b.strip() for b in bullets if b.strip())
+    return f"Your background and current life — things true about you: {joined}"
+
+
+def _make_persona_rerolled_msc_seeker(
+    router: LLMRouter, convo: MSCConversation, seed: int
+) -> SimulatedUser:
+    """Build a seeker whose scenario-prompt bullets are shuffled by ``seed``.
+
+    Shares the same persona frame + opener as :func:`make_msc_seeker` so
+    the only differential vs the baseline seeker is bullet ordering.
+    """
+    opener = self_opening_utterance(convo, session_id=1) or "Hi, how have you been?"
+    return make_llm_simulated_user(
+        router,
+        persona_prompt=_DEFAULT_SEEKER_PERSONA_FRAME,
+        scenario_prompt=_shuffled_scenario_prompt_for(convo, seed),
+        opening_user_utterance=opener,
+        tier=TaskTier.SIMPLE,
+        max_tokens=200,
+        temperature=0.7,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -436,6 +479,19 @@ def build_parser() -> argparse.ArgumentParser:
             "scope-hint flags, not as a replacement for them."
         ),
     )
+    p.add_argument(
+        "--persona-reroll-per-session",
+        action="store_true",
+        help=(
+            "Rebuild the simulated seeker at every session boundary AND "
+            "permute the MSC persona bullets by a session-seeded shuffle. "
+            "Preserves MSC user identity (same bullets, different order) "
+            "while probing whether in-prompt attentional ordering of "
+            "backstory facts is what pins u001/u002 at Bond=6. Mutually "
+            "exclusive with --per-session-seeker (both test the same "
+            "flatness ceiling with overlapping semantics)."
+        ),
+    )
     return p
 
 
@@ -467,6 +523,10 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(
             "--session-scoped-wai-sr and --recall-first-wai-sr are mutually exclusive."
         )
+    if args.per_session_seeker and args.persona_reroll_per_session:
+        raise SystemExit(
+            "--per-session-seeker and --persona-reroll-per-session are mutually exclusive."
+        )
     if args.session_scoped_wai_sr:
         scope_hint = args.scope_hint or SESSION_SCOPE_HINT
         scope_hint_variant = "session_scoped"
@@ -482,16 +542,28 @@ def main(argv: list[str] | None = None) -> int:
     for idx, convo in enumerate(convs):
         if args.mode == "scripted":
             seeker = _make_scripted_seeker()
-            seeker_factory = (
-                _make_scripted_seeker if args.per_session_seeker else None
-            )
+            if args.per_session_seeker or args.persona_reroll_per_session:
+                seeker_factory = _make_scripted_seeker
+            else:
+                seeker_factory = None
         else:
             seeker = make_msc_seeker(router, convo)
-            seeker_factory = (
-                (lambda convo=convo: make_msc_seeker(router, convo))
-                if args.per_session_seeker
-                else None
-            )
+            if args.persona_reroll_per_session:
+                # Session boundary callback receives session_idx via a
+                # module-level counter to preserve the no-arg signature.
+                _state = {"session_idx": 0}
+
+                def _reroll_factory(convo=convo):
+                    _state["session_idx"] += 1
+                    return _make_persona_rerolled_msc_seeker(
+                        router, convo, seed=_state["session_idx"]
+                    )
+
+                seeker_factory = _reroll_factory
+            elif args.per_session_seeker:
+                seeker_factory = lambda convo=convo: make_msc_seeker(router, convo)
+            else:
+                seeker_factory = None
         t_u = time.time()
         try:
             run = _run_one_user(
@@ -551,6 +623,7 @@ def main(argv: list[str] | None = None) -> int:
         "session_scoped_wai_sr": bool(args.session_scoped_wai_sr),
         "recall_first_wai_sr": bool(args.recall_first_wai_sr),
         "per_session_seeker": bool(args.per_session_seeker),
+        "persona_reroll_per_session": bool(args.persona_reroll_per_session),
         "scope_hint_variant": scope_hint_variant,
         "scope_hint": scope_hint,
         "cohort": cohort,

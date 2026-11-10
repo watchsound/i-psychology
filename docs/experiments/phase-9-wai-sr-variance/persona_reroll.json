@@ -1,0 +1,275 @@
+{
+  "benchmark": "phase9_attachment_overlay",
+  "mode": "local",
+  "tier": "simple",
+  "routing": "ollama / qwen2.5:7b (reason=explicit_local)",
+  "shim": "C:\\Users\\nihan\\Desktop\\my-ai-projects\\psychology-base\\.data\\msc\\train.jsonl",
+  "limit": 3,
+  "max_turns_per_session": 2,
+  "session_scoped_wai_sr": false,
+  "recall_first_wai_sr": false,
+  "per_session_seeker": false,
+  "persona_reroll_per_session": true,
+  "scope_hint_variant": "baseline",
+  "scope_hint": null,
+  "cohort": {
+    "n_users": 3,
+    "n_users_pearson_scoreable": 3,
+    "mean_pearson_r": 0.019671122391336875,
+    "mean_abs_divergence": 1.1979166666666667,
+    "mean_llm_bond_std": 0.9144565866539817,
+    "mean_behavior_bond_std": 0.3201508756447159,
+    "max_llm_bond_std": 1.4142135623730951,
+    "mean_final_behavior_bond": 5.25,
+    "mean_final_llm_bond": 4.333333333333333,
+    "mean_final_trust_ema": 5.23,
+    "handoff_count": 0
+  },
+  "per_user_runs": [
+    {
+      "user_id": "u-overlay-000",
+      "conversation_id": "msc_2",
+      "handoff_triggered": false,
+      "n_paired_sessions": 4,
+      "pearson_r": 0.0,
+      "mean_abs_divergence": 2.3125,
+      "max_divergence": 4.5,
+      "max_divergence_session_index": 2,
+      "llm_bond_std": 1.4142135623730951,
+      "behavior_bond_std": 0.3247595264191645,
+      "final_trust_ema": 5.4328,
+      "final_behavior_bond": 5.5,
+      "final_llm_bond": 3,
+      "behavior_bond_series": [
+        4.75,
+        5.5,
+        5.5,
+        5.5
+      ],
+      "llm_bond_series": [
+        3,
+        5,
+        1,
+        3
+      ],
+      "per_session": [
+        {
+          "session_id": 1,
+          "n_companion_turns": 2,
+          "behavior_bond": 4.75,
+          "llm_bond": 3,
+          "mirror_hits": 1,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 4.45
+        },
+        {
+          "session_id": 2,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 5,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.08
+        },
+        {
+          "session_id": 3,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 1,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.332
+        },
+        {
+          "session_id": 4,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 3,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.4328
+        }
+      ]
+    },
+    {
+      "user_id": "u-overlay-001",
+      "conversation_id": "msc_5",
+      "handoff_triggered": false,
+      "n_paired_sessions": 4,
+      "pearson_r": -0.5773502691896257,
+      "mean_abs_divergence": 0.6875,
+      "max_divergence": 1.25,
+      "max_divergence_session_index": 2,
+      "llm_bond_std": 0.5,
+      "behavior_bond_std": 0.3247595264191645,
+      "final_trust_ema": 5.2816,
+      "final_behavior_bond": 5.5,
+      "final_llm_bond": 5,
+      "behavior_bond_series": [
+        5.5,
+        5.5,
+        4.75,
+        5.5
+      ],
+      "llm_bond_series": [
+        6,
+        5,
+        6,
+        5
+      ],
+      "per_session": [
+        {
+          "session_id": 1,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 6,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 4.9
+        },
+        {
+          "session_id": 2,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 5,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.26
+        },
+        {
+          "session_id": 3,
+          "n_companion_turns": 2,
+          "behavior_bond": 4.75,
+          "llm_bond": 6,
+          "mirror_hits": 1,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 4.954000000000001
+        },
+        {
+          "session_id": 4,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 5,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.2816
+        }
+      ]
+    },
+    {
+      "user_id": "u-overlay-002",
+      "conversation_id": "msc_7",
+      "handoff_triggered": false,
+      "n_paired_sessions": 4,
+      "pearson_r": 0.6363636363636364,
+      "mean_abs_divergence": 0.59375,
+      "max_divergence": 1.125,
+      "max_divergence_session_index": 1,
+      "llm_bond_std": 0.82915619758885,
+      "behavior_bond_std": 0.31093357409581873,
+      "final_trust_ema": 4.9756,
+      "final_behavior_bond": 4.75,
+      "final_llm_bond": 5,
+      "behavior_bond_series": [
+        5.5,
+        5.125,
+        5.5,
+        4.75
+      ],
+      "llm_bond_series": [
+        6,
+        4,
+        6,
+        5
+      ],
+      "per_session": [
+        {
+          "session_id": 1,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 6,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 4.9
+        },
+        {
+          "session_id": 2,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.125,
+          "llm_bond": 4,
+          "mirror_hits": 1,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 1,
+          "trust_ema_after": 5.035
+        },
+        {
+          "session_id": 3,
+          "n_companion_turns": 2,
+          "behavior_bond": 5.5,
+          "llm_bond": 6,
+          "mirror_hits": 2,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 5.314
+        },
+        {
+          "session_id": 4,
+          "n_companion_turns": 2,
+          "behavior_bond": 4.75,
+          "llm_bond": 5,
+          "mirror_hits": 1,
+          "rupture_hits": 0,
+          "repair_hits": 0,
+          "sycophancy_hits": 0,
+          "over_disclosure_hits": 0,
+          "consistency_hits": 0,
+          "trust_ema_after": 4.9756
+        }
+      ]
+    }
+  ],
+  "wall_s": 1081.1,
+  "generated_at": "2026-11-10T00:46:13"
+}
