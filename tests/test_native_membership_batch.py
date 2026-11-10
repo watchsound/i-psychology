@@ -46,7 +46,7 @@ def batch(tmp_path, monkeypatch, native_spec, *, operation_scope='condition', wa
 def test_two_slow_conditions_get_distinct_operations_only_when_explicitly_enabled(
         tmp_path, monkeypatch, native_spec, scope, complete, attempts):
     state, wire, lifecycle = batch(tmp_path,monkeypatch,native_spec,operation_scope=scope)
-    clock = [executor.time.monotonic()]
+    clock = [0.0]
     monkeypatch.setattr(executor.time, 'monotonic', lambda:clock[0])
     original = LlamaCppProvider._open
     operations = []
@@ -74,7 +74,7 @@ def test_two_slow_conditions_get_distinct_operations_only_when_explicitly_enable
 
 def test_per_condition_deadlines_do_not_reset_the_total_scope_limit(tmp_path,monkeypatch,native_spec):
     state, wire, lifecycle = batch(tmp_path,monkeypatch,native_spec,wall=630)
-    clock = [executor.time.monotonic()]
+    clock = [0.0]
     monkeypatch.setattr(executor.time,'monotonic',lambda:clock[0])
     original = LlamaCppProvider._open
     def advance(self,request,*,timeout):

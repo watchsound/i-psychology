@@ -15,7 +15,7 @@ class LocalNativeCapture:
     """
 
     def __init__(self, provider, *, max_attempts, deadline, observer,
-                 validate_chat, max_metadata=256, clock=time.monotonic):
+                 validate_chat, max_metadata=256, clock=None):
         from psychology_base.llm.providers.ollama import OllamaProvider
         from psychology_base.llm.providers.llama_cpp import LlamaCppProvider
         import math
@@ -27,7 +27,8 @@ class LocalNativeCapture:
                 or type(deadline) not in (int, float) or not math.isfinite(deadline)):
             raise ValueError('Native capture requires pinned local transport and finite bounds')
         self.provider, self.max_attempts, self.deadline = provider, max_attempts, deadline
-        self.observer, self.validate_chat, self.clock = observer, validate_chat, clock
+        self.observer, self.validate_chat = observer, validate_chat
+        self.clock = clock if clock is not None else time.monotonic
         self.max_metadata = max_metadata
         self.attempts = self.metadata_attempts = 0
         self.events = []
