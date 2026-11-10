@@ -240,7 +240,7 @@ def make_llm_simulated_user(
             messages,
             tier=tier,
             max_tokens=max_tokens,
-            temperature=temperature,
+            temperature=_simulated_user.temperature,
         )
         text = getattr(completion, "content", "") or getattr(
             completion, "text", ""
@@ -249,6 +249,10 @@ def make_llm_simulated_user(
         history.append(("assistant", utterance))
         return utterance
 
+    # Mutable per-callable attribute so a caller can transiently override
+    # sampling temperature (e.g. WAI-SR forced-temp probe) and restore the
+    # construction-time value — default reads are byte-identical.
+    _simulated_user.temperature = temperature  # type: ignore[attr-defined]
     return _simulated_user
 
 

@@ -261,6 +261,7 @@ def _run_one_user(
     max_turns_per_session: int,
     scope_hint: str | None = None,
     seeker_factory=None,
+    wai_sr_temperature: float | None = None,
 ) -> dict:
     """Score one MSC conversation under both traces.
 
@@ -332,6 +333,7 @@ def _run_one_user(
                 user_id=user_id,
                 administered_at_seconds=admin_ts.timestamp(),
                 scope_hint=scope_hint,
+                temperature_override=wai_sr_temperature,
             )
             llm_bond = score_wai_sr(rs).bond
         except Exception as exc:  # parse failure, etc. — skip LLM for this session
@@ -480,6 +482,21 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument(
+        "--wai-sr-temperature",
+        type=float,
+        default=None,
+        help=(
+            "Force a non-default sampling temperature on the 5 WAI-SR "
+            "rating calls only (seeker conversation turns stay at the "
+            "construction-time 0.7). Preserves persona + closure + "
+            "anchor and injects pure sampling noise at the rating "
+            "point — probes whether the modal-pick determinism is what "
+            "pins u001/u002 at Bond=6 rather than persona encoding. "
+            "Composable with every other flag; default None keeps "
+            "byte-identity with the prior baseline."
+        ),
+    )
+    p.add_argument(
         "--persona-reroll-per-session",
         action="store_true",
         help=(
@@ -574,6 +591,7 @@ def main(argv: list[str] | None = None) -> int:
                 max_turns_per_session=args.max_turns_per_session,
                 scope_hint=scope_hint,
                 seeker_factory=seeker_factory,
+                wai_sr_temperature=args.wai_sr_temperature,
             )
         except Exception as exc:
             print(f"  [{idx+1}/{len(convs)}] {convo.conversation_id}: FAIL {exc!r}")
@@ -624,6 +642,7 @@ def main(argv: list[str] | None = None) -> int:
         "recall_first_wai_sr": bool(args.recall_first_wai_sr),
         "per_session_seeker": bool(args.per_session_seeker),
         "persona_reroll_per_session": bool(args.persona_reroll_per_session),
+        "wai_sr_temperature": args.wai_sr_temperature,
         "scope_hint_variant": scope_hint_variant,
         "scope_hint": scope_hint,
         "cohort": cohort,

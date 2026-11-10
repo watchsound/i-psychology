@@ -247,6 +247,7 @@ def administer_wai_sr_simulated(
     administered_at_seconds: float,
     subject_noun: str = "Companion",
     scope_hint: str | None = None,
+    temperature_override: float | None = None,
 ) -> WAISRResponseSet:
     """Administer the 5-item WAI-SR to a simulated seeker.
 
@@ -260,23 +261,42 @@ def administer_wai_sr_simulated(
     session, not overall") to test whether the LLM-reported Bond series
     recovers within-user variance across sessions. Default ``None``
     preserves byte-identity with Pillar A and prior Pillar F baselines.
+
+    ``temperature_override`` transiently swaps the seeker's sampling
+    temperature for the 5 rating calls only, then restores the original
+    value — preserves persona + closure + anchor while injecting pure
+    sampling noise at the WAI-SR point. Requires the seeker to expose a
+    mutable ``temperature`` attribute (as :func:`make_llm_simulated_user`
+    does); silently ignored on seekers without that attribute so
+    scripted-test shims continue to work.
     """
-    responses: list[WAISRResponse] = []
-    for item_id, subscale, wording in WAI_SR_ITEMS:
-        rendered = wording.format(subject=subject_noun)
-        rating_line = (
-            f"Please rate this statement on a scale from 1 (seldom) to 7 "
-            f'(always). Answer with just the number. "{rendered}"'
-        )
-        if scope_hint:
-            prompt = f"{scope_hint} {rating_line}"
-        else:
-            prompt = rating_line
-        reply = seeker(prompt)
-        score = _parse_likert(reply)
-        responses.append(
-            WAISRResponse(item_id=item_id, subscale=subscale, score=score)
-        )
+    should_swap = temperature_override is not None and hasattr(
+        seeker, "temperature"
+    )
+    saved_temperature: float | None = None
+    if should_swap:
+        saved_temperature = seeker.temperature  # type: ignore[attr-defined]
+        seeker.temperature = temperature_override  # type: ignore[attr-defined]
+    try:
+        responses: list[WAISRResponse] = []
+        for item_id, subscale, wording in WAI_SR_ITEMS:
+            rendered = wording.format(subject=subject_noun)
+            rating_line = (
+                f"Please rate this statement on a scale from 1 (seldom) to 7 "
+                f'(always). Answer with just the number. "{rendered}"'
+            )
+            if scope_hint:
+                prompt = f"{scope_hint} {rating_line}"
+            else:
+                prompt = rating_line
+            reply = seeker(prompt)
+            score = _parse_likert(reply)
+            responses.append(
+                WAISRResponse(item_id=item_id, subscale=subscale, score=score)
+            )
+    finally:
+        if should_swap:
+            seeker.temperature = saved_temperature  # type: ignore[attr-defined]
     return WAISRResponseSet(
         user_id=user_id,
         administered_at_seconds=administered_at_seconds,

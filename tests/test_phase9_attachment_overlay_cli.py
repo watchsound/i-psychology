@@ -171,3 +171,39 @@ def test_persona_reroll_composes_with_recall_first(tmp_path: Path) -> None:
     assert artefact["persona_reroll_per_session"] is True
     assert artefact["scope_hint_variant"] == "recall_first"
     assert artefact["recall_first_wai_sr"] is True
+
+
+def test_wai_sr_temperature_default_off(tmp_path: Path) -> None:
+    out = tmp_path / "default.json"
+    result = _invoke(output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["wai_sr_temperature"] is None
+
+
+def test_wai_sr_temperature_flag_recorded_in_artefact(tmp_path: Path) -> None:
+    out = tmp_path / "temp.json"
+    result = _invoke("--wai-sr-temperature", "1.0", output=out)
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["wai_sr_temperature"] == 1.0
+    # Composable with scope hints and persona-reroll — not a mutex.
+    assert artefact["scope_hint_variant"] == "baseline"
+    assert artefact["persona_reroll_per_session"] is False
+
+
+def test_wai_sr_temperature_composes_with_persona_reroll(tmp_path: Path) -> None:
+    out = tmp_path / "composed.json"
+    result = _invoke(
+        "--wai-sr-temperature",
+        "1.0",
+        "--persona-reroll-per-session",
+        "--recall-first-wai-sr",
+        output=out,
+    )
+    assert result.returncode == 0, result.stderr
+    artefact = json.loads(out.read_text(encoding="utf-8"))
+    assert artefact["wai_sr_temperature"] == 1.0
+    assert artefact["persona_reroll_per_session"] is True
+    assert artefact["recall_first_wai_sr"] is True
+    assert artefact["scope_hint_variant"] == "recall_first"

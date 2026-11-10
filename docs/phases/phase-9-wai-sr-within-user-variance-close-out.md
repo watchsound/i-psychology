@@ -1,4 +1,4 @@
-# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 three times)
+# Phase 9+ LLM-WAI-SR within-user variance probe — close-out (2026-11-09, extended 2026-11-10 three times, then 2026-11-10 forced-temp)
 
 ## 1. What this closes
 
@@ -67,6 +67,7 @@ N=3 MSC users, 4 sessions each, ``--max-turns-per-session 2``, local Ollama
 | per_session_seeker             | **0.144**         | 0.433            | **+0.333**     | 1.250               |
 | persona_reroll                 | **0.914**         | **1.414**        | +0.020         | 1.198               |
 | persona_reroll × recall_first  | **0.478**         | 0.500            | **−0.192**     | **1.521**           |
+| wai_sr_temperature=1.0         | **0.000**         | 0.000            | +0.000         | 0.833               |
 
 ### 3.3 Extension — per-session-seeker architectural probe (2026-11-10)
 
@@ -141,6 +142,28 @@ Per-user convergence under composed variant:
 | u000 | +0.000           | **−0.577** | 1.688               |
 | u001 | −0.577           | +0.000     | 1.250               |
 | u002 | +0.636           | +0.000     | 1.625               |
+
+### 3.6 Extension — forced WAI-SR temperature (2026-11-10, fourth extension)
+
+Finding 9 named one of two untested levers lying *outside* the
+persona-plus-closure-plus-anchor matrix: **forced temperature on the
+WAI-SR call only**, preserving persona + closure + anchor and injecting
+pure sampling noise at just the rating point. Shipped as the new
+`--wai-sr-temperature` CLI flag on the overlay runner — swaps the
+seeker's mutable `.temperature` attribute transiently around the 5
+rating calls (via `administer_wai_sr_simulated(temperature_override=...)`)
+and restores the construction-time 0.7 for the next session's turns.
+Default `None` keeps byte-identity with baseline. Composable with
+every other flag — not a mutex.
+
+Per-user trajectories under `--wai-sr-temperature 1.0` (no scope hint,
+no persona rotation):
+
+| user | baseline            | wai_sr_temperature=1.0 |
+|------|---------------------|-------------------------|
+| u000 | [3, 4, 4, 4] σ=0.43 | [4, 4, 4, 4] σ=**0.00** |
+| u001 | [6, 6, 6, 6] σ=0.00 | [5, 5, 5, 5] σ=0.00     |
+| u002 | [6, 6, 6, 6] σ=0.00 | [6, 6, 6, 6] σ=0.00     |
 
 ## 4. What the numbers say
 
@@ -278,6 +301,45 @@ pure sampling noise) and multi-sample variance-emit (reports the
 seeker's actual dispersion at the WAI-SR point rather than its modal
 pick).
 
+**Eleventh honest finding (2026-11-10 fourth extension) — forced
+temperature at the WAI-SR call doesn't just fail to unlock variance,
+it SUPPRESSES it.** The hypothesis was that u001/u002's deterministic
+modal-6 pick might be a sampling-mode artefact (greedy decode of a
+peaked distribution): raise the temperature only at the rating point,
+inject sampling noise, see if σ > 0 emerges. Result on
+`--wai-sr-temperature 1.0`: **every** user collapses to σ=0.000 —
+*more flat than baseline*. u000, the only user who varied at baseline
+[3, 4, 4, 4] σ=0.43, now sits at a flat [4, 4, 4, 4]. u001 shifts
+modal pick 6→5 but stays locked at [5, 5, 5, 5]. u002 stays at
+[6, 6, 6, 6]. Divergence improves marginally (0.729 → 0.833) but at
+σ=0 the trace carries no within-user information. This inverts the
+hypothesis: **temperature at the WAI-SR point is net-suppressive of
+the one natural variance source baseline exposed**. Plausible
+mechanism — at temperature=1.0 the seeker generates more prose
+around the integer, and the WAI-SR "Answer with just the number"
+pull fixes the mode per persona; modest session-to-session context
+differences are not enough signal to shift the sampled mode when
+the sampling distribution is wider but the parse target is a single
+integer, so the modal pick becomes *more* consistent, not less. The
+flatness is NOT a sampling artefact; raising temperature only
+adds width to the local sampling distribution without delivering
+the cross-session content differences the WAI-SR integer parse
+could latch onto.
+
+**Twelfth honest finding — flatness-by-elimination is now
+persona-encoding-driven.** The 7-variant sweep has now ruled out
+three structural candidates for the 2-of-3 flatness ceiling:
+(a) closure-history (per-session-seeker: σ unchanged), (b)
+prompt-level anchors (session-scoped and recall-first: σ smaller or
+unchanged for u001/u002), (c) sampling-mode determinism (forced-temp:
+σ worse). The only intervention that ever moved u001/u002 off
+[6, 6, 6, 6] was persona-reroll — and specifically persona-reroll
+alone, not under any composition. By elimination, the flatness lives
+in the *attentional ordering of MSC persona bullets* and nothing
+else tested changes it. This is not a new mechanism claim beyond
+Finding 8; it is Finding 8 under three additional strictly-non-
+confirming controls.
+
 ## 5. Honest limitations
 
 - **N=3 pilot result**, not a cohort claim. The 2026-10-08 Pillar A σ=0
@@ -310,6 +372,15 @@ pick).
   0.914), correlation worse than both (−0.192 vs +0.020 and −0.053),
   divergence worst of any variant (1.521). Do not read the two flags
   as orthogonal controls that can be stacked.
+- **Forced temperature at the WAI-SR call SUPPRESSES variance below
+  baseline.** The fourth extension (`--wai-sr-temperature 1.0`)
+  collapses every user to σ=0.000, including u000 whose baseline
+  showed σ=0.43 natural variance. Divergence recovers slightly
+  (0.729 → 0.833) only because the modal pick shifts, not because
+  the trace now carries session-to-session information. Do not
+  expect sampling-level interventions at the rating point to
+  unlock the variance ceiling on this substrate; the architectural
+  lever is persona encoding (Finding 8).
 - **u000's +1.000 per-session-seeker shape-alignment does not survive
   persona rotation.** This argues against reading the r=+1.000 as a
   general property of closure-reset — it is specific to the combination
@@ -345,23 +416,38 @@ pick).
   `_make_persona_rerolled_msc_seeker(router, convo, seed)` to deliver
   a fresh seeker whose MSC persona bullets are permuted by a
   session-seeded RNG, composable with scope-hint flags and mutually
-  exclusive with `--per-session-seeker`.
-- **Tests** (12 regression locks):
+  exclusive with `--per-session-seeker`;
+  (2026-11-10 fourth extension) `--wai-sr-temperature FLOAT` CLI flag
+  that transiently overrides the seeker's sampling temperature at just
+  the WAI-SR rating calls. Plumbed through
+  [`src/psychology_base/applications/llm_responders.py`](../../src/psychology_base/applications/llm_responders.py)
+  (`make_llm_simulated_user` now exposes `.temperature` as a mutable
+  per-callable attribute) and
+  [`src/psychology_base/eval/benchmarks/public_datasets/esconv_wai_sr_harness.py`](../../src/psychology_base/eval/benchmarks/public_datasets/esconv_wai_sr_harness.py)
+  (`administer_wai_sr_simulated(..., temperature_override=...)` with
+  try/finally save-restore around the 5 rating calls). Composable with
+  every other flag — not a mutex. Default `None` keeps byte-identity
+  with baseline.
+- **Tests** (15 regression locks):
   [`tests/test_phase9_attachment_overlay_cli.py`](../../tests/test_phase9_attachment_overlay_cli.py)
   — subprocess-pattern following the longitudinal CLI test; 5
   scope-hint variants + mutex + variance envelope, 3 (first extension)
   covering `--per-session-seeker` default-off, tagging, and
-  composability with `--recall-first-wai-sr`, plus 4 (second
-  extension) covering `--persona-reroll-per-session` default-off,
-  tagging, mutex vs `--per-session-seeker`, and composability with
-  `--recall-first-wai-sr`.
-- **Artefacts** (6-variant comparison):
+  composability with `--recall-first-wai-sr`, 4 (second extension)
+  covering `--persona-reroll-per-session` default-off, tagging, mutex
+  vs `--per-session-seeker`, and composability with
+  `--recall-first-wai-sr`, plus 3 (fourth extension) covering
+  `--wai-sr-temperature` default-off, flag-recorded-in-artefact, and
+  composability with `--persona-reroll-per-session --recall-first-wai-sr`.
+- **Artefacts** (7-variant comparison):
   [`docs/experiments/phase-9-wai-sr-variance/`](../experiments/phase-9-wai-sr-variance/)
   — `baseline.json`, `session_scoped.json`, `recall_first.json`,
   `per_session_seeker.json`, `persona_reroll.json`,
   `persona_reroll_recall_first.json` (composed — `scope_hint_variant`
   tag reads `recall_first`, and `persona_reroll_per_session=true`
-  disambiguates from the pure recall-first run).
+  disambiguates from the pure recall-first run),
+  `wai_sr_temperature.json` (forced-temp — `wai_sr_temperature=1.0`
+  disambiguates from baseline).
 - **Docs**: this close-out.
 
 ## 7. What this does NOT unlock
@@ -377,9 +463,18 @@ pick).
   r collapses back to +0.020 and u000's per-session-seeker shape
   alignment evaporates. The composed persona-reroll × recall-first
   attempt pushed r further negative (−0.192), falsifying the
-  content-anchoring hypothesis. No single-knob and no two-knob
+  content-anchoring hypothesis. Forced temperature at the WAI-SR call
+  (fourth extension) SUPPRESSED variance below baseline (σ=0.000
+  across all three users) rather than unlocking it, falsifying the
+  sampling-mode-determinism hypothesis. No single-knob and no two-knob
   intervention tested so far simultaneously unlocks variance AND
-  preserves correlation.
+  preserves correlation. The 7-variant search space over
+  persona/closure/anchor/sampling levers is exhausted; remaining
+  untested axes are multi-sample variance-emit at the WAI-SR point
+  (reports the seeker's actual dispersion rather than its modal
+  pick) and cross-model substrate changes (different seeker LLM, or
+  N=59 re-measurement on qwen-turbo to retire the σ=0 Pillar A read
+  rather than re-open it only on qwen2.5:7b).
 
 ## 8. Cross-references
 
