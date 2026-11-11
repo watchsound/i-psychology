@@ -193,6 +193,30 @@ class LLMRouter:
                 providers["ollama"].enforce_loopback()
             except ValueError as exc:
                 raise ExecutionDeferred(str(exc)) from exc
+        # Airgap-suppression notice: ``mode="local"`` short-circuits ``.route()``
+        # straight to the loopback Ollama regardless of ``force_cloud_chat``
+        # and ``force_cloud_embeddings`` (see ``test_local_never_selects_cloud_
+        # even_when_forced``). This is intentional — the loopback guard is the
+        # airgap floor. Callers that intended cloud routing (benchmark scripts,
+        # live-fire harnesses) must flip ``execution=ExecutionPolicy(mode=
+        # "research")`` in addition to ``force_cloud_chat=True``. Warn once at
+        # construction so a mis-set config is loud instead of silent.
+        if self.execution.mode == "local":
+            if config.local_ollama.force_cloud_chat:
+                logger.warning(
+                    "LLMRouter config: force_cloud_chat=true is suppressed "
+                    "under execution.mode=local (airgap). SIMPLE chat will "
+                    "route to local Ollama. To route to cloud, construct the "
+                    "router with ExecutionPolicy(mode=\"research\")."
+                )
+            if config.local_ollama.force_cloud_embeddings:
+                logger.warning(
+                    "LLMRouter config: force_cloud_embeddings=true is "
+                    "suppressed under execution.mode=local (airgap). "
+                    "Embeddings will route to local Ollama. To route to "
+                    "cloud, construct the router with "
+                    "ExecutionPolicy(mode=\"research\")."
+                )
 
         # Probe Ollama once at construction. If it's reachable AND the
         # simple_model is pulled, SIMPLE routes to it; otherwise fall
@@ -440,7 +464,14 @@ class LLMRouter:
                 purpose=_operation.get().purpose if _operation.get() else kind, provider=provider.name, model=model, kind=kind)
 
     def route(self, tier: TaskTier) -> tuple[LLMProvider, RoutingDecision]:
-        """Decide which provider handles ``tier`` and return it + decision."""
+        """Decide which provider handles ``tier`` and return it + decision.
+
+        Airgap short-circuit: ``execution.mode == "local"`` returns the
+        loopback Ollama unconditionally, suppressing ``force_cloud_chat``.
+        The construction-time WARN log announces the suppression so a
+        mis-set caller config (``force_cloud_chat=True`` without
+        ``mode="research"``) is not silently honored-then-ignored.
+        """
         if self.execution.mode == "local":
             if self._diagnostic_chat is not None:
                 provider = self._diagnostic_chat

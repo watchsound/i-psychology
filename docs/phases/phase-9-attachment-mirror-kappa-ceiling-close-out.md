@@ -117,6 +117,12 @@ The actionable reading: **lexical `_mirror_hit` is operationally correct for all
 - **No production code changes.** `attachment_state.py` unchanged. Lexical path remains the default.
 - **No new gate.** Attachment-overlay has no Mirror-rate-vs-reference gate; adding one would be goalpost-moving on a measurement already structured as a *measurement* rather than a *claim*.
 
+### 8.1 Follow-up: router force-cloud suppression made loud
+
+The runner's first draft shipped `force_cloud_chat=True` on its own, hit the silent-redirect that `phase8_f_extes_llm_run.py` and ≥8 other benchmark scripts accept, and routed `--mode cloud` runs to local ollama. The runner was fixed to also flip `execution=ExecutionPolicy(mode="research")` and enforce `mode="cloud" ⇒ provider != "ollama"` at construction — see [`_build_router`](../../benchmarks/scripts/phase9_attachment_mirror_kappa_ceiling.py).
+
+The underlying router behavior at [`src/psychology_base/llm/router.py`](../../src/psychology_base/llm/router.py) is **not** a bug — `test_local_never_selects_cloud_even_when_forced` locks it as an intentional airgap floor (loopback enforcement). But the suppression is silent, which is the footgun future benchmark authors kept stepping on. Fix: `LLMRouter.__init__` now emits a one-time `WARNING` log when `execution.mode == "local"` AND either `force_cloud_chat=True` or `force_cloud_embeddings=True` are set, pointing callers at `ExecutionPolicy(mode="research")`. Routing semantics unchanged; regression test `test_local_mode_warns_when_cloud_force_flags_set` locks the new behavior.
+
 ---
 
 ## 9. Verification commands

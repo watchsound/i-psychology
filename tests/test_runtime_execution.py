@@ -50,6 +50,35 @@ def test_local_never_selects_cloud_even_when_forced(monkeypatch, tmp_path, tier)
     assert all(url.startswith("http://127.0.0.1:11434/") for url in state["requests"])
 
 
+@pytest.mark.parametrize("force_flag", ["force_cloud_chat", "force_cloud_embeddings"])
+def test_local_mode_warns_when_cloud_force_flags_set(monkeypatch, tmp_path, caplog, force_flag):
+    """Airgap suppression is intentional; the WARN log is the caller's
+    heads-up that a mis-set config was silently honored-then-ignored.
+    Benchmark scripts that intend cloud routing must also set
+    ``execution=ExecutionPolicy(mode="research")``."""
+    import logging
+    from psychology_base.llm.config import CacheConfig, LLMConfig, LocalOllamaConfig, ProviderConfig
+    from psychology_base.llm.execution import ExecutionPolicy
+    from psychology_base.llm.providers.ollama import OllamaProvider
+    local = OllamaProvider(simple_model="small", advanced_model="large", embedding_model="vectors")
+    cfg = LLMConfig(
+        active_provider="tongyi",
+        providers={
+            "tongyi": ProviderConfig("tongyi", "cloud-small", "cloud-big"),
+            "ollama": ProviderConfig("ollama", "small", "large", embedding_model="vectors"),
+        },
+        cache=CacheConfig(enabled=False),
+        execution=ExecutionPolicy(mode="local"),
+        local_ollama=LocalOllamaConfig(**{force_flag: True}),
+    )
+    caplog.set_level(logging.WARNING, logger="psychology_base.llm.router")
+    LLMRouter(cfg, providers={"ollama": local})
+    messages = [rec.message for rec in caplog.records
+                if rec.name == "psychology_base.llm.router" and rec.levelno == logging.WARNING]
+    assert any(force_flag in msg and "execution.mode=local" in msg for msg in messages)
+    assert any("ExecutionPolicy(mode=\"research\")" in msg for msg in messages)
+
+
 @pytest.mark.parametrize("kind", ["chat", "embed_batch"])
 def test_local_outage_recovers_without_cloud_or_new_router(monkeypatch, tmp_path, kind):
     from psychology_base.llm.execution import ExecutionDeferred
