@@ -42,6 +42,23 @@ providers:
     advanced_model: gpt-4o
     api_key_env: OPENAI_API_KEY
 
+  deepseek:
+    # DeepSeek's OpenAI-compatible endpoint. Our OpenAIProvider supports
+    # ``api_dialect="deepseek"`` so the same code path drives chat here;
+    # only base_url + model slot names differ from the OpenAI block.
+    #   deepseek-chat:     V3.x general-purpose non-reasoning — correct
+    #                      fit for naive-seeker WAI-SR roleplay.
+    #   deepseek-reasoner: R1/R2 reasoning model — reserved for the
+    #                      advanced/judge tier; will burn thinking
+    #                      tokens like gpt-5-nano, so avoid for roleplay.
+    # No embedder slot — DeepSeek does not publish a retrieval
+    # embedder; LLMRouter.embed() continues to route to local Ollama
+    # via local_ollama.force_cloud_embeddings=false (the default).
+    simple_model: deepseek-chat
+    advanced_model: deepseek-reasoner
+    api_key_env: DEEPSEEK_API_KEY
+    base_url: https://api.deepseek.com
+
   ollama:
     base_url: http://localhost:11434
     # Choose a model you have pulled locally. Qwen2.5 7B is a strong default

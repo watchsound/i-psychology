@@ -87,6 +87,20 @@ def _build_provider(cfg: ProviderConfig) -> LLMProvider:
             base_url=cfg.base_url,
             max_retries=cfg.max_retries,
         )
+    if cfg.name == "deepseek":
+        # DeepSeek exposes an OpenAI-compatible API; our OpenAIProvider
+        # already supports ``api_dialect="deepseek"`` for the small
+        # protocol differences (max_tokens vs max_completion_tokens,
+        # response_format JSON object vs schema). Default base_url to
+        # DeepSeek's endpoint when the config omits one.
+        return OpenAIProvider(
+            simple_model=cfg.simple_model,
+            advanced_model=cfg.advanced_model,
+            api_key=cfg.api_key(),
+            base_url=cfg.base_url or "https://api.deepseek.com",
+            max_retries=cfg.max_retries,
+            api_dialect="deepseek",
+        )
     if cfg.name == "anthropic":
         return AnthropicProvider(
             simple_model=cfg.simple_model,
@@ -118,7 +132,7 @@ def _build_provider(cfg: ProviderConfig) -> LLMProvider:
         return AlibabaTongyiProvider(**kwargs)
     raise ValueError(
         f"Unknown provider name: {cfg.name!r}. "
-        f"Supported: ollama, openai, anthropic, tongyi."
+        f"Supported: ollama, openai, anthropic, tongyi, deepseek."
     )
 
 

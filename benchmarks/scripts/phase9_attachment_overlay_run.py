@@ -194,8 +194,15 @@ def _make_scripted_seeker() -> SimulatedUser:
 # ---------------------------------------------------------------------------
 
 
-def _config_with_overrides(mode: str):
+def _config_with_overrides(mode: str, provider: str | None = None):
     cfg = load_config()
+    if provider is not None:
+        if provider not in cfg.providers:
+            raise SystemExit(
+                f"--provider {provider!r} not configured in configs/llm.yaml; "
+                f"available: {sorted(cfg.providers)}"
+            )
+        cfg = _dc.replace(cfg, active_provider=provider)
     if mode == "local":
         # Local Ollama (qwen2.5:7b) generates far slower than the
         # production-paid 60s per-request / 60s per-operation defaults —
@@ -227,8 +234,10 @@ def _config_with_overrides(mode: str):
     return cfg
 
 
-def _build_router(mode: str, tier: TaskTier) -> tuple[LLMRouter, str]:
-    cfg = _config_with_overrides(mode)
+def _build_router(
+    mode: str, tier: TaskTier, provider: str | None = None
+) -> tuple[LLMRouter, str]:
+    cfg = _config_with_overrides(mode, provider=provider)
     if mode == "cloud":
         env = cfg.get_provider(cfg.active_provider).api_key_env
         if env and not os.environ.get(env):
@@ -485,6 +494,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="scripted = zero LLM, CI-safe plumbing check. local/cloud = real overlay.",
     )
     p.add_argument("--tier", choices=("simple", "advanced"), default="simple")
+    p.add_argument(
+        "--provider",
+        type=str,
+        default=None,
+        help=(
+            "Override configs/llm.yaml::active_provider for this run (e.g. "
+            "'openai', 'anthropic', 'tongyi'). Chat routes through the "
+            "named provider's simple/advanced slot; embeddings continue to "
+            "honor local_ollama.force_cloud_embeddings (defaults to local "
+            "Ollama so no change needed there). Mainly used when the "
+            "default cloud provider is quota-exhausted — a run with "
+            "--provider openai probes a *different substrate*, which is "
+            "the Phase 9+ §7 cross-model-substrate sibling axis, not the "
+            "qwen-turbo σ=0 retirement."
+        ),
+    )
     p.add_argument("--output", type=Path, default=DEFAULT_OUT)
     p.add_argument(
         "--session-scoped-wai-sr",
@@ -593,7 +618,7 @@ def main(argv: list[str] | None = None) -> int:
         routing_note = "scripted (no LLM)"
         router = None
     else:
-        router, routing_note = _build_router(args.mode, tier)
+        router, routing_note = _build_router(args.mode, tier, provider=args.provider)
         responder = make_llm_responder(router, tier=tier)
     print(f"Routing [mode={args.mode} tier={args.tier}]: {routing_note}")
 
@@ -700,6 +725,7 @@ def main(argv: list[str] | None = None) -> int:
         "benchmark": "phase9_attachment_overlay",
         "mode": args.mode,
         "tier": args.tier,
+        "provider_override": args.provider,
         "routing": routing_note,
         "shim": str(args.shim),
         "limit": args.limit,
