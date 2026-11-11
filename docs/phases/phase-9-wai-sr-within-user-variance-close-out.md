@@ -612,3 +612,66 @@ first-class trace alongside the modal pick.
   [`phase-8-pillar-a-close-out.md`](phase-8-pillar-a-close-out.md)
 - Phase 9+ 4-week gate calibrated regression (same recent series):
   [`phase-9-attachment-four-week-gate-calibrated-close-out.md`](phase-9-attachment-four-week-gate-calibrated-close-out.md)
+
+## 9. Follow-up: N=59 qwen-turbo retirement attempt blocked on daily quota (2026-11-11)
+
+The §7 remaining axis *"N=59 re-measurement on qwen-turbo to retire the
+σ=0 Pillar A read"* was attempted on 2026-11-11 and could not complete
+within this calendar day.
+
+Preparation that shipped as part of the attempt (orthogonal
+improvements, retained regardless of whether N=59 ever lands):
+
+- `8ba5555` — `LLMRouter` now WARNs at construction when
+  `force_cloud_*` is suppressed by `execution.mode=local` (airgap
+  short-circuit was previously silent; the WARN surfaces the latent
+  footgun affecting nine benchmark scripts without breaking the locked
+  airgap invariant).
+- `f568355` — Overlay runner `_config_with_overrides` cloud branch
+  now also sets `ExecutionPolicy(mode="research")`, with a
+  mode-symmetry raise in `_build_router` mirroring
+  `phase9_attachment_mirror_kappa_ceiling.py`. Prior to this fix,
+  `--mode cloud` silently routed to local Ollama under the YAML
+  default.
+- `9280fb0` — `AlibabaTongyiProvider._request` now retries HTTP 429
+  with exponential backoff (ladder 2, 4, 8, 16, 30, 45s; ~105s per
+  call) honoring `Retry-After`. Non-429 HTTPErrors remain fast-fail.
+  Four new regression tests; 168/168 LLM + runtime tests green.
+
+Execution attempt (2026-11-10 23:37 → 2026-11-11 01:49):
+
+A background poller probed DashScope qwen-turbo every 5 minutes for
+`Throttling.RateQuota` clearance, intended to auto-launch
+`phase9_attachment_overlay_run.py --mode cloud --tier simple --limit 59`
+on first non-429 response. 27 probes over 2h11m all returned
+`429 Throttling.RateQuota`. The probe cadence is wide of DashScope's
+per-minute quota window, so 27 × 5-minute independent probes hitting
+429 every time rules out per-minute throttling and strongly indicates
+a **daily quota** on the free tier — likely consumed by the 2026-11-10
+variance-probe iterations (eight variants × N=3 × ~50 calls each ≈
+1,200 calls plus smoke-probe traffic). The poller was killed cleanly
+at 01:49 after a product decision to not block further on this axis.
+
+Shape of the N=59 experiment (preserved for a future quota-fresh
+retry):
+
+```
+python benchmarks/scripts/phase9_attachment_overlay_run.py \
+    --mode cloud --tier simple --limit 59 \
+    --out docs/experiments/phase-9-wai-sr-variance/n59-cloud-baseline.json
+```
+
+Expected cost: 59 users × 5 sessions × ≈10 qwen-turbo calls ≈ 3,000
+calls. Expected wall time: 45–90 minutes depending on throttling.
+Retry infrastructure from `9280fb0` will absorb transient per-minute
+429s.
+
+Updated terminal state of this axis:
+
+The 8-variant persona / closure / anchor / sampling / aggregation
+sweep remains the primary evidence. The σ=0 Pillar A read stays on
+the books as **"not retired at N=59 by 2026-11-11 due to DashScope
+daily quota exhaustion"** — a quota-side blocker, not a research
+finding. The WAI-SR variance axis is otherwise closed as exhausted
+on all substrate-held-constant levers that were reachable with
+available compute budget.
