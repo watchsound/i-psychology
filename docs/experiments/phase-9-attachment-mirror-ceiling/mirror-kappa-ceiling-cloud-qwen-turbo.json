@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-11-11T01:24:28.603546+00:00",
+  "mode": "cloud",
+  "tier": "simple",
+  "provider_route": "tongyi / qwen-turbo (reason=forced_cloud)",
+  "corpus_tag": "phase9_attachment_weight_calibration:CALIBRATION_CORPUS",
+  "limit": null,
+  "n_turns": 55,
+  "lexical_mirror_hits": 17,
+  "llm_mirror_hits": 55,
+  "agreement_rate": 0.3091,
+  "cohens_kappa": 0.0,
+  "confusion": {
+    "lex0_llm0": 0,
+    "lex0_llm1": 38,
+    "lex1_llm0": 0,
+    "lex1_llm1": 17
+  },
+  "lex_under_trigger_samples": [
+    {
+      "fixture_tag": "pure_mirror_light",
+      "turn_index": 1,
+      "turn": "Can you tell me more about what happened today?",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_mirror_light",
+      "turn_index": 2,
+      "turn": "I appreciate you sharing.",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_consistency_saturated",
+      "turn_index": 0,
+      "turn": "Last time you mentioned the deadline — how did that go?",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_consistency_saturated",
+      "turn_index": 1,
+      "turn": "You said earlier you've been working on sleep hygiene.",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_consistency_saturated",
+      "turn_index": 2,
+      "turn": "Previously you talked about your sister — any update?",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_rupture_light",
+      "turn_index": 0,
+      "turn": "Actually, no — that's not quite right.",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_rupture_light",
+      "turn_index": 1,
+      "turn": "I think there's more to the story.",
+      "lex": 0,
+      "llm": 1
+    },
+    {
+      "fixture_tag": "pure_rupture_light",
+      "turn_index": 2,
+      "turn": "Keep going.",
+      "lex": 0,
+      "llm": 1
+    }
+  ],
+  "lex_over_trigger_samples": [],
+  "honest_limitations": [
+    "60-turn hand-authored corpus is small; κ noise band ≈ ±0.1 at N=60.",
+    "LLM judge sees no client context (empty tuple) — apples-to-apples with lexical _mirror_hit which also sees only the companion turn.",
+    "LLM judge is a second lexical-register classifier at a semantic level, not ground truth; disagreement bounds the ceiling, not the floor.",
+    "The author-intuition target_bond field from CALIBRATION_CORPUS is NOT used here — only the companion_turns field."
+  ],
+  "interpretation": {
+    "lex0_llm1": "semantic-empathy cases lexical misses — the κ-ceiling gap in the under-count direction",
+    "lex1_llm0": "cue-token false positives — lexical fires on a token the semantic judge does not read as empathic",
+    "kappa_band": "chance-corrected agreement; raw agreement alone is misleading when one path is sparse"
+  }
+}
