@@ -218,9 +218,11 @@ def _config_with_overrides(mode: str):
             ),
         )
     elif mode == "cloud":
+        from psychology_base.llm.execution import ExecutionPolicy
         cfg = _dc.replace(
             cfg,
             local_ollama=_dc.replace(cfg.local_ollama, force_cloud_chat=True),
+            execution=ExecutionPolicy(mode="research"),
         )
     return cfg
 
@@ -236,6 +238,12 @@ def _build_router(mode: str, tier: TaskTier) -> tuple[LLMRouter, str]:
     if mode == "local" and dec.provider != "ollama":
         raise SystemExit(
             f"--mode local but router routed to {dec.provider} ({dec.reason})."
+        )
+    if mode == "cloud" and dec.provider == "ollama":
+        raise SystemExit(
+            f"--mode cloud but router routed to {dec.provider} ({dec.reason}). "
+            f"The _config_with_overrides cloud branch must also set "
+            f"ExecutionPolicy(mode=\"research\") to escape the airgap."
         )
     return router, f"{dec.provider} / {dec.model_id} (reason={dec.reason})"
 
