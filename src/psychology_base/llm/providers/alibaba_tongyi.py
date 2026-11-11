@@ -68,6 +68,17 @@ class AlibabaTongyiProvider:
     # cue failures that bi-encoder cosine ranking buries.
     rerank_model: str = "gte-rerank-v2"
     rerank_url: str = DASHSCOPE_RERANK_URL
+    # DashScope 429 handling. ``Throttling.RateQuota`` is a per-minute
+    # sliding window; retry-with-backoff is the canonical unblock. The
+    # total retry budget must cross the ~60s window boundary — with the
+    # defaults below the per-call wait ladder is 2, 4, 8, 16, 30, 45s
+    # (sum ~105s), enough for a sustained-429 window to clear once.
+    # Non-429 HTTP errors still propagate immediately. The ``Retry-After``
+    # header is honored when present. Set ``max_retries=0`` to restore
+    # the pre-retry fail-fast behavior.
+    max_retries: int = 6
+    retry_backoff_s: float = 2.0
+    retry_backoff_max_s: float = 45.0
     _opened: bool = field(default=False, repr=False)
     bounded_transport: bool = False
 
@@ -82,6 +93,41 @@ class AlibabaTongyiProvider:
             raise ValueError("Paid runtime requires an HTTPS provider endpoint")
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _RejectRedirects())
         return opener.open(request, timeout=timeout)
+
+    def _request(self, request, label: str) -> str:
+        """POST ``request`` and return response body, retrying on HTTP 429.
+
+        ``Throttling.RateQuota`` from DashScope is a per-minute quota;
+        exponential-backoff retry is the canonical unblock. All other
+        HTTPErrors propagate as ``RuntimeError`` immediately.
+
+        ``label`` differentiates the terminal error message across
+        chat/embedding/rerank callers.
+        """
+        for attempt in range(self.max_retries + 1):
+            try:
+                with self._open(request) as resp:
+                    return resp.read().decode("utf-8")
+            except urllib.error.HTTPError as exc:
+                is_retryable = exc.code == 429 and attempt < self.max_retries
+                if not is_retryable:
+                    body = ""
+                    try:
+                        body = exc.read().decode("utf-8", errors="replace")
+                    except Exception:
+                        pass
+                    raise RuntimeError(
+                        f"{label} HTTP {exc.code}: {body[:500]}"
+                    ) from exc
+                retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                try:
+                    wait_s = float(retry_after) if retry_after else self.retry_backoff_s * (2 ** attempt)
+                except (TypeError, ValueError):
+                    wait_s = self.retry_backoff_s * (2 ** attempt)
+                wait_s = min(wait_s, self.retry_backoff_max_s)
+                time.sleep(wait_s)
+        # The loop either returns or raises; reaching here would be a bug.
+        raise RuntimeError(f"{label}: retry loop exhausted without return")
 
     def model_for(self, tier: TaskTier) -> str:
         return self.simple_model if tier == TaskTier.SIMPLE else self.advanced_model
@@ -133,18 +179,7 @@ class AlibabaTongyiProvider:
         )
 
         t0 = time.monotonic()
-        try:
-            with self._open(req) as resp:
-                raw = resp.read().decode("utf-8")
-        except urllib.error.HTTPError as exc:
-            body = ""
-            try:
-                body = exc.read().decode("utf-8", errors="replace")
-            except Exception:
-                pass
-            raise RuntimeError(
-                f"Tongyi HTTP {exc.code}: {body[:500]}"
-            ) from exc
+        raw = self._request(req, "Tongyi")
         latency_ms = (time.monotonic() - t0) * 1000.0
 
         data = json.loads(raw)
@@ -212,18 +247,7 @@ class AlibabaTongyiProvider:
             },
             method="POST",
         )
-        try:
-            with self._open(req) as resp:
-                raw = resp.read().decode("utf-8")
-        except urllib.error.HTTPError as exc:
-            body = ""
-            try:
-                body = exc.read().decode("utf-8", errors="replace")
-            except Exception:
-                pass
-            raise RuntimeError(
-                f"Tongyi embedding HTTP {exc.code}: {body[:500]}"
-            ) from exc
+        raw = self._request(req, "Tongyi embedding")
 
         data = json.loads(raw)
         output = data.get("output") or {}
@@ -279,18 +303,7 @@ class AlibabaTongyiProvider:
             },
             method="POST",
         )
-        try:
-            with self._open(req) as resp:
-                raw = resp.read().decode("utf-8")
-        except urllib.error.HTTPError as exc:
-            body = ""
-            try:
-                body = exc.read().decode("utf-8", errors="replace")
-            except Exception:
-                pass
-            raise RuntimeError(
-                f"Tongyi rerank HTTP {exc.code}: {body[:500]}"
-            ) from exc
+        raw = self._request(req, "Tongyi rerank")
         data = json.loads(raw)
         output = data.get("output") or {}
         results = output.get("results") or []

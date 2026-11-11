@@ -533,6 +533,128 @@ def test_tongyi_provider_raises_on_http_error():
             p.chat([ChatMessage(role="user", content="x")])
 
 
+def test_tongyi_provider_retries_on_429_then_succeeds(monkeypatch):
+    """DashScope ``Throttling.RateQuota`` 429 is per-minute and transient —
+    exponential-backoff retry is the canonical unblock."""
+    import urllib.error
+
+    p = AlibabaTongyiProvider(
+        api_key="sk-fake",
+        max_retries=3,
+        retry_backoff_s=0.01,
+        retry_backoff_max_s=0.05,
+    )
+
+    sleeps: list[float] = []
+    monkeypatch.setattr(
+        "psychology_base.llm.providers.alibaba_tongyi.time.sleep",
+        lambda s: sleeps.append(s),
+    )
+
+    err = urllib.error.HTTPError(
+        url="x", code=429,
+        msg='Throttling.RateQuota',
+        hdrs=None,
+        fp=io.BytesIO(b'{"code":"Throttling.RateQuota","message":"rate limit"}'),
+    )
+    ok = _FakeResp(_tongyi_response_body("hi"))
+
+    call_count = {"n": 0}
+
+    def _fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] <= 2:
+            raise err
+        return ok
+
+    with patch("urllib.request.urlopen", side_effect=_fake_urlopen):
+        result = p.chat([ChatMessage(role="user", content="x")])
+
+    assert result.content == "hi"
+    assert call_count["n"] == 3, "two 429s then success"
+    assert len(sleeps) == 2
+    assert sleeps[0] == pytest.approx(0.01)
+    assert sleeps[1] == pytest.approx(0.02)
+
+
+def test_tongyi_provider_gives_up_after_max_retries():
+    """After ``max_retries`` 429s the terminal error surfaces normally so
+    callers can decide (e.g. overlay runner's per-user try/except)."""
+    import urllib.error
+
+    p = AlibabaTongyiProvider(
+        api_key="sk-fake",
+        max_retries=2,
+        retry_backoff_s=0.0,
+        retry_backoff_max_s=0.0,
+    )
+    err = urllib.error.HTTPError(
+        url="x", code=429, msg="rate limit",
+        hdrs=None,
+        fp=io.BytesIO(b'{"code":"Throttling.RateQuota","message":"still rate limited"}'),
+    )
+    with patch("urllib.request.urlopen", side_effect=err) as uo:
+        with pytest.raises(RuntimeError, match="Tongyi HTTP 429"):
+            p.chat([ChatMessage(role="user", content="x")])
+        assert uo.call_count == 3, "1 initial + 2 retries"
+
+
+def test_tongyi_provider_honors_retry_after_header(monkeypatch):
+    """A ``Retry-After`` seconds header, when present, wins over the
+    exponential-backoff default."""
+    import urllib.error
+    from email.message import Message
+
+    p = AlibabaTongyiProvider(
+        api_key="sk-fake",
+        max_retries=2,
+        retry_backoff_s=0.01,
+        retry_backoff_max_s=5.0,
+    )
+
+    sleeps: list[float] = []
+    monkeypatch.setattr(
+        "psychology_base.llm.providers.alibaba_tongyi.time.sleep",
+        lambda s: sleeps.append(s),
+    )
+
+    hdrs = Message()
+    hdrs["Retry-After"] = "0.5"
+    err = urllib.error.HTTPError(
+        url="x", code=429, msg="rate limit",
+        hdrs=hdrs,
+        fp=io.BytesIO(b'{"code":"Throttling.RateQuota"}'),
+    )
+    ok = _FakeResp(_tongyi_response_body("hi"))
+
+    call_count = {"n": 0}
+
+    def _fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            raise err
+        return ok
+
+    with patch("urllib.request.urlopen", side_effect=_fake_urlopen):
+        p.chat([ChatMessage(role="user", content="x")])
+    assert sleeps == [pytest.approx(0.5)], "Retry-After wins over exp backoff"
+
+
+def test_tongyi_provider_does_not_retry_non_429():
+    """Non-429 errors must still surface fast — retry is 429-specific."""
+    import urllib.error
+
+    p = AlibabaTongyiProvider(api_key="sk-fake", max_retries=4)
+    err = urllib.error.HTTPError(
+        url="x", code=500, msg="Internal Server Error",
+        hdrs=None, fp=io.BytesIO(b'{"message":"boom"}'),
+    )
+    with patch("urllib.request.urlopen", side_effect=err) as uo:
+        with pytest.raises(RuntimeError, match="Tongyi HTTP 500"):
+            p.chat([ChatMessage(role="user", content="x")])
+        assert uo.call_count == 1, "500 is not retryable"
+
+
 def test_router_builds_tongyi_from_config(tmp_path, monkeypatch):
     """End-to-end: config file names tongyi as active_provider, router
     constructs the provider with the env-sourced API key."""
